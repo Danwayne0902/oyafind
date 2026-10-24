@@ -1,0 +1,775 @@
+name,slug,parent_slug,location_type,catalogue_origin,reviewed_at
+Aba North,abia-aba-north,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Aba South,abia-aba-south,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Arochukwu,abia-arochukwu,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bende,abia-bende,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikwuano,abia-ikwuano,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Isiala Ngwa North,abia-isiala-ngwa-north,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Isiala Ngwa South,abia-isiala-ngwa-south,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Isuikwuato,abia-isuikwuato,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Obi Ngwa,abia-obi-ngwa,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ohafia,abia-ohafia,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Osisioma,abia-osisioma,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ugwunagbo,abia-ugwunagbo,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ukwa East,abia-ukwa-east,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ukwa West,abia-ukwa-west,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Umuahia North,abia-umuahia-north,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Umuahia South,abia-umuahia-south,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Umu Nneochi,abia-umu-nneochi,abia,lga,oyafind_reviewed,2026-10-23 00:00:00
+Demsa,adamawa-demsa,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Fufore,adamawa-fufore,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ganaye,adamawa-ganaye,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gireri,adamawa-gireri,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gombi,adamawa-gombi,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Guyuk,adamawa-guyuk,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Hong,adamawa-hong,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Jada,adamawa-jada,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Lamurde,adamawa-lamurde,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Madagali,adamawa-madagali,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Maiha,adamawa-maiha,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mayo-Belwa,adamawa-mayo-belwa,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Michika,adamawa-michika,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mubi North,adamawa-mubi-north,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mubi South,adamawa-mubi-south,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Numan,adamawa-numan,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Shelleng,adamawa-shelleng,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Song,adamawa-song,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Toungo,adamawa-toungo,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Yola North,adamawa-yola-north,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Yola South,adamawa-yola-south,adamawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Abak,akwa-ibom-abak,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Eastern Obolo,akwa-ibom-eastern-obolo,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Eket,akwa-ibom-eket,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Esit Eket,akwa-ibom-esit-eket,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Essien Udim,akwa-ibom-essien-udim,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Etim Ekpo,akwa-ibom-etim-ekpo,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Etinan,akwa-ibom-etinan,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ibeno,akwa-ibom-ibeno,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ibesikpo Asutan,akwa-ibom-ibesikpo-asutan,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ibiono-Ibom,akwa-ibom-ibiono-ibom,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ika,akwa-ibom-ika,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikono,akwa-ibom-ikono,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikot Abasi,akwa-ibom-ikot-abasi,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikot Ekpene,akwa-ibom-ikot-ekpene,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ini,akwa-ibom-ini,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Itu,akwa-ibom-itu,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mbo,akwa-ibom-mbo,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mkpat-Enin,akwa-ibom-mkpat-enin,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nsit-Atai,akwa-ibom-nsit-atai,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nsit-Ibom,akwa-ibom-nsit-ibom,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nsit-Ubium,akwa-ibom-nsit-ubium,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Obot Akara,akwa-ibom-obot-akara,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Okobo,akwa-ibom-okobo,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Onna,akwa-ibom-onna,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oron,akwa-ibom-oron,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oruk Anam,akwa-ibom-oruk-anam,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Udung-Uko,akwa-ibom-udung-uko,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ukanafun,akwa-ibom-ukanafun,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Uruan,akwa-ibom-uruan,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Urue-Offong/Oruko,akwa-ibom-urue-offong/oruko,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Uyo,akwa-ibom-uyo,akwa-ibom,lga,oyafind_reviewed,2026-10-23 00:00:00
+Aguata,anambra-aguata,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Anambra East,anambra-anambra-east,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Anambra West,anambra-anambra-west,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Anaocha,anambra-anaocha,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Awka North,anambra-awka-north,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Awka South,anambra-awka-south,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ayamelum,anambra-ayamelum,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dunukofia,anambra-dunukofia,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ekwusigo,anambra-ekwusigo,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Idemili North,anambra-idemili-north,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Idemili South,anambra-idemili-south,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ihiala,anambra-ihiala,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Njikoka,anambra-njikoka,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nnewi North,anambra-nnewi-north,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nnewi South,anambra-nnewi-south,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ogbaru,anambra-ogbaru,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Onitsha North,anambra-onitsha-north,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Onitsha South,anambra-onitsha-south,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Orumba North,anambra-orumba-north,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Orumba South,anambra-orumba-south,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oyi,anambra-oyi,anambra,lga,oyafind_reviewed,2026-10-23 00:00:00
+Alkaleri,bauchi-alkaleri,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bauchi,bauchi-bauchi,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bogoro,bauchi-bogoro,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Damban,bauchi-damban,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Darazo,bauchi-darazo,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dass,bauchi-dass,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gamawa,bauchi-gamawa,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ganjuwa,bauchi-ganjuwa,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Giade,bauchi-giade,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Itas/Gadau,bauchi-itas/gadau,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Jamaare,bauchi-jamaare,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Katagum,bauchi-katagum,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kirfi,bauchi-kirfi,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Misau,bauchi-misau,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ningi,bauchi-ningi,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Shira,bauchi-shira,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Tafawa Balewa,bauchi-tafawa-balewa,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Toro,bauchi-toro,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Warji,bauchi-warji,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Zaki,bauchi-zaki,bauchi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Brass,bayelsa-brass,bayelsa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ekeremor,bayelsa-ekeremor,bayelsa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kolokuma/Opokuma,bayelsa-kolokuma-opokuma,bayelsa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nembe,bayelsa-nembe,bayelsa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ogbia,bayelsa-ogbia,bayelsa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Sagbama,bayelsa-sagbama,bayelsa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Southern Ijaw,bayelsa-southern-ijaw,bayelsa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Yenagoa,bayelsa-yenagoa,bayelsa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ado,benue-ado,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Agatu,benue-agatu,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Apa,benue-apa,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Buruku,benue-buruku,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gboko,benue-gboko,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Guma,benue-guma,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gwer East,benue-gwer-east,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gwer West,benue-gwer-west,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Katsina-Ala,benue-katsina-ala,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Konshisha,benue-konshisha,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kwande,benue-kwande,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Logo,benue-logo,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Makurdi,benue-makurdi,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Obi,benue-obi,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ogbadibo,benue-ogbadibo,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ohimini,benue-ohimini,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oju,benue-oju,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Okpokwu,benue-okpokwu,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Otukpo,benue-otukpo,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Tarka,benue-tarka,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ukum,benue-ukum,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ushongo,benue-ushongo,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Vandeikya,benue-vandeikya,benue,lga,oyafind_reviewed,2026-10-23 00:00:00
+Abadam,borno-abadam,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Askira/Uba,borno-askira-uba,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bama,borno-bama,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bayo,borno-bayo,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Biu,borno-biu,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Chibok,borno-chibok,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Damboa,borno-damboa,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dikwa,borno-dikwa,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gubio,borno-gubio,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Guzamala,borno-guzamala,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gwoza,borno-gwoza,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Hawul,borno-hawul,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Jere,borno-jere,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kaga,borno-kaga,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kala/Balge,borno-kala-balge,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Konduga,borno-konduga,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kukawa,borno-kukawa,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kwaya Kusar,borno-kwaya-kusar,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mafa,borno-mafa,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Magumeri,borno-magumeri,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Maiduguri,borno-maiduguri,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Marte,borno-marte,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mobbar,borno-mobbar,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Monguno,borno-monguno,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ngala,borno-ngala,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nganzai,borno-nganzai,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Shani,borno-shani,borno,lga,oyafind_reviewed,2026-10-23 00:00:00
+Abi,cross-river-abi,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Akamkpa,cross-river-akamkpa,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Akpabuyo,cross-river-akpabuyo,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bakassi,cross-river-bakassi,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bekwarra,cross-river-bekwarra,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Biase,cross-river-biase,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Boki,cross-river-boki,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Calabar Municipal,cross-river-calabar-municipal,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Calabar South,cross-river-calabar-south,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Etung,cross-river-etung,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikom,cross-river-ikom,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Obanliku,cross-river-obanliku,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Obubra,cross-river-obubra,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Obudu,cross-river-obudu,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Odukpani,cross-river-odukpani,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ogoja,cross-river-ogoja,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Yakuur,cross-river-yakuur,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Yala,cross-river-yala,cross-river,lga,oyafind_reviewed,2026-10-23 00:00:00
+Aniocha North,delta-aniocha-north,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Aniocha South,delta-aniocha-south,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bomadi,delta-bomadi,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Burutu,delta-burutu,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ethiope East,delta-ethiope-east,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ethiope West,delta-ethiope-west,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ika North East,delta-ika-north-east,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ika South,delta-ika-south,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Isoko North,delta-isoko-north,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Isoko South,delta-isoko-south,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ndokwa East,delta-ndokwa-east,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ndokwa West,delta-ndokwa-west,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Okpe,delta-okpe,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oshimili North,delta-oshimili-north,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oshimili South,delta-oshimili-south,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Patani,delta-patani,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Sapele,delta-sapele,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Udu,delta-udu,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ughelli North,delta-ughelli-north,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ughelli South,delta-ughelli-south,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ukwuani,delta-ukwuani,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Uvwie,delta-uvwie,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Warri North,delta-warri-north,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Warri South,delta-warri-south,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Warri South West,delta-warri-south-west,delta,lga,oyafind_reviewed,2026-10-23 00:00:00
+Abakaliki,ebonyi-abakaliki,ebonyi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Afikpo North,ebonyi-afikpo-north,ebonyi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Afikpo South,ebonyi-afikpo-south,ebonyi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ebonyi,ebonyi-ebonyi,ebonyi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ezza North,ebonyi-ezza-north,ebonyi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ezza South,ebonyi-ezza-south,ebonyi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikwo,ebonyi-ikwo,ebonyi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ishielu,ebonyi-ishielu,ebonyi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ivo,ebonyi-ivo,ebonyi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Izzi,ebonyi-izzi,ebonyi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ohaozara,ebonyi-ohaozara,ebonyi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ohaukwu,ebonyi-ohaukwu,ebonyi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Onicha,ebonyi-onicha,ebonyi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Akoko-Edo,edo-akoko-edo,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Egor,edo-egor,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Esan Central,edo-esan-central,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Esan North-East,edo-esan-north-east,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Esan South-East,edo-esan-south-east,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Esan West,edo-esan-west,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Etsako Central,edo-etsako-central,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Etsako East,edo-etsako-east,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Etsako West,edo-etsako-west,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Igueben,edo-igueben,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikpoba Okha,edo-ikpoba-okha,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oredo,edo-oredo,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Orhionmwon,edo-orhionmwon,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ovia North-East,edo-ovia-north-east,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ovia South-West,edo-ovia-south-west,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Owan East,edo-owan-east,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Owan West,edo-owan-west,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Uhunmwonde,edo-uhunmwonde,edo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ado Ekiti,ekiti-ado-ekiti,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Efon,ekiti-efon,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ekiti East,ekiti-ekiti-east,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ekiti South-West,ekiti-ekiti-south-west,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ekiti West,ekiti-ekiti-west,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Emure,ekiti-emure,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gbonyin,ekiti-gbonyin,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ido Osi,ekiti-ido-osi,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ijero,ekiti-ijero,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikere,ekiti-ikere,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikole,ekiti-ikole,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ilejemeje,ekiti-ilejemeje,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Irepodun/Ifelodun,ekiti-irepodun-ifelodun,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ise/Orun,ekiti-ise-orun,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Moba,ekiti-moba,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oye,ekiti-oye,ekiti,lga,oyafind_reviewed,2026-10-23 00:00:00
+Aninri,enugu-aninri,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Awgu,enugu-awgu,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Enugu East,enugu-enugu-east,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Enugu North,enugu-enugu-north,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Enugu South,enugu-enugu-south,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ezeagu,enugu-ezeagu,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Igbo Etiti,enugu-igbo-etiti,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Igbo Eze North,enugu-igbo-eze-north,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Igbo Eze South,enugu-igbo-eze-south,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Isi Uzo,enugu-isi-uzo,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nkanu East,enugu-nkanu-east,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nkanu West,enugu-nkanu-west,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nsukka,enugu-nsukka,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oji River,enugu-oji-river,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Udenu,enugu-udenu,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Udi,enugu-udi,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Uzo Uwani,enugu-uzo-uwani,enugu,lga,oyafind_reviewed,2026-10-23 00:00:00
+Abaji,fct-abuja-abaji,fct-abuja,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bwari,fct-abuja-bwari,fct-abuja,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gwagwalada,fct-abuja-gwagwalada,fct-abuja,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kuje,fct-abuja-kuje,fct-abuja,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kwali,fct-abuja-kwali,fct-abuja,lga,oyafind_reviewed,2026-10-23 00:00:00
+Municipal Area Council,fct-abuja-municipal-area-council,fct-abuja,lga,oyafind_reviewed,2026-10-23 00:00:00
+Akko,gombe-akko,gombe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Balanga,gombe-balanga,gombe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Billiri,gombe-billiri,gombe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dukku,gombe-dukku,gombe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Funakaye,gombe-funakaye,gombe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gombe,gombe-gombe,gombe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kaltungo,gombe-kaltungo,gombe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kwami,gombe-kwami,gombe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nafada,gombe-nafada,gombe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Shongom,gombe-shongom,gombe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Yamaltu/Deba,gombe-yamaltu-deba,gombe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Aboh Mbaise,imo-aboh-mbaise,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ahiazu Mbaise,imo-ahiazu-mbaise,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ehime Mbano,imo-ehime-mbano,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ezinihitte,imo-ezinihitte,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ideato North,imo-ideato-north,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ideato South,imo-ideato-south,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ihitte/Uboma,imo-ihitte-uboma,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikeduru,imo-ikeduru,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Isiala Mbano,imo-isiala-mbano,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Isu,imo-isu,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mbaitoli,imo-mbaitoli,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ngor Okpala,imo-ngor-okpala,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Njaba,imo-njaba,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nkwerre,imo-nkwerre,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nwangele,imo-nwangele,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Obowo,imo-obowo,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oguta,imo-oguta,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ohaji/Egbema,imo-ohaji-egbema,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Okigwe,imo-okigwe,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Orlu,imo-orlu,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Orsu,imo-orsu,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oru East,imo-oru-east,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oru West,imo-oru-west,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Owerri Municipal,imo-owerri-municipal,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Owerri North,imo-owerri-north,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Owerri West,imo-owerri-west,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Unuimo,imo-unuimo,imo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Auyo,jigawa-auyo,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Babura,jigawa-babura,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Biriniwa,jigawa-biriniwa,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Birnin Kudu,jigawa-birnin-kudu,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Buji,jigawa-buji,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dutse,jigawa-dutse,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gagarawa,jigawa-gagarawa,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Garki,jigawa-garki,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gumel,jigawa-gumel,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Guri,jigawa-guri,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gwaram,jigawa-gwaram,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gwiwa,jigawa-gwiwa,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Hadejia,jigawa-hadejia,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Jahun,jigawa-jahun,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kafin Hausa,jigawa-kafin-hausa,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kaugama,jigawa-kaugama,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kazaure,jigawa-kazaure,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kiri Kasama,jigawa-kiri-kasama,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kiyawa,jigawa-kiyawa,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Maigatari,jigawa-maigatari,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Malam Madori,jigawa-malam-madori,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Miga,jigawa-miga,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ringim,jigawa-ringim,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Roni,jigawa-roni,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Sule Tankarkar,jigawa-sule-tankarkar,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Taura,jigawa-taura,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Yankwashi,jigawa-yankwashi,jigawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Birnin Gwari,kaduna-birnin-gwari,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Chikun,kaduna-chikun,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Giwa,kaduna-giwa,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Igabi,kaduna-igabi,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikara,kaduna-ikara,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Jaba,kaduna-jaba,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Jema'a,kaduna-jemaa,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kachia,kaduna-kachia,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kaduna North,kaduna-kaduna-north,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kaduna South,kaduna-kaduna-south,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kagarko,kaduna-kagarko,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kajuru,kaduna-kajuru,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kaura,kaduna-kaura,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kauru,kaduna-kauru,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kubau,kaduna-kubau,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kudan,kaduna-kudan,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Lere,kaduna-lere,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Makarfi,kaduna-makarfi,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Sabon Gari,kaduna-sabon-gari,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Sanga,kaduna-sanga,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Soba,kaduna-soba,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Zangon Kataf,kaduna-zangon-kataf,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Zaria,kaduna-zaria,kaduna,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ajingi,kano-ajingi,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Albasu,kano-albasu,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bagwai,kano-bagwai,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bebeji,kano-bebeji,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bichi,kano-bichi,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bunkure,kano-bunkure,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dala,kano-dala,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dambatta,kano-dambatta,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dawakin Kudu,kano-dawakin-kudu,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dawakin Tofa,kano-dawakin-tofa,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Doguwa,kano-doguwa,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Fagge,kano-fagge,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gabasawa,kano-gabasawa,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Garko,kano-garko,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Garum Mallam,kano-garum-mallam,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gaya,kano-gaya,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gezawa,kano-gezawa,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gwale,kano-gwale,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gwarzo,kano-gwarzo,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kabo,kano-kabo,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kano Municipal,kano-kano-municipal,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Karaye,kano-karaye,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kibiya,kano-kibiya,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kiru,kano-kiru,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kumbotso,kano-kumbotso,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kunchi,kano-kunchi,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kura,kano-kura,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Madobi,kano-madobi,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Makoda,kano-makoda,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Minjibir,kano-minjibir,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nasarawa,kano-nasarawa,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Rano,kano-rano,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Rimin Gado,kano-rimin-gado,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Rogo,kano-rogo,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Shanono,kano-shanono,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Sumaila,kano-sumaila,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Takai,kano-takai,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Tarauni,kano-tarauni,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Tofa,kano-tofa,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Tsanyawa,kano-tsanyawa,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Tudun Wada,kano-tudun-wada,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ungogo,kano-ungogo,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Warawa,kano-warawa,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Wudil,kano-wudil,kano,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bakori,katsina-bakori,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Batagarawa,katsina-batagarawa,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Batsari,katsina-batsari,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Baure,katsina-baure,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bindawa,katsina-bindawa,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Charanchi,katsina-charanchi,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dandume,katsina-dandume,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Danja,katsina-danja,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dan Musa,katsina-dan-musa,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Daura,katsina-daura,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dutsi,katsina-dutsi,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dutsin Ma,katsina-dutsin-ma,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Faskari,katsina-faskari,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Funtua,katsina-funtua,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ingawa,katsina-ingawa,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Jibia,katsina-jibia,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kafur,katsina-kafur,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kaita,katsina-kaita,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kankara,katsina-kankara,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kankia,katsina-kankia,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Katsina,katsina-katsina,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kurfi,katsina-kurfi,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kusada,katsina-kusada,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mai'Adua,katsina-maiadua,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Malumfashi,katsina-malumfashi,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mani,katsina-mani,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mashi,katsina-mashi,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Matazu,katsina-matazu,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Musawa,katsina-musawa,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Rimi,katsina-rimi,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Sabuwa,katsina-sabuwa,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Safana,katsina-safana,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Sandamu,katsina-sandamu,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Zango,katsina-zango,katsina,lga,oyafind_reviewed,2026-10-23 00:00:00
+Aleiro,kebbi-aleiro,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Arewa Dandi,kebbi-arewa-dandi,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Argungu,kebbi-argungu,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Augie,kebbi-augie,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bagudo,kebbi-bagudo,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Birnin Kebbi,kebbi-birnin-kebbi,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bunza,kebbi-bunza,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dandi,kebbi-dandi,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Fakai,kebbi-fakai,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gwandu,kebbi-gwandu,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Jega,kebbi-jega,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kalgo,kebbi-kalgo,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Koko/Besse,kebbi-koko-besse,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Maiyama,kebbi-maiyama,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ngaski,kebbi-ngaski,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Sakaba,kebbi-sakaba,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Shanga,kebbi-shanga,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Suru,kebbi-suru,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Wasagu/Danko,kebbi-wasagu-danko,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Yauri,kebbi-yauri,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Zuru,kebbi-zuru,kebbi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Adavi,kogi-adavi,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ajaokuta,kogi-ajaokuta,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ankpa,kogi-ankpa,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bassa,kogi-bassa,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dekina,kogi-dekina,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ibaji,kogi-ibaji,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Idah,kogi-idah,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Igalamela Odolu,kogi-igalamela-odolu,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ijumu,kogi-ijumu,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kabba/Bunu,kogi-kabba-bunu,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kogi,kogi-kogi,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Lokoja,kogi-lokoja,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mopa Muro,kogi-mopa-muro,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ofu,kogi-ofu,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ogori/Magongo,kogi-ogori-magongo,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Okehi,kogi-okehi,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Okene,kogi-okene,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Olamaboro,kogi-olamaboro,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Omala,kogi-omala,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Yagba East,kogi-yagba-east,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Yagba West,kogi-yagba-west,kogi,lga,oyafind_reviewed,2026-10-23 00:00:00
+Asa,kwara-asa,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Baruten,kwara-baruten,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Edu,kwara-edu,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ekiti,kwara-ekiti,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ifelodun,kwara-ifelodun,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ilorin East,kwara-ilorin-east,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ilorin South,kwara-ilorin-south,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ilorin West,kwara-ilorin-west,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Irepodun,kwara-irepodun,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Isin,kwara-isin,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kaiama,kwara-kaiama,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Moro,kwara-moro,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Offa,kwara-offa,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oke Ero,kwara-oke-ero,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oyun,kwara-oyun,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Pategi,kwara-pategi,kwara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Agege,lagos-agege,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ajeromi-Ifelodun,lagos-ajeromi-ifelodun,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Alimosho,lagos-alimosho,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Amuwo-Odofin,lagos-amuwo-odofin,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Apapa,lagos-apapa,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Badagry,lagos-badagry,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Epe,lagos-epe,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Eti Osa,lagos-eti-osa,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ibeju-Lekki,lagos-ibeju-lekki,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ifako-Ijaiye,lagos-ifako-ijaiye,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikeja,lagos-ikeja,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikorodu,lagos-ikorodu,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kosofe,lagos-kosofe,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Lagos Island,lagos-lagos-island,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Lagos Mainland,lagos-lagos-mainland,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mushin,lagos-mushin,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ojo,lagos-ojo,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oshodi-Isolo,lagos-oshodi-isolo,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Shomolu,lagos-shomolu,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Surulere,lagos-surulere,lagos,lga,oyafind_reviewed,2026-10-23 00:00:00
+Akwanga,nasarawa-akwanga,nasarawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Awe,nasarawa-awe,nasarawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Doma,nasarawa-doma,nasarawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Karu,nasarawa-karu,nasarawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Keana,nasarawa-keana,nasarawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Keffi,nasarawa-keffi,nasarawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kokona,nasarawa-kokona,nasarawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Lafia,nasarawa-lafia,nasarawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nasarawa,nasarawa-nasarawa,nasarawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nasarawa Egba,nasarawa-nasarawa-egba,nasarawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Obi,nasarawa-obi,nasarawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Toto,nasarawa-toto,nasarawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Wamba,nasarawa-wamba,nasarawa,lga,oyafind_reviewed,2026-10-23 00:00:00
+Agaie,niger-agaie,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Agwara,niger-agwara,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bida,niger-bida,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Borgu,niger-borgu,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bosso,niger-bosso,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Chanchaga,niger-chanchaga,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Edati,niger-edati,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gbako,niger-gbako,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gurara,niger-gurara,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Katcha,niger-katcha,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kontagora,niger-kontagora,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Lapai,niger-lapai,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Lavun,niger-lavun,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Magama,niger-magama,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mariga,niger-mariga,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mashegu,niger-mashegu,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mokwa,niger-mokwa,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Moya,niger-moya,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Paikoro,niger-paikoro,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Rafi,niger-rafi,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Rijau,niger-rijau,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Shiroro,niger-shiroro,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Suleja,niger-suleja,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Tafa,niger-tafa,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Wushishi,niger-wushishi,niger,lga,oyafind_reviewed,2026-10-23 00:00:00
+Abeokuta North,ogun-abeokuta-north,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Abeokuta South,ogun-abeokuta-south,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ado-Odo/Ota,ogun-ado-odo-ota,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Egbado North,ogun-egbado-north,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Egbado South,ogun-egbado-south,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ewekoro,ogun-ewekoro,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ifo,ogun-ifo,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ijebu East,ogun-ijebu-east,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ijebu North,ogun-ijebu-north,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ijebu North East,ogun-ijebu-north-east,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ijebu Ode,ogun-ijebu-ode,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikenne,ogun-ikenne,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Imeko Afon,ogun-imeko-afon,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ipokia,ogun-ipokia,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Obafemi Owode,ogun-obafemi-owode,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Odeda,ogun-odeda,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Odogbolu,ogun-odogbolu,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ogun Waterside,ogun-ogun-waterside,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Remo North,ogun-remo-north,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Shagamu,ogun-shagamu,ogun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Akoko North-East,ondo-akoko-north-east,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Akoko North-West,ondo-akoko-north-west,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Akoko South-East,ondo-akoko-south-east,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Akoko South-West,ondo-akoko-south-west,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Akure North,ondo-akure-north,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Akure South,ondo-akure-south,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ese Odo,ondo-ese-odo,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Idanre,ondo-idanre,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ifedore,ondo-ifedore,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ilaje,ondo-ilaje,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ile Oluji/Okeigbo,ondo-ile-oluji-okeigbo,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Irele,ondo-irele,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Odigbo,ondo-odigbo,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Okitipupa,ondo-okitipupa,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ondo East,ondo-ondo-east,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ondo West,ondo-ondo-west,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ose,ondo-ose,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Owo,ondo-owo,ondo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Atakunmosa East,osun-atakunmosa-east,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Atakunmosa West,osun-atakunmosa-west,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Aiyedaade,osun-aiyedaade,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Aiyedire,osun-aiyedire,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Boluwaduro,osun-boluwaduro,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Boripe,osun-boripe,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ede North,osun-ede-north,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ede South,osun-ede-south,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Egbedore,osun-egbedore,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ejigbo,osun-ejigbo,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ife Central,osun-ife-central,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ife East,osun-ife-east,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ife North,osun-ife-north,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ife South,osun-ife-south,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ifedayo,osun-ifedayo,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ifelodun,osun-ifelodun,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ila,osun-ila,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ilesa East,osun-ilesa-east,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ilesa West,osun-ilesa-west,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Irepodun,osun-irepodun,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Irewole,osun-irewole,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Isokan,osun-isokan,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Iwo,osun-iwo,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Obokun,osun-obokun,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Odo Otin,osun-odo-otin,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ola Oluwa,osun-ola-oluwa,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Olorunda,osun-olorunda,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oriade,osun-oriade,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Orolu,osun-orolu,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Osogbo,osun-osogbo,osun,lga,oyafind_reviewed,2026-10-23 00:00:00
+Afijio,oyo-afijio,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Akinyele,oyo-akinyele,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Atiba,oyo-atiba,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Atisbo,oyo-atisbo,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Egbeda,oyo-egbeda,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ibadan North,oyo-ibadan-north,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ibadan North-East,oyo-ibadan-north-east,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ibadan North-West,oyo-ibadan-north-west,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ibadan South-East,oyo-ibadan-south-east,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ibadan South-West,oyo-ibadan-south-west,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ibarapa Central,oyo-ibarapa-central,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ibarapa East,oyo-ibarapa-east,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ibarapa North,oyo-ibarapa-north,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ido,oyo-ido,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Irepo,oyo-irepo,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Iseyin,oyo-iseyin,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Itesiwaju,oyo-itesiwaju,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Iwajowa,oyo-iwajowa,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kajola,oyo-kajola,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Lagelu,oyo-lagelu,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ogbomosho North,oyo-ogbomosho-north,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ogbomosho South,oyo-ogbomosho-south,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ogo Oluwa,oyo-ogo-oluwa,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Olorunsogo,oyo-olorunsogo,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oluyole,oyo-oluyole,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ona-Ara,oyo-ona-ara,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Orelope,oyo-orelope,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ori-Ire,oyo-ori-ire,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oyo East,oyo-oyo-east,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oyo West,oyo-oyo-west,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Saki East,oyo-saki-east,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Saki West,oyo-saki-west,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Surulere,oyo-surulere,oyo,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bokkos,plateau-bokkos,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Barkin Ladi,plateau-barkin-ladi,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bassa,plateau-bassa,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Jos East,plateau-jos-east,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Jos North,plateau-jos-north,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Jos South,plateau-jos-south,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kanam,plateau-kanam,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kanke,plateau-kanke,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Langtang North,plateau-langtang-north,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Langtang South,plateau-langtang-south,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mangu,plateau-mangu,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Mikang,plateau-mikang,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Pankshin,plateau-pankshin,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Qua'an Pan,plateau-quaan-pan,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Riyom,plateau-riyom,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Shendam,plateau-shendam,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Wase,plateau-wase,plateau,lga,oyafind_reviewed,2026-10-23 00:00:00
+Abua/Odual,rivers-abua-odual,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ahoada East,rivers-ahoada-east,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ahoada West,rivers-ahoada-west,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Akuku-Toru,rivers-akuku-toru,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Andoni,rivers-andoni,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Asari-Toru,rivers-asari-toru,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bonny,rivers-bonny,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Degema,rivers-degema,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Eleme,rivers-eleme,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Emohua,rivers-emohua,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Etche,rivers-etche,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gokana,rivers-gokana,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ikwerre,rivers-ikwerre,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Khana,rivers-khana,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Obio/Akpor,rivers-obio-akpor,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ogba/Egbema/Ndoni,rivers-ogba-egbema-ndoni,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ogu/Bolo,rivers-ogu-bolo,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Okrika,rivers-okrika,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Omuma,rivers-omuma,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Opobo/Nkoro,rivers-opobo-nkoro,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Oyigbo,rivers-oyigbo,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Port Harcourt,rivers-port-harcourt,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Tai,rivers-tai,rivers,lga,oyafind_reviewed,2026-10-23 00:00:00
+Binji,sokoto-binji,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bodinga,sokoto-bodinga,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Dange Shuni,sokoto-dange-shuni,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gada,sokoto-gada,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Goronyo,sokoto-goronyo,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gudu,sokoto-gudu,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gwadabawa,sokoto-gwadabawa,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Illela,sokoto-illela,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Isa,sokoto-isa,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kebbe,sokoto-kebbe,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kware,sokoto-kware,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Rabah,sokoto-rabah,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Sabon Birni,sokoto-sabon-birni,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Shagari,sokoto-shagari,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Silame,sokoto-silame,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Sokoto North,sokoto-sokoto-north,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Sokoto South,sokoto-sokoto-south,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Tambuwal,sokoto-tambuwal,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Tangaza,sokoto-tangaza,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Tureta,sokoto-tureta,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Wamako,sokoto-wamako,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Wurno,sokoto-wurno,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Yabo,sokoto-yabo,sokoto,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ardo Kola,taraba-ardo-kola,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bali,taraba-bali,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Donga,taraba-donga,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gashaka,taraba-gashaka,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gassol,taraba-gassol,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ibi,taraba-ibi,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Jalingo,taraba-jalingo,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Karim Lamido,taraba-karim-lamido,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kurmi,taraba-kurmi,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Lau,taraba-lau,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Sardauna,taraba-sardauna,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Takum,taraba-takum,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Ussa,taraba-ussa,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Wukari,taraba-wukari,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Yorro,taraba-yorro,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Zing,taraba-zing,taraba,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bade,yobe-bade,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bursari,yobe-bursari,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Damaturu,yobe-damaturu,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Fika,yobe-fika,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Fune,yobe-fune,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Geidam,yobe-geidam,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gujba,yobe-gujba,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gulani,yobe-gulani,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Jakusko,yobe-jakusko,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Karasuwa,yobe-karasuwa,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Machina,yobe-machina,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nangere,yobe-nangere,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Nguru,yobe-nguru,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Potiskum,yobe-potiskum,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Tarmuwa,yobe-tarmuwa,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Yunusari,yobe-yunusari,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Yusufari,yobe-yusufari,yobe,lga,oyafind_reviewed,2026-10-23 00:00:00
+Anka,zamfara-anka,zamfara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bakura,zamfara-bakura,zamfara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Birnin Magaji/Kiyaw,zamfara-birnin-magaji-kiyaw,zamfara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bukkuyum,zamfara-bukkuyum,zamfara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Bungudu,zamfara-bungudu,zamfara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gummi,zamfara-gummi,zamfara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Gusau,zamfara-gusau,zamfara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Kaura Namoda,zamfara-kaura-namoda,zamfara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Maradun,zamfara-maradun,zamfara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Maru,zamfara-maru,zamfara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Shinkafi,zamfara-shinkafi,zamfara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Talata Mafara,zamfara-talata-mafara,zamfara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Chafe,zamfara-chafe,zamfara,lga,oyafind_reviewed,2026-10-23 00:00:00
+Zurmi,zamfara-zurmi,zamfara,lga,oyafind_reviewed,2026-10-23 00:00:00

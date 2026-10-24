@@ -1,0 +1,39 @@
+name,slug,parent_slug,location_type,catalogue_origin,reviewed_at
+Nigeria,nigeria,,country,oyafind_reviewed,2026-10-23 00:00:00
+Abia,abia,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Adamawa,adamawa,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Akwa Ibom,akwa-ibom,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Anambra,anambra,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Bauchi,bauchi,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Bayelsa,bayelsa,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Benue,benue,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Borno,borno,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Cross River,cross-river,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Delta,delta,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Ebonyi,ebonyi,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Edo,edo,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Ekiti,ekiti,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Enugu,enugu,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Federal Capital Territory,fct-abuja,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Gombe,gombe,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Imo,imo,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Jigawa,jigawa,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Kaduna,kaduna,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Kano,kano,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Katsina,katsina,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Kebbi,kebbi,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Kogi,kogi,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Kwara,kwara,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Lagos,lagos,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Nasarawa,nasarawa,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Niger,niger,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Ogun,ogun,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Ondo,ondo,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Osun,osun,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Oyo,oyo,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Plateau,plateau,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Rivers,rivers,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Sokoto,sokoto,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Taraba,taraba,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Yobe,yobe,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
+Zamfara,zamfara,nigeria,state,oyafind_reviewed,2026-10-23 00:00:00
