@@ -1,5 +1,6 @@
 import './bootstrap';
 import '../css/app.css';
+import '../css/oyafind-v2.css';
 import '@fontsource-variable/instrument-sans';
 import { createApp } from 'vue';
 import App from './App.vue';

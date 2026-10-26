@@ -104,7 +104,7 @@ class OpportunityDiscoveryRepository
             $query->where('work_mode', $filters['work_mode']);
         }
 
-        return $query->with(['category', 'location.parent']);
+        return $query->with(['category', 'location.parent', 'latestVerifiedCheck']);
     }
 
     public function findPublicBySlug(string $slug): ?Opportunity

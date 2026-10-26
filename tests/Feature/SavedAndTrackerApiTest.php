@@ -173,7 +173,7 @@ class SavedAndTrackerApiTest extends TestCase
             ->assertOk()
             ->assertJsonCount(2, 'data');
 
-        $this->deleteJson('/api/v1/me/saved-opportunities/' . $opp1->id)
+        $this->deleteJson('/api/v1/me/saved-opportunities/'.$opp1->id)
             ->assertOk()
             ->assertJsonPath('status', 'ok');
 
@@ -226,7 +226,7 @@ class SavedAndTrackerApiTest extends TestCase
         $trackerId = $createRes->json('data.id');
 
         // Update status to 'applied'
-        $this->patchJson('/api/v1/me/applications/' . $trackerId, [
+        $this->patchJson('/api/v1/me/applications/'.$trackerId, [
             'status' => 'applied',
             'applied_at' => '2026-10-23T14:00:00Z',
         ])
@@ -235,7 +235,7 @@ class SavedAndTrackerApiTest extends TestCase
             ->assertJsonPath('data.status_source', 'user-reported');
 
         // Invalid status rejected
-        $this->patchJson('/api/v1/me/applications/' . $trackerId, [
+        $this->patchJson('/api/v1/me/applications/'.$trackerId, [
             'status' => 'unsupported_status',
         ])->assertUnprocessable();
 
@@ -247,12 +247,24 @@ class SavedAndTrackerApiTest extends TestCase
             ->assertJsonPath('data.0.status', 'applied');
 
         // Delete
-        $this->deleteJson('/api/v1/me/applications/' . $trackerId)
+        $this->deleteJson('/api/v1/me/applications/'.$trackerId)
             ->assertOk();
 
         $this->getJson('/api/v1/me/applications')
             ->assertOk()
             ->assertJsonCount(0, 'data');
+    }
+
+    public function test_tracking_a_non_public_opportunity_returns_not_found(): void
+    {
+        $this->actingAs($this->verifiedUser);
+
+        $this->postJson('/api/v1/me/applications', [
+            'opportunity_id' => 999999,
+            'status' => 'interested',
+        ])->assertNotFound();
+
+        $this->assertDatabaseCount('user_applications', 0);
     }
 
     public function test_tracker_records_are_strictly_owner_scoped(): void
@@ -280,11 +292,11 @@ class SavedAndTrackerApiTest extends TestCase
         // Other user attempts to update or delete
         $this->actingAs($otherUser);
 
-        $this->patchJson('/api/v1/me/applications/' . $trackerId, [
+        $this->patchJson('/api/v1/me/applications/'.$trackerId, [
             'status' => 'applied',
         ])->assertNotFound();
 
-        $this->deleteJson('/api/v1/me/applications/' . $trackerId)->assertOk();
+        $this->deleteJson('/api/v1/me/applications/'.$trackerId)->assertOk();
 
         // Record still intact for the owner
         $this->actingAs($this->verifiedUser);
@@ -296,7 +308,7 @@ class SavedAndTrackerApiTest extends TestCase
     private function createPublicOpportunity(string $slug): Opportunity
     {
         $opp = Opportunity::query()->create([
-            'title' => 'Synthetic ' . $slug,
+            'title' => 'Synthetic '.$slug,
             'slug' => $slug,
             'summary' => 'Synthetic summary.',
             'description' => 'Synthetic full description.',

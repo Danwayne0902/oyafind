@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use InvalidArgumentException;
 
@@ -111,5 +112,18 @@ class Opportunity extends Model
     public function verificationRecords(): HasMany
     {
         return $this->hasMany(VerificationRecord::class);
+    }
+
+    /**
+     * The most recent verified check on record. Public listing eligibility
+     * already requires a current qualifying check; this relation supplies the
+     * public check date without trusting the legacy verified_at column.
+     */
+    public function latestVerifiedCheck(): HasOne
+    {
+        return $this->hasOne(VerificationRecord::class)->ofMany(
+            ['checked_at' => 'max', 'id' => 'max'],
+            fn ($query) => $query->where('result', 'verified'),
+        );
     }
 }

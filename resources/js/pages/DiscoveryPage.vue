@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import OpportunityCard from '../components/OpportunityCard.vue';
 import LocationPicker from '../components/LocationPicker.vue';
 import UiIcon from '../components/UiIcon.vue';
@@ -16,29 +16,40 @@ const props = defineProps({
     pagination: { type: Object, default: null },
     locationFiltered: { type: Boolean, default: false },
     selectedLocation: { type: String, default: '' },
+    savedIds: { type: Array, default: () => [] },
+    savePendingId: { type: Number, default: null },
+    isAuthenticated: { type: Boolean, default: false },
 });
 
-const emit = defineEmits(['update:query', 'search', 'navigate', 'category', 'opportunity', 'location']);
-const activePreview = ref('');
+const emit = defineEmits(['update:query', 'search', 'navigate', 'location', 'save', 'sort']);
 
-const categoryDetails = [
-    { name: 'Jobs', slug: 'jobs', description: 'Full-time, part-time and remote jobs.', icon: 'briefcase', tone: 'mint' },
-    { name: 'Scholarships', slug: 'scholarships', description: 'Funding for your education and future.', icon: 'graduation-cap', tone: 'violet' },
-    { name: 'Internships', slug: 'internships', description: 'Gain experience and build your career.', icon: 'users', tone: 'blue' },
-    { name: 'Grants', slug: 'grants', description: 'Support for individuals, startups and businesses.', icon: 'coins', tone: 'amber' },
-    { name: 'Training', slug: 'training', description: 'Build new skills and increase your value.', icon: 'book', tone: 'violet' },
-    { name: 'Business Support', slug: 'business-support', description: 'Resources for your business growth.', icon: 'chart', tone: 'mint' },
-    { name: 'Gigs', slug: 'gigs', description: 'Short-term and flexible work opportunities.', icon: 'bolt', tone: 'amber' },
-    { name: 'Tenders', slug: 'tenders', description: 'Government and private sector tenders.', icon: 'file', tone: 'blue' },
+const FALLBACK_CATEGORIES = [
+    { name: 'Jobs', slug: 'jobs', icon: 'briefcase' },
+    { name: 'Scholarships', slug: 'scholarships', icon: 'graduation-cap' },
+    { name: 'Internships', slug: 'internships', icon: 'users' },
+    { name: 'Grants', slug: 'grants', icon: 'coins' },
+    { name: 'Training', slug: 'training', icon: 'book' },
+    { name: 'Business Support', slug: 'business-support', icon: 'chart' },
+    { name: 'Gigs', slug: 'gigs', icon: 'bolt' },
+    { name: 'Tenders', slug: 'tenders', icon: 'file' },
 ];
 
-const categoryCards = computed(() => {
-    const apiCategories = new Map(props.categories.map((category) => [category.slug, category]));
-
-    return categoryDetails.map((category) => ({
-        ...category,
-        name: apiCategories.get(category.slug)?.name ?? category.name,
+const categoryChips = computed(() => {
+    const active = new Map(props.categories.map((category) => [category.slug, category]));
+    return FALLBACK_CATEGORIES.map((fallback) => ({
+        name: active.get(fallback.slug)?.name ?? fallback.name,
+        slug: fallback.slug,
+        icon: fallback.icon,
     }));
+});
+
+const hasFilters = computed(() => Boolean(
+    props.query.trim() || props.selectedLocation || props.locationFiltered,
+));
+
+const sortValue = computed(() => {
+    if (typeof window === 'undefined') return 'newest';
+    return new URLSearchParams(window.location.search).get('sort') ?? 'newest';
 });
 
 function retry() {
@@ -51,194 +62,222 @@ function changePage(page) {
     emit('navigate', `${window.location.pathname}?${params.toString()}`);
 }
 
-function searchSuggestion(value) {
-    emit('update:query', value);
-    emit('search');
+function clearFilters() {
+    emit('navigate', '/');
+}
+
+function categoryHref(slug) {
+    const base = `/categories/${encodeURIComponent(slug)}`;
+    return props.selectedLocation ? `${base}?location=${encodeURIComponent(props.selectedLocation)}` : base;
+}
+
+function changeSort(event) {
+    const params = new URLSearchParams(window.location.search);
+    if (event.target.value === 'newest') params.delete('sort');
+    else params.set('sort', event.target.value);
+    params.delete('page');
+    const queryString = params.toString();
+    emit('navigate', `${window.location.pathname}${queryString ? `?${queryString}` : ''}`);
 }
 </script>
 
 <template>
-    <section class="discovery">
-        <section class="hero" aria-labelledby="hero-heading">
-            <div class="hero-content">
-                <p class="hero-label"><UiIcon name="compass" :size="15" /> Your next opportunity starts here</p>
-                <h1 id="hero-heading">Good opportunities.<br><span class="hero-highlight">Within your reach.</span></h1>
-                <p class="hero-copy">Discover jobs, scholarships, grants, training and gigs across Nigeria — all in one place.</p>
-                <form class="search-form" role="search" @submit.prevent="emit('search')">
+    <section class="explore-page">
+        <header class="masthead">
+            <div class="masthead-inner">
+                <p class="pilot-eyebrow">
+                    <span>Ibadan pilot</span>
+                    <span class="pilot-sep" aria-hidden="true"></span>
+                    <span class="pilot-sub">Oyo State</span>
+                </p>
+                <h1>Find what’s next,<br><span class="masthead-highlight">closer to home.</span></h1>
+                <p class="masthead-copy">
+                    Jobs, scholarships, grants, training and gigs for people building a living in Ibadan.
+                    Every public listing has had its source and details checked before it appears.
+                </p>
+
+                <form class="explore-search" role="search" @submit.prevent="emit('search')">
+                    <UiIcon class="explore-search-icon" name="search" :size="20" />
                     <label class="visually-hidden" for="opportunity-search">Search opportunities</label>
-                    <UiIcon class="search-icon" name="search" :size="21" />
                     <input
                         id="opportunity-search"
                         :value="query"
                         type="search"
                         maxlength="100"
-                        placeholder="Search jobs, scholarships, grants..."
+                        placeholder="Search a role, organisation or skill"
                         autocomplete="off"
                         @input="emit('update:query', $event.target.value)"
                     >
                     <button class="button button-primary" type="submit">
-                        Search <UiIcon name="arrow" :size="18" />
+                        Search <UiIcon name="arrow" :size="17" />
                     </button>
                 </form>
-                <div class="popular-searches" aria-label="Popular searches">
-                    <span class="popular-label">Popular searches:</span>
-                    <button type="button" @click="searchSuggestion('remote jobs')">
-                        <UiIcon name="search" :size="14" /> Remote jobs
+
+                <div class="filter-row">
+                    <LocationPicker :selected-slug="selectedLocation" @select="emit('location', $event)" />
+                    <span class="filter-row-label">Browse</span>
+                    <nav class="category-chips" aria-label="Browse by category">
+                        <a
+                            v-for="chip in categoryChips"
+                            :key="chip.slug"
+                            class="category-chip"
+                            :href="categoryHref(chip.slug)"
+                            data-internal-link
+                        >
+                            <UiIcon :name="chip.icon" :size="15" />
+                            {{ chip.name }}
+                        </a>
+                    </nav>
+                </div>
+                <p v-if="categoriesError" class="masthead-note" role="status">{{ categoriesError }}</p>
+            </div>
+        </header>
+
+        <div class="feed-layout">
+            <div class="feed-main">
+                <div class="feed-head">
+                    <div>
+                        <p class="feed-kicker">{{ hasFilters ? 'Filtered view' : 'Live listings' }}</p>
+                        <h2 class="feed-title">{{ title }}</h2>
+                    </div>
+                    <div class="feed-head-tools">
+                        <p v-if="pagination && !loading" class="feed-count">
+                            <strong>{{ pagination.total }}</strong>
+                            {{ pagination.total === 1 ? 'opportunity' : 'opportunities' }}
+                        </p>
+                        <label class="sort-control">
+                            <span>Sort</span>
+                            <select :value="sortValue" @change="changeSort">
+                                <option value="newest">Newest</option>
+                                <option value="deadline">Closing soon</option>
+                                <option value="title">A–Z</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+                <div v-if="hasFilters" class="active-filters">
+                    <span v-if="query" class="active-filter">Search: “{{ query }}”</span>
+                    <span v-if="selectedLocation" class="active-filter">Area selected</span>
+                    <button class="active-filter-clear" type="button" @click="clearFilters">
+                        Clear filters
                     </button>
-                    <button type="button" @click="searchSuggestion('scholarships')">
-                        <UiIcon name="search" :size="14" /> Scholarships
+                </div>
+
+                <div v-if="loading" class="feed-skeleton" role="status" aria-live="polite">
+                    <span class="visually-hidden">Loading public opportunities…</span>
+                    <div v-for="n in 3" :key="n" class="skeleton-card" aria-hidden="true">
+                        <span class="skeleton-line is-short"></span>
+                        <span class="skeleton-line is-title"></span>
+                        <span class="skeleton-line"></span>
+                        <span class="skeleton-line is-medium"></span>
+                    </div>
+                </div>
+
+                <div v-else-if="error" class="empty-panel is-error" role="alert">
+                    <span class="empty-panel-icon" aria-hidden="true"><UiIcon name="shield-check" :size="22" /></span>
+                    <h2>We couldn’t load opportunities</h2>
+                    <p>{{ error }}</p>
+                    <button class="button button-secondary" type="button" @click="retry">Try again</button>
+                </div>
+
+                <div v-else-if="opportunities.length" class="feed-list" aria-live="polite">
+                    <OpportunityCard
+                        v-for="opportunity in opportunities"
+                        :key="opportunity.id"
+                        :opportunity="opportunity"
+                        :saved="savedIds.includes(opportunity.id)"
+                        :pending="savePendingId === opportunity.id"
+                        @save="emit('save', $event)"
+                    />
+                </div>
+
+                <div v-else class="empty-panel">
+                    <span class="empty-panel-icon" aria-hidden="true"><UiIcon name="search" :size="22" /></span>
+                    <h2>{{ hasFilters ? 'Nothing matches this view yet' : 'No live listings right now' }}</h2>
+                    <p v-if="hasFilters">
+                        Try a broader area, a different category, or clear the search. The pilot feed is still small while listings are checked.
+                    </p>
+                    <p v-else>
+                        Listings appear here only after OyaFind has reviewed the source and details.
+                        We don’t pad the feed with examples, so an empty board is an honest one.
+                    </p>
+                    <div class="empty-panel-actions">
+                        <button v-if="hasFilters" class="button button-primary" type="button" @click="clearFilters">
+                            Show all areas
+                        </button>
+                        <a class="button button-secondary" href="/how-it-works" data-internal-link>
+                            How OyaFind works
+                        </a>
+                    </div>
+                </div>
+
+                <div v-if="pagination && pagination.current_page < pagination.last_page && !loading && !error" class="pagination">
+                    <button class="button button-secondary" type="button" @click="changePage(pagination.current_page + 1)">
+                        Next page <UiIcon name="arrow" :size="16" />
                     </button>
-                    <button type="button" @click="searchSuggestion('internships')">
-                        <UiIcon name="search" :size="14" /> Internships
-                    </button>
                 </div>
             </div>
 
-            <div class="hero-visual" aria-label="Illustrative preview of opportunity cards, not live listings">
-                <div class="visual-orbit" aria-hidden="true"></div>
-                <div class="visual-dots" aria-hidden="true"></div>
-                <svg class="visual-curve" viewBox="0 0 420 280" fill="none" aria-hidden="true">
-                    <path d="M28 174c48-97 120-124 193-89 51 24 50 72 99 83 32 7 55-6 77-28" />
-                </svg>
-                <span class="visual-lime-dot" aria-hidden="true"></span>
-                <span class="visual-compass" aria-hidden="true"><UiIcon name="compass" :size="44" /></span>
-                <button
-                    class="preview-card preview-card-one"
-                    :class="{ 'is-active': activePreview === 'graduate' }"
-                    type="button"
-                    :aria-pressed="activePreview === 'graduate'"
-                    @click="activePreview = 'graduate'"
-                >
-                    <span class="preview-card-content">
-                        <span class="preview-icon preview-icon-mint"><UiIcon name="briefcase" :size="22" /></span>
-                        <span class="preview-copy">
-                            <span class="preview-title" role="heading" aria-level="2">Graduate Trainee</span>
-                            <span class="preview-location"><UiIcon name="pin" :size="13" /> Ibadan, Oyo State</span>
-                            <span class="preview-status preview-status-teal">Example: source checked</span>
-                        </span>
-                        <UiIcon class="preview-arrow" name="arrow" :size="18" />
-                    </span>
-                </button>
+            <aside class="feed-rail" aria-label="About OyaFind listings">
+                <section class="rail-card rail-card-check">
+                    <p class="rail-kicker">What a check means</p>
+                    <h2>Checked before it is listed.</h2>
+                    <p>
+                        Every public listing has had its source and details checked by OyaFind.
+                        A check is not an endorsement, or a guarantee of safety, selection or payment.
+                    </p>
+                </section>
 
-                <button
-                    class="preview-card preview-card-two"
-                    :class="{ 'is-active': activePreview === 'scholarship' }"
-                    type="button"
-                    :aria-pressed="activePreview === 'scholarship'"
-                    @click="activePreview = 'scholarship'"
-                >
-                    <span class="preview-card-content">
-                        <span class="preview-icon preview-icon-violet"><UiIcon name="graduation-cap" :size="22" /></span>
-                        <span class="preview-copy">
-                            <span class="preview-title" role="heading" aria-level="2">Scholarship Programme</span>
-                            <span class="preview-location"><UiIcon name="pin" :size="13" /> Ibadan, Oyo State</span>
-                            <span class="preview-status preview-status-lime">Example: applications open</span>
-                        </span>
-                        <UiIcon class="preview-arrow" name="arrow" :size="18" />
-                    </span>
-                </button>
-            </div>
-        </section>
+                <section class="rail-card">
+                    <p class="rail-kicker">The 30-day rule</p>
+                    <p>
+                        Listings without a deadline are rechecked every 30 days. If that check is overdue,
+                        the listing is hidden until it is confirmed again.
+                    </p>
+                </section>
 
-        <section id="how-it-works" class="benefit-strip-wrap" aria-label="Why browse OyaFind">
-            <div class="benefit-strip">
-                <div class="benefit-item">
-                    <span class="benefit-icon"><UiIcon name="users" :size="22" /></span>
-                    <span><strong>Browse without an account</strong><small>Explore opportunities freely.</small></span>
-                </div>
-                <div class="benefit-item">
-                    <span class="benefit-icon"><UiIcon name="shield-check" :size="22" /></span>
-                    <span><strong>Source links included</strong><small>Go directly to the original source.</small></span>
-                </div>
-                <div class="benefit-item">
-                    <span class="benefit-icon"><UiIcon name="calendar" :size="22" /></span>
-                    <span><strong>Clear deadlines</strong><small>Never miss an opportunity.</small></span>
-                </div>
-            </div>
-            <div class="benefit-cta-row">
-                <a class="text-link" href="/how-it-works" data-internal-link>
-                    Learn how verification, locations &amp; tracking work &rarr;
+                <section class="rail-card">
+                    <p class="rail-kicker">Saving is private</p>
+                    <p>
+                        Sign in to keep a shortlist and track your own application progress.
+                        Your notes belong to you, and tracking is user-reported.
+                    </p>
+                    <a v-if="!isAuthenticated" class="rail-link" href="/login" data-internal-link>
+                        Sign in or create an account <span aria-hidden="true">→</span>
+                    </a>
+                    <a v-else class="rail-link" href="/saved" data-internal-link>
+                        Open your saved list <span aria-hidden="true">→</span>
+                    </a>
+                </section>
+
+                <a class="rail-guide-link" href="/how-it-works" data-internal-link>
+                    Read how verification, areas and tracking work <span aria-hidden="true">→</span>
                 </a>
-            </div>
-        </section>
+            </aside>
+        </div>
 
-        <section id="categories" class="category-section" aria-labelledby="category-heading">
-            <div class="section-heading">
-                <div>
-                    <h2 id="category-heading">Explore by category</h2>
-                    <p>Find the right opportunity for your next move.</p>
-                </div>
-                <a class="text-link section-heading-link" href="/categories" data-internal-link>
-                    Detailed category guide &rarr;
-                </a>
+        <section class="how-band" aria-label="How OyaFind works">
+            <div class="how-band-head">
+                <p class="feed-kicker">Three things to know</p>
+                <h2>Built for a phone, a tight budget and a short walk to the truth.</h2>
             </div>
-            <p v-if="categoriesError" class="category-api-note" role="status">{{ categoriesError }}</p>
-            <div class="category-grid" aria-label="Opportunity categories">
-                <a
-                    v-for="category in categoryCards"
-                    :key="category.slug"
-                    class="category-card"
-                    :href="selectedLocation ? `/categories/${encodeURIComponent(category.slug)}?location=${encodeURIComponent(selectedLocation)}` : `/categories/${encodeURIComponent(category.slug)}`"
-                    data-internal-link
-                >
-                    <span class="category-icon" :class="`tone-${category.tone}`"><UiIcon :name="category.icon" :size="23" /></span>
-                    <span class="category-card-copy">
-                        <strong>{{ category.name }}</strong>
-                        <small>{{ category.description }}</small>
-                    </span>
-                    <UiIcon class="category-arrow" name="arrow" :size="18" />
-                </a>
-            </div>
-            <p v-if="categoriesLoading && !categories.length" class="category-loading-copy" role="status" aria-live="polite">
-                <UiIcon class="loading-spinner" name="loader" :size="16" />
-                Loading opportunity categories…
-            </p>
-        </section>
-
-        <LocationPicker :selected-slug="selectedLocation" @select="emit('location', $event)" />
-
-        <section class="results-section" aria-labelledby="results-heading">
-            <div class="results-heading">
-                <div>
-                    <p class="eyebrow">Discover</p>
-                    <h2 id="results-heading">{{ title }}</h2>
-                </div>
-                <p v-if="pagination && !loading" class="result-count">
-                    {{ pagination.total }} {{ pagination.total === 1 ? 'opportunity' : 'opportunities' }}
-                </p>
-            </div>
-
-            <p v-if="locationFiltered" class="filter-note">
-                Showing results for the location filter in this link. Clear the location parameter to browse all areas.
-            </p>
-            <p v-else class="filter-note">
-                Browsing all areas. Location is optional; no location filter is selected.
-            </p>
-
-            <p v-if="loading" class="state-panel state-loading" role="status" aria-live="polite">
-                <UiIcon class="loading-spinner" name="loader" :size="19" />
-                Loading public opportunities…
-            </p>
-            <div v-else-if="error" class="state-panel state-error" role="alert">
-                <h3>We couldn’t load opportunities</h3>
-                <p>{{ error }}</p>
-                <button class="button button-secondary" type="button" @click="retry">Try again</button>
-            </div>
-            <div v-else-if="opportunities.length" class="opportunity-list" aria-live="polite">
-                <OpportunityCard v-for="opportunity in opportunities" :key="opportunity.id" :opportunity="opportunity" />
-            </div>
-            <div v-else class="empty-state">
-                <span class="empty-icon" aria-hidden="true"><UiIcon name="search" :size="25" /></span>
-                <h3>{{ query ? 'No results match this search' : 'No public opportunities to show yet' }}</h3>
-                <p>There are no current listings matching this view. Listings appear here only after the required review and source/detail checks. We do not add sample listings to the live feed.</p>
-                <a v-if="query" class="text-link" href="/search" data-internal-link>Clear search and browse all</a>
-                <a v-else-if="locationFiltered" class="text-link" href="/" data-internal-link>Browse all areas</a>
-            </div>
-
-            <div v-if="pagination && pagination.current_page < pagination.last_page && !loading && !error" class="pagination">
-                <button class="button button-secondary" type="button" @click="changePage(pagination.current_page + 1)">
-                    Next page
-                </button>
+            <div class="how-band-steps">
+                <article>
+                    <span class="how-step-num">01</span>
+                    <h3>Browse without an account</h3>
+                    <p>Explore public listings, categories and areas before you decide to sign in.</p>
+                </article>
+                <article>
+                    <span class="how-step-num">02</span>
+                    <h3>Filter by reviewed areas</h3>
+                    <p>Coarse, human-reviewed locations. No GPS, no maps, no exact address.</p>
+                </article>
+                <article>
+                    <span class="how-step-num">03</span>
+                    <h3>Apply at the source</h3>
+                    <p>OyaFind takes you to the provider’s own channel. It does not submit applications.</p>
+                </article>
             </div>
         </section>
 
@@ -246,7 +285,11 @@ function searchSuggestion(value) {
             <span class="trust-icon" aria-hidden="true"><UiIcon name="shield-check" :size="20" /></span>
             <div>
                 <h2>Clear information, careful checks</h2>
-                <p>OyaFind displays eligible public listings after review and source/detail checks. A check is not a guarantee of provider safety, selection or payment. Apply directly through the opportunity provider.</p>
+                <p>
+                    OyaFind displays public listings after staff review and a source/details check.
+                    A check is not a guarantee of provider safety, selection or payment.
+                    Apply directly through the opportunity provider.
+                </p>
             </div>
         </aside>
     </section>

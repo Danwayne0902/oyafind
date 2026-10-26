@@ -17,9 +17,8 @@ const allCategories = [
         tag: 'Employment',
         icon: 'briefcase',
         tone: 'mint',
-        description: 'Verified full-time, part-time, and contract employment opportunities across Ibadan and Nigeria.',
+        description: 'Full-time, part-time and contract roles relevant to Ibadan and Oyo State.',
         targetAudience: 'Jobseekers, fresh graduates, skilled workers, and experienced professionals.',
-        verificationNote: 'Direct employer verification, legitimate contact checks, and a strict no-applicant-fee rule.',
         examples: ['Graduate Trainees', 'Operations Associates', 'Administrative Officers', 'Field Leads', 'Technical Specialists'],
     },
     {
@@ -30,7 +29,6 @@ const allCategories = [
         tone: 'amber',
         description: 'Short-term assignments, freelance projects, technical jobs, and flexible local gigs.',
         targetAudience: 'Freelancers, artisans, students seeking side income, and independent contractors.',
-        verificationNote: 'Clearly defined scope of work, confirmed contact person, and agreed deliverable expectations.',
         examples: ['Photography & Media', 'Event Support', 'Delivery & Logistics', 'Graphic Design', 'Artisan Repairs'],
     },
     {
@@ -41,7 +39,6 @@ const allCategories = [
         tone: 'blue',
         description: 'Pre-graduation industrial training (IT/SIWES), clinical attachments, and graduate internships.',
         targetAudience: 'Undergraduates from universities and polytechnics, NYSC corps members, and recent graduates.',
-        verificationNote: 'Authentic employer mentorship structure, official company presence, and clear placement duration.',
         examples: ['Software Engineering Interns', 'Finance & Accounting Trainees', 'Lab & Clinical Interns', 'Marketing Associates'],
     },
     {
@@ -52,7 +49,6 @@ const allCategories = [
         tone: 'violet',
         description: 'Tuition grants, academic merit scholarships, community bursaries, and international study funds.',
         targetAudience: 'Secondary school leavers, undergraduate students, polytechnic attendees, and postgraduates.',
-        verificationNote: 'Official institutional sponsor check, verified application portal URL, and zero application fees.',
         examples: ['STEM Undergraduate Bursaries', 'State Education Board Grants', 'Foundation Fellowships', 'Research Awards'],
     },
     {
@@ -63,7 +59,6 @@ const allCategories = [
         tone: 'violet',
         description: 'Technical bootcamps, vocational skill workshops, professional certifications, and apprenticeships.',
         targetAudience: 'Youth seeking high-demand skills, artisans upgrading their trade, and career switchers.',
-        verificationNote: 'Structured curriculum, credible training provider, and transparent pricing disclosure.',
         examples: ['Web & Mobile Bootcamps', 'Solar Energy Installation', 'Fashion & Garment Making', 'Financial Literacy'],
     },
     {
@@ -74,7 +69,6 @@ const allCategories = [
         tone: 'amber',
         description: 'Non-equity business grants, research seed capital, and community development funding.',
         targetAudience: 'Early-stage entrepreneurs, SME founders, tech innovators, farmers, and social changemakers.',
-        verificationNote: 'Confirmed grantmaker authenticity, zero repayment terms, and documented qualification criteria.',
         examples: ['Agribusiness Seed Grants', 'Youth Enterprise Capital', 'Women in Business Microgrants', 'Creative Arts Funds'],
     },
     {
@@ -85,7 +79,6 @@ const allCategories = [
         tone: 'mint',
         description: 'Business incubation, co-working access, mentorship cohorts, and SME advisory clinics.',
         targetAudience: 'Startup founders, cooperative societies, and small business owners looking to scale.',
-        verificationNote: 'Recognized hub track record, experienced mentors, and defined program timelines.',
         examples: ['Innovation Hub Cohorts', 'SME Advisory Clinics', 'Export Readiness Programs', 'Investor Pitch Days'],
     },
     {
@@ -96,7 +89,6 @@ const allCategories = [
         tone: 'blue',
         description: 'Formal public notices, corporate procurement bids, and supply contracts for registered enterprises.',
         targetAudience: 'Registered contractors, vendors, supply chain operators, and registered business owners.',
-        verificationNote: 'Verifiable issuing agency or corporate body, clear specifications, and documented deadlines.',
         examples: ['Office & IT Equipment Supply', 'Facility Renovation & Works', 'Catering & Event Concessions', 'Printing & Packaging'],
     },
 ];
@@ -121,8 +113,9 @@ const filteredCategories = computed(() => {
             <p class="eyebrow"><UiIcon name="compass" :size="15" /> Opportunity catalogue</p>
             <h1 id="categories-heading">Explore opportunities by category</h1>
             <p class="page-intro-copy">
-                OyaFind organizes verified opportunities into 8 clear categories.
-                Each listing is independently checked before publication so you spend time applying to legitimate, active options.
+                OyaFind organises reviewed opportunities into 8 clear categories.
+                Every public listing is reviewed before publication, and only listings whose source
+                and details have been checked appear in the feed.
             </p>
 
             <div class="category-search-bar" role="search">
@@ -131,7 +124,7 @@ const filteredCategories = computed(() => {
                     v-model="searchQuery"
                     type="search"
                     maxlength="60"
-                    placeholder="Filter by keyword (e.g. jobs, tech, SIWES, grant, artisan)…"
+                    placeholder="Filter categories"
                     aria-label="Filter categories"
                 >
                 <button
@@ -170,10 +163,6 @@ const filteredCategories = computed(() => {
                         <strong><UiIcon name="users" :size="15" /> Who it’s for:</strong>
                         <span>{{ cat.targetAudience }}</span>
                     </div>
-                    <div class="meta-row">
-                        <strong><UiIcon name="shield-check" :size="15" /> Our check:</strong>
-                        <span>{{ cat.verificationNote }}</span>
-                    </div>
                 </div>
 
                 <div class="examples-section">
@@ -207,13 +196,14 @@ const filteredCategories = computed(() => {
             </button>
         </div>
 
-        <aside class="trust-notice-banner" aria-label="Our publishing standards">
+        <aside class="trust-notice-banner" aria-label="Our publishing standard">
             <span class="notice-icon"><UiIcon name="shield-check" :size="26" /></span>
             <div>
-                <h3>No paid rankings. No phantom listings.</h3>
+                <h3>One standard for every category</h3>
                 <p>
-                    Every category on OyaFind operates under the same standard: opportunities must have verifiable sources,
-                    transparent requirements, and direct application channels. We never charge jobseekers or applicants to view or apply.
+                    Every public listing has had its source and details checked by OyaFind before it appears.
+                    A check is not an endorsement or a guarantee of safety, selection or payment.
+                    Apply through the provider’s own channel.
                 </p>
             </div>
         </aside>

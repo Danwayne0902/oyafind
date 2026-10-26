@@ -160,7 +160,8 @@ class OpportunityDiscoveryApiTest extends TestCase
             ->assertOk()
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.slug', 'eligible-synthetic-opportunity')
-            ->assertJsonPath('data.0.verification_status', 'verified');
+            ->assertJsonPath('data.0.verification_status', 'verified')
+            ->assertJsonPath('data.0.verified_at', $this->now->subDays(2)->toIso8601String());
         $response->assertJsonMissing(['slug' => 'verified-after-publication']);
 
         $response->assertJsonMissingPath('data.0.verified_by');
@@ -355,7 +356,7 @@ class OpportunityDiscoveryApiTest extends TestCase
             'organisation_name', 'source_url', 'application_url', 'application_method',
             'application_instructions', 'opportunity_type', 'work_mode', 'eligibility',
             'requirements', 'amount_min', 'amount_max', 'currency', 'deadline_at',
-            'publication_status', 'verification_status', 'published_at',
+            'publication_status', 'verification_status', 'verified_at', 'published_at',
         ], array_keys($detail->json('data')));
         $detail->assertJsonMissingPath('data.submitted_by');
         $detail->assertJsonMissingPath('data.verified_by');

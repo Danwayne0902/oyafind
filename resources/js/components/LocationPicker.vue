@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useLocationPicker } from '../useLocationPicker.js';
 import UiIcon from './UiIcon.vue';
 
@@ -8,6 +8,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['select']);
+const root = ref(null);
 const {
     isOpen,
     query,
@@ -18,101 +19,127 @@ const {
     displayName,
     openPicker,
     search,
-    selectChoice,
-    clearLocation,
     loadChoices,
 } = useLocationPicker(emit);
 
-// Resolve a human-readable label for the currently selected slug.
-// Searches the already-loaded choices list; falls back to the slug
-// itself only when choices have not been fetched yet.
 const selectedLabel = computed(() => {
     if (!props.selectedSlug) return '';
-    const match = choices.value.find((c) => c.slug === props.selectedSlug);
+    const match = choices.value.find((choice) => choice.slug === props.selectedSlug);
     return match ? displayName(match) : props.selectedSlug;
 });
 
-// Pre-load the catalogue silently when a selection is already active so
-// selectedLabel can resolve to a friendly name without the user having
-// to open the picker first.
+function choose(slug) {
+    emit('select', slug);
+    isOpen.value = false;
+}
+
+function close() {
+    isOpen.value = false;
+}
+
+function onDocumentPointerDown(event) {
+    if (!isOpen.value || !root.value) return;
+    if (!root.value.contains(event.target)) close();
+}
+
+function onKeydown(event) {
+    if (event.key === 'Escape' && isOpen.value) close();
+}
+
 watch(
     () => props.selectedSlug,
-    (slug) => { if (slug && !choices.value.length) void loadChoices(); },
+    (slug) => {
+        if (slug && !choices.value.length) void loadChoices();
+    },
     { immediate: true },
 );
+
+onMounted(() => {
+    document.addEventListener('pointerdown', onDocumentPointerDown);
+    document.addEventListener('keydown', onKeydown);
+});
+
+onUnmounted(() => {
+    document.removeEventListener('pointerdown', onDocumentPointerDown);
+    document.removeEventListener('keydown', onKeydown);
+});
 </script>
 
 <template>
-    <section class="location-picker" aria-labelledby="location-picker-heading">
-        <div class="location-picker-heading">
-            <div>
-                <p class="eyebrow">Optional filter</p>
-                <h2 id="location-picker-heading">Browse by area</h2>
-            </div>
-            <button v-if="selectedSlug" class="text-link" type="button" @click="clearLocation">
-                Browse all areas
-            </button>
-        </div>
-
-        <p class="location-picker-copy">
-            Location is optional. Browse all opportunities or choose a reviewed area.
-            <span v-if="selectedSlug">Current area: <strong>{{ selectedLabel }}</strong>.</span>
-        </p>
-
+    <div ref="root" class="area-picker">
         <button
-            v-if="!isOpen"
-            class="button button-secondary"
+            class="area-trigger"
             type="button"
-            aria-controls="location-picker-controls"
-            @click="openPicker"
-        >{{ selectedSlug ? 'Change area' : 'Choose an area' }}</button>
+            :aria-expanded="isOpen"
+            aria-controls="area-picker-panel"
+            @click="isOpen ? close() : openPicker()"
+        >
+            <UiIcon name="pin" :size="16" />
+            <span class="area-trigger-label">{{ selectedSlug ? selectedLabel : 'All areas' }}</span>
+            <span v-if="!selectedSlug" class="area-trigger-hint">Choose</span>
+            <UiIcon class="area-trigger-chevron" name="chevron-down" :size="15" />
+        </button>
 
-        <div v-if="isOpen" id="location-picker-controls" class="location-picker-controls">
-            <form class="location-search-form" role="search" @submit.prevent="search">
-                <label for="location-search">Search reviewed areas</label>
-                <div class="location-search-controls">
-                    <input
-                        id="location-search"
-                        v-model="query"
-                        type="search"
-                        maxlength="100"
-                        autocomplete="off"
-                        placeholder="Search areas"
-                    >
-                    <button class="button button-primary" type="submit" :disabled="loading" :aria-busy="loading">
-                        <UiIcon v-if="loading" class="loading-spinner" name="loader" :size="17" />
-                        {{ loading ? 'Searching…' : 'Search areas' }}
-                    </button>
-                </div>
+        <div v-if="isOpen" id="area-picker-panel" class="area-panel" role="dialog" aria-label="Choose a reviewed area">
+            <div class="area-panel-head">
+                <p class="area-panel-title">Filter by area</p>
+                <button class="area-panel-close" type="button" aria-label="Close area picker" @click="close">
+                    <UiIcon name="close" :size="16" />
+                </button>
+            </div>
+
+            <form class="area-search" role="search" @submit.prevent="search">
+                <label class="visually-hidden" for="area-search-input">Search reviewed areas</label>
+                <input
+                    id="area-search-input"
+                    v-model="query"
+                    type="search"
+                    maxlength="100"
+                    autocomplete="off"
+                    placeholder="Search Ibadan North, Oluyole…"
+                >
+                <button class="button button-secondary button-sm" type="submit" :disabled="loading" :aria-busy="loading">
+                    {{ loading ? 'Searching…' : 'Search' }}
+                </button>
             </form>
 
-            <p v-if="loading" class="muted-copy state-loading" role="status" aria-live="polite">
-                <UiIcon class="loading-spinner" name="loader" :size="17" />
-                Loading reviewed areas…
-            </p>
-            <p v-else-if="state === 'stale'" class="cache-state" role="status" aria-live="polite">
+            <p v-if="state === 'stale'" class="area-state" role="status">
                 Showing saved areas while offline. This list may be out of date.
             </p>
-            <p v-else-if="state === 'fresh'" class="cache-state" role="status">
-                Area list checked just now.
-            </p>
-            <p v-if="error" class="location-error" role="alert">
-                {{ error }} All-location browsing remains available.
-            </p>
+            <p v-if="error" class="area-state is-error" role="alert">{{ error }}</p>
 
-            <template v-if="choices.length">
-                <label class="location-results-label" for="location-results">Available reviewed areas</label>
-                <select id="location-results" :value="selectedSlug" @change="selectChoice">
-                    <option value="" disabled>Select an area</option>
-                    <option v-for="choice in choices" :key="choice.id" :value="choice.slug">
-                        {{ displayName(choice) }}
-                    </option>
-                </select>
-            </template>
-            <p v-else-if="!loading && !error" class="muted-copy">
-                No reviewed areas are available in this list. You can browse all areas.
+            <div class="area-list" role="listbox" aria-label="Reviewed areas">
+                <button
+                    class="area-option"
+                    :class="{ 'is-selected': !selectedSlug }"
+                    type="button"
+                    role="option"
+                    :aria-selected="!selectedSlug"
+                    @click="choose('')"
+                >
+                    All areas
+                </button>
+                <button
+                    v-for="choice in choices"
+                    :key="choice.id"
+                    class="area-option"
+                    :class="{ 'is-selected': choice.slug === selectedSlug }"
+                    type="button"
+                    role="option"
+                    :aria-selected="choice.slug === selectedSlug"
+                    @click="choose(choice.slug)"
+                >
+                    <span>{{ displayName(choice) }}</span>
+                    <UiIcon v-if="choice.slug === selectedSlug" name="check" :size="15" />
+                </button>
+            </div>
+
+            <p v-if="!loading && !error && !choices.length" class="area-state">
+                No reviewed areas match that search. You can still browse all areas.
             </p>
-            <button class="text-link location-close" type="button" @click="isOpen = false">Close area picker</button>
+            <p class="area-note">
+                OyaFind uses reviewed, coarse areas only. No GPS or exact address is requested.
+            </p>
         </div>
-    </section>
+    </div>
 </template>

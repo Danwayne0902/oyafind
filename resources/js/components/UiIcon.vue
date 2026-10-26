@@ -101,5 +101,11 @@ defineProps({
         <template v-else-if="name === 'check'">
             <path d="m5 12 5 5L20 7" />
         </template>
+        <template v-else-if="name === 'chevron-down'">
+            <path d="m6 9 6 6 6-6" />
+        </template>
+        <template v-else-if="name === 'close'">
+            <path d="m6 6 12 12M18 6 6 18" />
+        </template>
     </svg>
 </template>

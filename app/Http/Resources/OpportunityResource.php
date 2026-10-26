@@ -21,6 +21,10 @@ class OpportunityResource extends JsonResource
             && $location->reviewed_by !== null
             && filled($location->catalogue_origin);
 
+        $verifiedAt = $this->relationLoaded('latestVerifiedCheck')
+            ? $this->latestVerifiedCheck?->checked_at
+            : $this->verified_at;
+
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -48,8 +52,9 @@ class OpportunityResource extends JsonResource
             'amount_max' => $this->amount_max,
             'currency' => $this->currency,
             'deadline_at' => $this->deadline_at?->utc()->toIso8601String(),
-            'publication_status' => 'published',
-            'verification_status' => 'verified',
+            'publication_status' => $this->status === 'published' ? 'published' : 'unavailable',
+            'verification_status' => $verifiedAt !== null ? 'verified' : 'unverified',
+            'verified_at' => $verifiedAt?->utc()->toIso8601String(),
             'published_at' => $this->published_at?->utc()->toIso8601String(),
         ];
     }

@@ -314,9 +314,13 @@ onMounted(() => {
                 <section class="profile-saved-note">
                     <span class="profile-saved-icon"><UiIcon name="book" :size="19" /></span>
                     <div>
-                        <h2>Saved opportunities</h2>
-                        <p v-if="profile.save_eligible">Your saved opportunities will be available here.</p>
+                        <h2>Your workspace</h2>
+                        <p v-if="profile.save_eligible">Your saved list and private tracker are ready.</p>
                         <p v-else>Saving unlocks after your contact is verified.</p>
+                        <p class="profile-saved-links">
+                            <a class="text-link" href="/saved" data-internal-link>Saved opportunities</a>
+                            <a class="text-link" href="/tracker" data-internal-link>Application tracker</a>
+                        </p>
                     </div>
                 </section>
             </aside>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { signIn } from '../api/account.js';
 import UiIcon from '../components/UiIcon.vue';
 
@@ -11,11 +11,17 @@ const fieldErrors = ref({});
 const submitting = ref(false);
 
 function safeReturnPath() {
+    if (typeof window === 'undefined') return '/profile';
     const value = new URLSearchParams(window.location.search).get('returnTo');
     return value && value.startsWith('/') && !value.startsWith('//') && !value.startsWith('/api/')
         ? value
         : '/profile';
 }
+
+const registerHref = computed(() => {
+    const target = safeReturnPath();
+    return target === '/profile' ? '/register' : `/register?returnTo=${encodeURIComponent(target)}`;
+});
 
 async function submit() {
     error.value = '';
@@ -42,11 +48,11 @@ async function submit() {
             <div class="account-story-copy">
                 <span class="account-story-mark"><img :src="'/brand/oyafind-mark-on-dark.svg'" alt=""></span>
                 <h1>Find what’s next.<br><span>Keep it moving.</span></h1>
-                <p>OyaFind brings jobs, scholarships, internships, grants, training and more into one place—so the next step feels easier to find.</p>
+                <p>Jobs, scholarships, internships, grants, training and more, starting with the Ibadan pilot — so the next step feels easier to find.</p>
                 <ul class="account-value-list">
-                    <li><UiIcon name="search" :size="19" /><span>Explore opportunities across categories</span></li>
-                    <li><UiIcon name="shield-check" :size="19" /><span>Check the source before you apply</span></li>
-                    <li><UiIcon name="calendar" :size="19" /><span>Keep important deadlines in view</span></li>
+                    <li><UiIcon name="search" :size="19" /><span>Explore by category and reviewed area</span></li>
+                    <li><UiIcon name="shield-check" :size="19" /><span>See when a source and its details were checked</span></li>
+                    <li><UiIcon name="calendar" :size="19" /><span>Keep deadlines and private notes in view</span></li>
                 </ul>
             </div>
             <p class="account-story-foot">Browse public opportunities freely, with or without an account.</p>
@@ -99,7 +105,7 @@ async function submit() {
                     </button>
                 </form>
                 <div class="account-panel-divider"><span>New to OyaFind?</span></div>
-                <a class="button button-secondary account-register-link" href="/register" data-internal-link>See how to get started</a>
+                <a class="button button-secondary account-register-link" :href="registerHref" data-internal-link>Create an account</a>
                 <p class="account-privacy-note">Your profile and opportunity tracker are for account holders.</p>
             </div>
         </div>

@@ -24,6 +24,19 @@ const submissionMessage = ref('');
 const submitting = ref(false);
 const submitted = ref(false);
 
+function safeReturnPath() {
+    if (typeof window === 'undefined') return '/profile';
+    const value = new URLSearchParams(window.location.search).get('returnTo');
+    return value && value.startsWith('/') && !value.startsWith('//') && !value.startsWith('/api/')
+        ? value
+        : '/profile';
+}
+
+const loginHref = computed(() => {
+    const target = safeReturnPath();
+    return target === '/profile' ? '/login' : `/login?returnTo=${encodeURIComponent(target)}`;
+});
+
 async function checkAvailability() {
     availability.value = 'checking';
     availabilityError.value = '';
@@ -58,7 +71,7 @@ async function submit() {
             password_confirmation: passwordConfirmation.value,
         });
         if (result.registration_mode === 'local_unverified') {
-            emit('authenticated', '/profile');
+            emit('authenticated', safeReturnPath());
             return;
         }
 
@@ -86,7 +99,7 @@ onMounted(checkAvailability);
             <div class="account-story-copy">
                 <span class="account-story-mark"><img :src="'/brand/oyafind-mark-on-dark.svg'" alt=""></span>
                 <h1>Make room for<br><span>your next move.</span></h1>
-                <p>Discover opportunities for work, learning and business—all brought together to help you find a path forward.</p>
+                <p>Discover opportunities for work, learning and business, starting with the Ibadan pilot.</p>
                 <div class="register-category-row" aria-label="Opportunity types">
                     <span><UiIcon name="briefcase" :size="17" /> Jobs</span>
                     <span><UiIcon name="graduation-cap" :size="17" /> Scholarships</span>
@@ -131,7 +144,7 @@ onMounted(checkAvailability);
                         {{ submissionMessage }}
                     </p>
                     <p class="account-secondary">
-                        Already verified? <a href="/login" data-internal-link>Sign in</a>
+                        Already verified? <a :href="loginHref" data-internal-link>Sign in</a>
                     </p>
                     <p class="account-privacy-note">
                         No account is activated until verified. Unverified details remain pending until verified or manually deleted.
@@ -167,7 +180,7 @@ onMounted(checkAvailability);
                             autocomplete="username"
                             required
                             maxlength="190"
-                            placeholder="you@example.com or +234 801 234 5678"
+                            placeholder="you@example.com"
                             :aria-invalid="Boolean(fieldErrors.contact)"
                             :aria-describedby="fieldErrors.contact ? 'register-contact-hint register-contact-error' : 'register-contact-hint'"
                         >
@@ -245,7 +258,7 @@ onMounted(checkAvailability);
                         </button>
                     </form>
                     <p class="account-secondary">
-                        Already have an account? <a href="/login" data-internal-link>Sign in</a>
+                        Already have an account? <a :href="loginHref" data-internal-link>Sign in</a>
                     </p>
                     <p class="account-privacy-note">
                         <template v-if="registrationMode === 'local_unverified'">

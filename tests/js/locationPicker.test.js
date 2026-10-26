@@ -71,9 +71,10 @@ test('picker exposes labeled keyboard-operable search and selection controls', a
     const { default: LocationPicker } = await server.ssrLoadModule('/resources/js/components/LocationPicker.vue');
     const html = await renderToString(createSSRApp(LocationPicker));
 
-    assert.match(html, /Browse by area/);
-    assert.match(html, /Location is optional/);
-    assert.match(html, /Choose an area/);
+    assert.match(html, /All areas/);
+    assert.match(html, /Choose/);
+    assert.match(html, /aria-expanded="false"/);
+    assert.match(html, /aria-controls="area-picker-panel"/);
     assert.doesNotMatch(html, /OpenStreetMap|ODbL/);
 });
 

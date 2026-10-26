@@ -46,11 +46,31 @@ test('sign-in screen explains OyaFind and accepts an email or phone identifier a
     const html = await renderToString(createSSRApp(LoginPage));
 
     assert.match(html, /Email or phone number/);
-    assert.match(html, /OyaFind brings jobs, scholarships, internships, grants, training and more into one place/);
-    assert.match(html, /Check the source before you apply/);
+    assert.match(html, /starting with the Ibadan pilot/);
+    assert.match(html, /Explore by category and reviewed area/);
+    assert.match(html, /See when a source and its details were checked/);
     assert.match(html, /name="identifier"/);
     assert.match(html, /name="password"/);
-    assert.match(html, /See how to get started/);
+    assert.match(html, /class="button button-secondary account-register-link"/);
+});
+
+test('sign-in keeps a safe return path when switching to registration', async () => {
+    const { default: LoginPage } = await server.ssrLoadModule('/resources/js/pages/LoginPage.vue');
+    const render = async (search) => {
+        globalThis.window = { location: { search } };
+        try {
+            return await renderToString(createSSRApp(LoginPage));
+        } finally {
+            delete globalThis.window;
+        }
+    };
+
+    const saved = await render('?returnTo=%2Fsaved');
+    assert.match(saved, /href="\/register\?returnTo=%2Fsaved"/);
+
+    const unsafe = await render('?returnTo=%2F%2Fevil.example');
+    assert.match(unsafe, /href="\/register"/);
+    assert.doesNotMatch(unsafe, /evil\.example/);
 });
 
 test('private profile screen communicates the unverified-contact save gate', async () => {

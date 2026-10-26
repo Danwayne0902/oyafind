@@ -2,12 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\Opportunity;
 use App\Models\SavedOpportunity;
 use App\Models\User;
 use App\Repositories\OpportunityDiscoveryRepository;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -26,7 +24,7 @@ class SavedOpportunityService
         $saved = SavedOpportunity::query()
             ->where('user_id', $user->id)
             ->orderByDesc('created_at')
-            ->with(['opportunity.category', 'opportunity.location.parent'])
+            ->with(['opportunity.category', 'opportunity.location.parent', 'opportunity.latestVerifiedCheck'])
             ->get();
 
         if ($saved->isEmpty()) {

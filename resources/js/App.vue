@@ -2,6 +2,8 @@
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import DiscoveryPage from './pages/DiscoveryPage.vue';
 import OpportunityDetailPage from './pages/OpportunityDetailPage.vue';
+import SavedPage from './pages/SavedPage.vue';
+import MyOpportunitiesPage from './pages/MyOpportunitiesPage.vue';
 import RegisterPage from './pages/RegisterPage.vue';
 import LoginPage from './pages/LoginPage.vue';
 import VerifyEmailPage from './pages/VerifyEmailPage.vue';
@@ -11,11 +13,19 @@ import HowItWorksPage from './pages/HowItWorksPage.vue';
 import UiIcon from './components/UiIcon.vue';
 import { getCategories, getOpportunity, getOpportunities } from './api/publicDiscovery.js';
 import { getMyProfile, signOut } from './api/account.js';
+import {
+    getMyApplications,
+    getSavedOpportunities,
+    saveOpportunity,
+    trackApplication,
+    unsaveOpportunity,
+} from './api/workspace.js';
 import { canonicalPageUrl, parsePublicRoute, safeExternalUrl, sharePageUrl, withLocationFilter } from './publicRoutes.js';
 
 const route = ref(parsePublicRoute(window.location));
 const menuOpen = ref(false);
 const currentUser = ref(null);
+const authReady = ref(false);
 const opportunities = ref([]);
 const categories = ref([]);
 const categoriesLoading = ref(true);
@@ -30,8 +40,13 @@ const shareMessage = ref('');
 const copyFallback = ref(false);
 const copyUrl = ref('');
 const searchInput = ref(route.value.query.q ?? '');
+const savedIds = ref([]);
+const trackedIds = ref([]);
+const savePendingId = ref(null);
+const notice = ref(null);
 let requestNumber = 0;
 let detailRequestNumber = 0;
+let noticeTimer = null;
 
 const userInitials = computed(() => (currentUser.value?.name ?? '')
     .trim()
@@ -43,33 +58,87 @@ const userInitials = computed(() => (currentUser.value?.name ?? '')
 
 const isDetailPage = computed(() => route.value.name === 'opportunity');
 const isNotFoundPage = computed(() => route.value.name === 'not-found');
+const isAuthPage = computed(() => ['register', 'login', 'verify-email', 'not-found'].includes(route.value.name));
+
 const pageTitle = computed(() => {
     if (isDetailPage.value) return selectedOpportunity.value?.title ?? 'Opportunity details';
     if (route.value.name === 'register') return 'Create an account';
     if (route.value.name === 'login') return 'Sign in';
     if (route.value.name === 'verify-email') return 'Verify your email';
     if (route.value.name === 'profile') return 'Your profile';
+    if (route.value.name === 'saved') return 'Saved opportunities';
+    if (route.value.name === 'tracker') return 'Application tracker';
     if (route.value.name === 'categories') return 'Opportunity categories';
     if (route.value.name === 'how-it-works') return 'How OyaFind works';
     if (route.value.name === 'category') return `${humanize(route.value.slug)} opportunities`;
-    return route.value.query.q ? `Search results for “${route.value.query.q}”` : 'Explore opportunities';
+    if (route.value.name === 'search') return route.value.query.q ? `Results for “${route.value.query.q}”` : 'Search opportunities';
+    return 'Open opportunities';
 });
 
+const returnPath = ref(`${window.location.pathname}${window.location.search}`);
+const loginHref = computed(() => `/login?returnTo=${encodeURIComponent(returnPath.value)}`);
+const registerHref = computed(() => `/register?returnTo=${encodeURIComponent(returnPath.value)}`);
+
+const showBottomNav = computed(() => !isAuthPage.value);
+
+const bottomNavItems = computed(() => [
+    { label: 'Explore', href: '/', icon: 'compass', active: ['home', 'search', 'category', 'categories', 'opportunity', 'how-it-works'].includes(route.value.name) },
+    { label: 'Saved', href: '/saved', icon: 'bookmark', active: route.value.name === 'saved' },
+    { label: 'Tracker', href: '/tracker', icon: 'chart', active: route.value.name === 'tracker' },
+    currentUser.value
+        ? { label: 'Profile', href: '/profile', icon: 'users', active: route.value.name === 'profile' }
+        : { label: 'Sign in', href: '/login', icon: 'users', active: ['login', 'register'].includes(route.value.name) },
+]);
+
 async function checkAuth() {
+    authReady.value = false;
     try {
         currentUser.value = await getMyProfile();
+        await loadAccountLists();
     } catch {
         currentUser.value = null;
+        savedIds.value = [];
+        trackedIds.value = [];
+    } finally {
+        authReady.value = true;
     }
+}
+
+async function loadAccountLists() {
+    if (!currentUser.value) {
+        savedIds.value = [];
+        trackedIds.value = [];
+        return;
+    }
+    const [savedResult, trackerResult] = await Promise.allSettled([
+        getSavedOpportunities(),
+        getMyApplications(),
+    ]);
+    savedIds.value = savedResult.status === 'fulfilled'
+        ? savedResult.value.map((item) => item.opportunity_id)
+        : [];
+    trackedIds.value = trackerResult.status === 'fulfilled'
+        ? trackerResult.value.map((item) => item.opportunity_id)
+        : [];
+}
+
+function showNotice(tone, message, linkHref = null, linkLabel = null) {
+    notice.value = { tone, message, linkHref, linkLabel };
+    window.clearTimeout(noticeTimer);
+    noticeTimer = window.setTimeout(() => {
+        notice.value = null;
+    }, 7000);
 }
 
 async function handleAuthenticated(targetPath) {
     await checkAuth();
-    navigate(targetPath, { replace: true });
+    navigate(targetPath || '/profile', { replace: true });
 }
 
 function handleSignedOut() {
     currentUser.value = null;
+    savedIds.value = [];
+    trackedIds.value = [];
     navigate('/login', { replace: true });
 }
 
@@ -77,9 +146,11 @@ async function handleHeaderSignOut() {
     try {
         await signOut();
     } catch {
-        // Continue clearing local state regardless
+        // Clear local state regardless of the response.
     }
     currentUser.value = null;
+    savedIds.value = [];
+    trackedIds.value = [];
     navigate('/login', { replace: true });
 }
 
@@ -91,6 +162,7 @@ function navigate(path, { replace = false } = {}) {
     const method = replace ? 'replaceState' : 'pushState';
     window.history[method]({}, '', path);
     route.value = parsePublicRoute(window.location);
+    returnPath.value = `${window.location.pathname}${window.location.search}`;
     searchInput.value = route.value.query.q ?? '';
     menuOpen.value = false;
     shareMessage.value = '';
@@ -107,6 +179,7 @@ function navigate(path, { replace = false } = {}) {
 
 function handlePopState() {
     route.value = parsePublicRoute(window.location);
+    returnPath.value = `${window.location.pathname}${window.location.search}`;
     searchInput.value = route.value.query.q ?? '';
     menuOpen.value = false;
     shareMessage.value = '';
@@ -141,16 +214,8 @@ function search() {
     navigate(`/search${queryString ? `?${queryString}` : ''}`);
 }
 
-function categoryPath(slug) {
-    return `/categories/${encodeURIComponent(slug)}`;
-}
-
 function selectLocation(slug) {
     navigate(withLocationFilter(`${window.location.pathname}${window.location.search}`, slug));
-}
-
-function opportunityPath(slug) {
-    return `/opportunities/${encodeURIComponent(slug)}`;
 }
 
 async function loadCategories() {
@@ -202,6 +267,76 @@ async function loadDetail(slug) {
     }
 }
 
+async function toggleSave(opportunity) {
+    const opportunityId = opportunity.id;
+    if (!currentUser.value) {
+        showNotice('info', 'Sign in to save opportunities and keep a private shortlist.');
+        navigate(loginHref.value);
+        return;
+    }
+    if (!currentUser.value.save_eligible) {
+        showNotice(
+            'warning',
+            'Verify the email address or phone number on your account before saving opportunities.',
+            '/profile',
+            'Open profile',
+        );
+        return;
+    }
+    if (savePendingId.value != null) return;
+
+    const wasSaved = savedIds.value.includes(opportunityId);
+    savePendingId.value = opportunityId;
+    try {
+        if (wasSaved) {
+            await unsaveOpportunity(opportunityId);
+            savedIds.value = savedIds.value.filter((id) => id !== opportunityId);
+            showNotice('success', 'Removed from your saved list.');
+        } else {
+            await saveOpportunity(opportunityId);
+            savedIds.value = [...savedIds.value, opportunityId];
+            showNotice('success', 'Saved. Open Saved to review it later.', '/saved', 'Open saved');
+        }
+    } catch (saveError) {
+        showNotice('error', saveError.message || 'Could not update your saved list. Try again.');
+    } finally {
+        savePendingId.value = null;
+    }
+}
+
+async function handleTrack(opportunity) {
+    const opportunityId = opportunity.id;
+    if (!currentUser.value) {
+        navigate(loginHref.value);
+        return;
+    }
+    if (trackedIds.value.includes(opportunityId)) {
+        navigate('/tracker');
+        return;
+    }
+    try {
+        await trackApplication({ opportunity_id: opportunityId, status: 'interested' });
+        trackedIds.value = [...trackedIds.value, opportunityId];
+        showNotice('success', 'Added to your private tracker.', '/tracker', 'Open tracker');
+    } catch (trackError) {
+        showNotice('error', trackError.message || 'Could not add this opportunity to your tracker.');
+    }
+}
+
+function markUnsaved(opportunityId) {
+    savedIds.value = savedIds.value.filter((id) => id !== opportunityId);
+}
+
+function markTracked(opportunityId) {
+    if (!trackedIds.value.includes(opportunityId)) {
+        trackedIds.value = [...trackedIds.value, opportunityId];
+    }
+}
+
+function markRemoved() {
+    void loadAccountLists();
+}
+
 async function copyCurrentPageUrl() {
     const url = canonicalPageUrl(window.location);
     copyUrl.value = url;
@@ -233,11 +368,13 @@ async function shareCurrentPage() {
 }
 
 watch(route, async (currentRoute) => {
-    if (['register', 'login', 'profile', 'categories', 'how-it-works'].includes(currentRoute.name)) {
+    if (['register', 'login', 'profile', 'categories', 'how-it-works', 'verify-email', 'saved', 'tracker'].includes(currentRoute.name)) {
         requestNumber += 1;
         detailRequestNumber += 1;
         loading.value = false;
         loadingDetail.value = false;
+        selectedOpportunity.value = null;
+        if (currentRoute.name === 'categories') void loadCategories();
         return;
     }
     if (currentRoute.name === 'opportunity') {
@@ -267,11 +404,12 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener('popstate', handlePopState);
     document.removeEventListener('click', handleInternalNavigation);
+    window.clearTimeout(noticeTimer);
 });
 </script>
 
 <template>
-    <div class="site-shell">
+    <div class="site-shell" :class="{ 'has-bottom-nav': showBottomNav }">
         <a class="skip-link" href="#main-content">Skip to content</a>
         <header class="site-header">
             <div class="header-inner">
@@ -279,6 +417,12 @@ onUnmounted(() => {
                     <span class="brand-mark"><img :src="'/brand/oyafind-mark.svg'" alt=""></span>
                     <span class="brand-name">Oya<span>Find</span></span>
                 </a>
+                <a class="pilot-tag" href="/how-it-works" data-internal-link>
+                    <span class="pilot-tag-dot" aria-hidden="true"></span>
+                    <span class="pilot-tag-long">Ibadan pilot</span>
+                    <span class="pilot-tag-short" aria-hidden="true">Ibadan</span>
+                </a>
+
                 <button
                     class="menu-toggle"
                     type="button"
@@ -287,26 +431,28 @@ onUnmounted(() => {
                     :aria-label="menuOpen ? 'Close navigation' : 'Open navigation'"
                     @click="menuOpen = !menuOpen"
                 ><span class="menu-toggle-lines" aria-hidden="true"></span></button>
+
                 <div id="site-navigation" class="header-panel" :class="{ 'is-open': menuOpen }">
                     <nav class="main-nav" aria-label="Main navigation">
-                        <a href="/" data-internal-link :aria-current="['home', 'search'].includes(route.name) ? 'page' : undefined">Explore</a>
-                        <a href="/categories" data-internal-link :aria-current="['categories', 'category'].includes(route.name) ? 'page' : undefined">Categories</a>
+                        <a href="/" data-internal-link :aria-current="['home', 'search', 'category'].includes(route.name) ? 'page' : undefined">Explore</a>
+                        <a v-if="currentUser" href="/saved" data-internal-link :aria-current="route.name === 'saved' ? 'page' : undefined">Saved</a>
+                        <a v-if="currentUser" href="/tracker" data-internal-link :aria-current="route.name === 'tracker' ? 'page' : undefined">Tracker</a>
+                        <a href="/categories" data-internal-link :aria-current="['categories'].includes(route.name) ? 'page' : undefined">Categories</a>
                         <a href="/how-it-works" data-internal-link :aria-current="route.name === 'how-it-works' ? 'page' : undefined">How it works</a>
-                        <a v-if="currentUser" href="/profile" data-internal-link :aria-current="route.name === 'profile' ? 'page' : undefined">Profile</a>
                     </nav>
                     <div class="header-actions">
                         <template v-if="currentUser">
-                            <a class="button button-secondary user-nav-pill" href="/profile" data-internal-link :title="`Signed in as ${currentUser.name || 'Account'}`">
+                            <a class="user-nav-pill" href="/profile" data-internal-link :title="`Signed in as ${currentUser.name || 'Account'}`">
                                 <span class="user-avatar-mini" aria-hidden="true">{{ userInitials }}</span>
                                 <span class="user-nav-name">{{ currentUser.name || 'Account' }}</span>
                             </a>
-                            <button class="button button-secondary signout-header-btn" type="button" @click="handleHeaderSignOut">
+                            <button class="signout-header-btn" type="button" @click="handleHeaderSignOut">
                                 Sign out
                             </button>
                         </template>
                         <template v-else>
-                            <a class="button button-secondary" href="/login" data-internal-link>Sign in</a>
-                            <a class="button button-primary" href="/register" data-internal-link>Get started</a>
+                            <a class="header-signin" href="/login" data-internal-link>Sign in</a>
+                            <a class="button button-primary button-sm" href="/register" data-internal-link>Create account</a>
                         </template>
                     </div>
                 </div>
@@ -315,9 +461,9 @@ onUnmounted(() => {
 
         <main id="main-content" class="page-content">
             <template v-if="isNotFoundPage">
-                <section class="notice-panel">
-                    <p class="eyebrow">Page not found</p>
-                    <h1>We couldn’t find that page.</h1>
+                <section class="empty-panel">
+                    <span class="empty-panel-icon" aria-hidden="true"><UiIcon name="compass" :size="22" /></span>
+                    <h1>We couldn’t find that page</h1>
                     <p>Try exploring current public opportunities instead.</p>
                     <a class="button button-primary" href="/" data-internal-link>Explore opportunities</a>
                 </section>
@@ -337,6 +483,56 @@ onUnmounted(() => {
                 :verification-query="route.query"
             />
             <ProfilePage v-else-if="route.name === 'profile'" :initial-profile="currentUser" @signed-out="handleSignedOut" />
+
+            <template v-else-if="route.name === 'saved'">
+                <SavedPage
+                    v-if="currentUser"
+                    :current-user="currentUser"
+                    @unsaved="markUnsaved"
+                    @tracked="markTracked"
+                />
+                <div v-else-if="!authReady" class="workspace-page">
+                    <p class="state-panel state-loading" role="status" aria-live="polite">
+                        <UiIcon class="loading-spinner" name="loader" :size="19" />
+                        Checking your account…
+                    </p>
+                </div>
+                <section v-else class="auth-gate">
+                    <p class="feed-kicker">Your shortlist</p>
+                    <h1>Sign in to see your saved opportunities</h1>
+                    <p>Saved listings are private to your account. Sign in, or create an account to start a shortlist.</p>
+                    <div class="auth-gate-actions">
+                        <a class="button button-primary" :href="loginHref" data-internal-link>Sign in</a>
+                        <a class="button button-secondary" :href="registerHref" data-internal-link>Create an account</a>
+                    </div>
+                    <a class="text-link" href="/" data-internal-link>Keep browsing without an account</a>
+                </section>
+            </template>
+
+            <template v-else-if="route.name === 'tracker'">
+                <MyOpportunitiesPage
+                    v-if="currentUser"
+                    :current-user="currentUser"
+                    @removed="markRemoved"
+                />
+                <div v-else-if="!authReady" class="workspace-page">
+                    <p class="state-panel state-loading" role="status" aria-live="polite">
+                        <UiIcon class="loading-spinner" name="loader" :size="19" />
+                        Checking your account…
+                    </p>
+                </div>
+                <section v-else class="auth-gate">
+                    <p class="feed-kicker">Private tracker</p>
+                    <h1>Sign in to open your application tracker</h1>
+                    <p>Your stages, dates and notes are private to your account. OyaFind never sends them to an employer.</p>
+                    <div class="auth-gate-actions">
+                        <a class="button button-primary" :href="loginHref" data-internal-link>Sign in</a>
+                        <a class="button button-secondary" :href="registerHref" data-internal-link>Create an account</a>
+                    </div>
+                    <a class="text-link" href="/" data-internal-link>Keep browsing without an account</a>
+                </section>
+            </template>
+
             <template v-else-if="isDetailPage">
                 <OpportunityDetailPage
                     :opportunity="selectedOpportunity"
@@ -346,9 +542,14 @@ onUnmounted(() => {
                     :copy-fallback="copyFallback"
                     :copy-url="copyUrl"
                     :safe-external-url="safeExternalUrl"
+                    :saved="selectedOpportunity ? savedIds.includes(selectedOpportunity.id) : false"
+                    :save-pending="selectedOpportunity ? savePendingId === selectedOpportunity.id : false"
+                    :tracked="selectedOpportunity ? trackedIds.includes(selectedOpportunity.id) : false"
                     @back="navigate('/search')"
                     @share="shareCurrentPage"
                     @copy="copyCurrentPageUrl"
+                    @save="toggleSave"
+                    @track="handleTrack"
                 />
             </template>
             <template v-else>
@@ -364,22 +565,56 @@ onUnmounted(() => {
                     :pagination="pagination"
                     :location-filtered="Boolean(route.query.location)"
                     :selected-location="route.query.location ?? ''"
+                    :saved-ids="savedIds"
+                    :save-pending-id="savePendingId"
+                    :is-authenticated="Boolean(currentUser)"
                     @update:query="searchInput = $event"
                     @search="search"
                     @navigate="navigate"
-                    @category="navigate(categoryPath($event))"
-                    @opportunity="navigate(opportunityPath($event))"
                     @location="selectLocation"
+                    @save="toggleSave"
                 />
             </template>
         </main>
 
         <footer class="site-footer">
-            <div>
+            <div class="footer-brand-block">
                 <p class="footer-brand">Oya<span>Find</span></p>
                 <p>Real opportunities. Closer to you.</p>
+                <p class="footer-pilot">Ibadan pilot · Oyo State, Nigeria</p>
             </div>
-            <p>OyaFind shares public listings; it does not submit applications or guarantee outcomes.</p>
+            <div class="footer-copy">
+                <p>OyaFind shares public listings. It does not submit applications, decide outcomes, or guarantee provider safety, selection or payment.</p>
+                <p class="footer-links">
+                    <a href="/how-it-works" data-internal-link>How it works</a>
+                    <a href="/categories" data-internal-link>Categories</a>
+                </p>
+            </div>
         </footer>
+
+        <nav v-if="showBottomNav" class="bottom-nav" aria-label="Primary">
+            <a
+                v-for="item in bottomNavItems"
+                :key="item.label"
+                class="bottom-nav-link"
+                :class="{ 'is-active': item.active }"
+                :href="item.href"
+                data-internal-link
+                :aria-current="item.active ? 'page' : undefined"
+            >
+                <span class="bottom-nav-icon"><UiIcon :name="item.icon" :size="20" /><span class="bottom-nav-dot" aria-hidden="true"></span></span>
+                <span class="bottom-nav-label">{{ item.label }}</span>
+            </a>
+        </nav>
+
+        <div v-if="notice" class="notice-toast" :class="`is-${notice.tone}`" role="status" aria-live="polite">
+            <span class="notice-toast-message">{{ notice.message }}</span>
+            <a v-if="notice.linkHref" class="notice-toast-link" :href="notice.linkHref" data-internal-link @click="notice = null">
+                {{ notice.linkLabel }}
+            </a>
+            <button class="notice-toast-close" type="button" aria-label="Dismiss" @click="notice = null">
+                <UiIcon name="close" :size="15" />
+            </button>
+        </div>
     </div>
 </template>

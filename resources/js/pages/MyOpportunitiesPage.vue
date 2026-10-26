@@ -3,11 +3,11 @@ import { computed, onMounted, ref } from 'vue';
 import UiIcon from '../components/UiIcon.vue';
 import { getMyApplications, updateApplication, deleteApplication } from '../api/workspace.js';
 
-const props = defineProps({
+defineProps({
     currentUser: { type: Object, default: null },
 });
 
-const emit = defineEmits(['navigate']);
+const emit = defineEmits(['navigate', 'removed']);
 
 const applications = ref([]);
 const loading = ref(true);
@@ -16,7 +16,6 @@ const actionMessage = ref('');
 const actionError = ref('');
 const currentFilter = ref('all');
 
-// Editing state
 const editingId = ref(null);
 const editStatus = ref('applied');
 const editAppliedAt = ref('');
@@ -25,13 +24,13 @@ const editSaving = ref(false);
 const deletingId = ref(null);
 
 const STATUS_CONFIG = {
-    interested: { label: 'Interested', colorClass: 'badge-status-neutral' },
-    preparing: { label: 'Preparing application', colorClass: 'badge-status-info' },
-    applied: { label: 'Applied', colorClass: 'badge-status-primary' },
-    interview: { label: 'Interview / Assessment', colorClass: 'badge-status-warning' },
-    successful: { label: 'Successful / Offer', colorClass: 'badge-status-success' },
-    unsuccessful: { label: 'Unsuccessful', colorClass: 'badge-status-muted' },
-    'user-reported': { label: 'User-reported', colorClass: 'badge-status-neutral' },
+    interested: { label: 'Interested', tone: 'neutral' },
+    preparing: { label: 'Preparing', tone: 'info' },
+    applied: { label: 'Applied', tone: 'primary' },
+    interview: { label: 'Interview', tone: 'warning' },
+    successful: { label: 'Successful', tone: 'success' },
+    unsuccessful: { label: 'Unsuccessful', tone: 'muted' },
+    'user-reported': { label: 'User-reported', tone: 'neutral' },
 };
 
 const filterTabs = [
@@ -59,14 +58,13 @@ const filteredApplications = computed(() => {
     return applications.value.filter((app) => app.status === currentFilter.value);
 });
 
+const activeTabLabel = computed(() => STATUS_CONFIG[currentFilter.value]?.label ?? currentFilter.value);
+
 function formatAppliedDate(dateStr) {
     if (!dateStr) return null;
     const date = new Date(dateStr);
     if (Number.isNaN(date.getTime())) return null;
-    return new Intl.DateTimeFormat('en', {
-        dateStyle: 'medium',
-        timeZone: 'UTC',
-    }).format(date);
+    return new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeZone: 'UTC' }).format(date);
 }
 
 function formatDeadline(deadlineAt) {
@@ -74,11 +72,12 @@ function formatDeadline(deadlineAt) {
     const date = new Date(deadlineAt);
     if (Number.isNaN(date.getTime())) return null;
     const formatted = new Intl.DateTimeFormat('en', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
         timeZone: 'UTC',
     }).format(date);
-    return date < new Date() ? `Deadline passed (${formatted} UTC)` : `Deadline: ${formatted} UTC`;
+    return date < new Date() ? `Deadline passed · ${formatted}` : `Closes ${formatted}`;
 }
 
 async function loadApplications() {
@@ -87,7 +86,7 @@ async function loadApplications() {
     try {
         applications.value = await getMyApplications();
     } catch (err) {
-        error.value = err.message || 'Could not load your applications. Please check your connection and try again.';
+        error.value = err.message || 'Could not load your applications. Check your connection and try again.';
     } finally {
         loading.value = false;
     }
@@ -119,18 +118,14 @@ async function saveEdit(id) {
             applied_at: editAppliedAt.value || null,
         });
 
-        // Update in-place
-        const index = applications.value.findIndex((a) => a.id === id);
+        const index = applications.value.findIndex((app) => app.id === id);
         if (index !== -1) {
-            applications.value[index] = {
-                ...applications.value[index],
-                ...updated,
-            };
+            applications.value[index] = { ...applications.value[index], ...updated };
         }
-        actionMessage.value = 'Application record updated.';
+        actionMessage.value = 'Tracker record updated.';
         editingId.value = null;
     } catch (err) {
-        actionError.value = err.message || 'Could not update application record.';
+        actionError.value = err.message || 'Could not update this tracker record.';
     } finally {
         editSaving.value = false;
     }
@@ -143,13 +138,12 @@ async function handleDelete(id) {
     actionError.value = '';
     try {
         await deleteApplication(id);
-        applications.value = applications.value.filter((a) => a.id !== id);
-        actionMessage.value = 'Application removed from tracker.';
-        if (editingId.value === id) {
-            editingId.value = null;
-        }
+        applications.value = applications.value.filter((app) => app.id !== id);
+        actionMessage.value = 'Removed from your tracker.';
+        emit('removed', id);
+        if (editingId.value === id) editingId.value = null;
     } catch (err) {
-        actionError.value = err.message || 'Failed to remove application.';
+        actionError.value = err.message || 'Could not remove this tracker record.';
     } finally {
         deletingId.value = null;
     }
@@ -161,15 +155,16 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="tracker-page-container">
-        <header class="tracker-header">
-            <div class="tracker-header-title">
-                <h1>Private application tracker</h1>
-                <p class="tracker-subtitle">
-                    Keep track of applications, interview stages, and notes in one private place.
+    <div class="workspace-page">
+        <header class="workspace-head">
+            <div>
+                <p class="feed-kicker">Private to you</p>
+                <h1>Application tracker</h1>
+                <p class="workspace-sub">
+                    Record your own progress, dates and notes. Nothing here is sent to an employer.
                 </p>
             </div>
-            <div class="tracker-header-actions">
+            <div class="workspace-actions">
                 <a class="button button-secondary" href="/saved" data-internal-link>
                     <UiIcon name="bookmark" :size="16" />
                     Saved opportunities
@@ -177,232 +172,205 @@ onMounted(() => {
             </div>
         </header>
 
-        <!-- Trust & privacy policy banner -->
-        <div class="tracker-trust-banner">
-            <div class="trust-banner-icon" aria-hidden="true">
-                <UiIcon name="shield-check" :size="20" />
-            </div>
-            <div class="trust-banner-content">
-                <strong>Strictly user-reported and private</strong>
+        <div class="inline-banner is-quiet">
+            <UiIcon name="shield-check" :size="18" />
+            <div>
+                <strong>User-reported and private</strong>
                 <p>
-                    All statuses, dates, and notes are recorded by you for your own tracking. OyaFind does not submit applications to employers, verify application delivery, or receive outcome confirmations from providers.
+                    Every status, date and note here is recorded by you. OyaFind does not submit applications,
+                    confirm delivery, or receive outcomes from providers.
                 </p>
             </div>
         </div>
 
-        <!-- Feedback notices -->
-        <div v-if="actionMessage" class="toast-notice success-notice" role="status" aria-live="polite">
-            <UiIcon name="check" :size="18" />
+        <div v-if="actionMessage" class="toast is-success" role="status" aria-live="polite">
+            <UiIcon name="check" :size="17" />
             <span>{{ actionMessage }}</span>
-            <button class="toast-close-btn" type="button" aria-label="Dismiss message" @click="actionMessage = ''">×</button>
+            <button class="toast-close" type="button" aria-label="Dismiss message" @click="actionMessage = ''">
+                <UiIcon name="close" :size="15" />
+            </button>
         </div>
 
-        <div v-if="actionError" class="toast-notice error-notice" role="alert">
+        <div v-if="actionError" class="toast is-error" role="alert">
             <span>{{ actionError }}</span>
-            <button class="toast-close-btn" type="button" aria-label="Dismiss error" @click="actionError = ''">×</button>
+            <button class="toast-close" type="button" aria-label="Dismiss error" @click="actionError = ''">
+                <UiIcon name="close" :size="15" />
+            </button>
         </div>
 
-        <!-- Filter tabs -->
-        <nav class="tracker-filter-tabs" aria-label="Filter applications by stage">
+        <nav class="status-tabs" aria-label="Filter applications by stage">
             <button
                 v-for="tab in filterTabs"
                 :key="tab.key"
-                class="filter-tab-btn"
+                class="status-tab"
                 :class="{ 'is-active': currentFilter === tab.key }"
                 :aria-pressed="currentFilter === tab.key"
                 type="button"
                 @click="currentFilter = tab.key"
             >
-                <span>{{ tab.label }}</span>
-                <span class="tab-count-pill">{{ countsByStatus[tab.key] || 0 }}</span>
+                {{ tab.label }}
+                <span class="tab-count">{{ countsByStatus[tab.key] || 0 }}</span>
             </button>
         </nav>
 
-        <!-- Loading state -->
-        <div v-if="loading" class="state-panel state-loading" role="status" aria-live="polite">
-            <UiIcon class="loading-spinner" name="loader" :size="24" />
-            <p>Loading your tracked applications…</p>
+        <div v-if="loading" class="feed-skeleton" role="status" aria-live="polite">
+            <span class="visually-hidden">Loading your tracked applications…</span>
+            <div v-for="n in 3" :key="n" class="skeleton-card" aria-hidden="true">
+                <span class="skeleton-line is-short"></span>
+                <span class="skeleton-line is-title"></span>
+                <span class="skeleton-line"></span>
+                <span class="skeleton-line is-medium"></span>
+            </div>
         </div>
 
-        <!-- Error state -->
-        <div v-else-if="error" class="notice-panel state-error" role="alert">
-            <p class="eyebrow">Unable to load tracker</p>
+        <div v-else-if="error" class="empty-panel is-error" role="alert">
+            <span class="empty-panel-icon" aria-hidden="true"><UiIcon name="shield-check" :size="22" /></span>
+            <h2>We couldn’t load your tracker</h2>
             <p>{{ error }}</p>
             <button class="button button-primary" type="button" @click="loadApplications">Try again</button>
         </div>
 
-        <!-- Empty state -->
-        <div v-else-if="filteredApplications.length === 0" class="tracker-empty-state">
-            <div class="empty-icon-wrap" aria-hidden="true">
-                <UiIcon name="chart" :size="36" />
-            </div>
-            <h2 v-if="currentFilter === 'all'">Your application tracker is empty</h2>
-            <h2 v-else>No applications marked as “{{ STATUS_CONFIG[currentFilter]?.label || currentFilter }}”</h2>
-            <p>
-                Add opportunities you are pursuing from your <a href="/saved" data-internal-link class="text-link">saved list</a> or while exploring to record interview dates, preparation progress, and notes.
+        <div v-else-if="filteredApplications.length === 0" class="empty-panel">
+            <span class="empty-panel-icon" aria-hidden="true"><UiIcon name="chart" :size="22" /></span>
+            <h2 v-if="currentFilter === 'all'">Nothing in your tracker yet</h2>
+            <h2 v-else>No applications marked “{{ activeTabLabel }}”</h2>
+            <p v-if="currentFilter === 'all'">
+                Add an opportunity from your saved list, or track one from a listing, to record dates and private notes.
             </p>
-            <div class="empty-actions">
-                <a class="button button-primary" href="/saved" data-internal-link>View saved opportunities</a>
-                <a class="button button-secondary" href="/" data-internal-link>Explore opportunities</a>
+            <p v-else>
+                Your other application records are still here. Switch back to “All” to see them.
+            </p>
+            <div class="empty-panel-actions">
+                <a class="button button-primary" href="/saved" data-internal-link>Open saved opportunities</a>
+                <button v-if="currentFilter !== 'all'" class="button button-secondary" type="button" @click="currentFilter = 'all'">
+                    Show all
+                </button>
+                <a v-else class="button button-secondary" href="/" data-internal-link>Explore opportunities</a>
             </div>
         </div>
 
-        <!-- Application cards -->
-        <div v-else class="tracker-items-list">
+        <div v-else class="tracker-list">
             <article
                 v-for="app in filteredApplications"
                 :key="app.id"
-                class="tracker-card"
+                class="tracker-record"
                 :class="{ 'is-unavailable': !app.is_available }"
             >
-                <!-- View Mode -->
-                <div v-if="editingId !== app.id" class="tracker-card-content">
-                    <div class="tracker-card-header">
-                        <div class="status-indicator-wrap">
-                            <span
-                                class="status-badge"
-                                :class="STATUS_CONFIG[app.status]?.colorClass || 'badge-status-neutral'"
-                            >
+                <div v-if="editingId !== app.id">
+                    <div class="tracker-record-head">
+                        <div class="tracker-status-group">
+                            <span class="status-pill" :class="`is-${STATUS_CONFIG[app.status]?.tone || 'neutral'}`">
                                 <span class="visually-hidden">User-reported status: </span>
                                 {{ STATUS_CONFIG[app.status]?.label || app.status }}
                             </span>
-                            <span class="user-reported-tag" title="User-reported progress, not verified by employer">
+                            <span class="user-reported-tag" title="User-reported progress, not confirmed by an employer">
                                 User-reported
                             </span>
                         </div>
-
-                        <div class="tracker-card-actions">
-                            <button
-                                class="button button-secondary button-sm"
-                                type="button"
-                                @click="startEdit(app)"
-                            >
-                                Edit stage & notes
+                        <div class="tracker-record-actions">
+                            <button class="button button-secondary button-sm" type="button" @click="startEdit(app)">
+                                Edit
                             </button>
                             <button
-                                class="button-text-danger button-sm"
+                                class="text-danger"
                                 type="button"
                                 :disabled="deletingId === app.id"
-                                aria-label="Remove from tracker"
+                                :aria-label="`Remove ${app.opportunity?.title || 'application'} from tracker`"
                                 @click="handleDelete(app.id)"
                             >
                                 <UiIcon name="trash" :size="14" />
-                                Remove
+                                {{ deletingId === app.id ? 'Removing…' : 'Remove' }}
                             </button>
                         </div>
                     </div>
 
-                    <!-- Available opportunity information -->
                     <template v-if="app.is_available && app.opportunity">
-                        <div class="tracker-opp-details">
-                            <div class="tracker-opp-topline">
-                                <span v-if="app.opportunity.category?.name" class="category-label">
-                                    {{ app.opportunity.category.name }}
-                                </span>
-                                <span v-if="formatDeadline(app.opportunity.deadline_at)" class="deadline-label">
-                                    {{ formatDeadline(app.opportunity.deadline_at) }}
-                                </span>
-                            </div>
-
-                            <h2 class="tracker-opp-title">
-                                <a :href="`/opportunities/${encodeURIComponent(app.opportunity.slug)}`" data-internal-link>
-                                    {{ app.opportunity.title }}
-                                </a>
-                            </h2>
-
-                            <p class="tracker-opp-org">{{ app.opportunity.organisation_name || 'Organisation not listed' }}</p>
-
-                            <div v-if="app.opportunity.location?.name" class="tracker-opp-meta">
-                                <span class="meta-location">
-                                    <UiIcon name="pin" :size="14" />
-                                    {{ app.opportunity.location.name }}
-                                </span>
-                            </div>
+                        <div class="tracker-opp-topline">
+                            <span v-if="app.opportunity.category?.name" class="op-cat">{{ app.opportunity.category.name }}</span>
+                            <span v-if="formatDeadline(app.opportunity.deadline_at)" class="op-deadline">
+                                {{ formatDeadline(app.opportunity.deadline_at) }}
+                            </span>
                         </div>
-                    </template>
-
-                    <!-- Safe unavailable listing display -->
-                    <template v-else>
-                        <div class="unavailable-listing-banner">
-                            <span class="status-dot status-warning" aria-hidden="true"></span>
-                            <strong>Opportunity no longer public</strong>
-                        </div>
-                        <p class="unavailable-copy">
-                            This opportunity is no longer published or has expired. Your private notes and application dates remain safely preserved in your tracker.
+                        <h2 class="tracker-title">
+                            <a :href="`/opportunities/${encodeURIComponent(app.opportunity.slug)}`" data-internal-link>
+                                {{ app.opportunity.title }}
+                            </a>
+                        </h2>
+                        <p class="ledger-org">
+                            {{ app.opportunity.organisation_name || 'Organisation not listed' }}
+                            <span aria-hidden="true">·</span>
+                            <span class="op-org-location">
+                                <UiIcon name="pin" :size="13" />
+                                {{ app.opportunity.location?.name || 'Location not specified' }}
+                            </span>
                         </p>
                     </template>
 
-                    <!-- Application details metadata -->
-                    <div class="tracker-meta-box">
+                    <template v-else>
+                        <div class="inline-banner is-warning is-compact">
+                            <UiIcon name="shield-check" :size="16" />
+                            <p>This opportunity is no longer public. Your notes and dates remain in your tracker.</p>
+                        </div>
+                    </template>
+
+                    <div class="tracker-meta">
                         <div v-if="formatAppliedDate(app.applied_at)" class="tracker-meta-row">
-                            <span class="meta-label">
-                                <UiIcon name="calendar" :size="14" />
-                                Applied date:
-                            </span>
+                            <span class="meta-label"><UiIcon name="calendar" :size="14" /> Applied</span>
                             <span class="meta-value">{{ formatAppliedDate(app.applied_at) }}</span>
                         </div>
-
-                        <div v-if="app.notes" class="tracker-notes-block">
-                            <span class="meta-label">Private notes:</span>
-                            <p class="tracker-notes-text">{{ app.notes }}</p>
+                        <div v-if="app.notes" class="tracker-notes">
+                            <span class="meta-label">Private notes</span>
+                            <p>{{ app.notes }}</p>
                         </div>
-                        <p v-else class="tracker-no-notes">
-                            No notes added yet. Click “Edit stage & notes” to record notes.
-                        </p>
+                        <p v-else class="tracker-no-notes">No notes yet. Add a confirmation number, contact or next step.</p>
                     </div>
                 </div>
 
-                <!-- Edit Mode -->
-                <div v-else class="tracker-card-edit-form">
-                    <header class="edit-form-header">
-                        <h3>Update tracking record</h3>
-                        <p class="field-hint">Statuses and notes are private and user-reported.</p>
+                <div v-else class="tracker-edit">
+                    <header class="tracker-edit-head">
+                        <div>
+                            <p class="feed-kicker">Editing record</p>
+                            <h3>{{ app.opportunity?.title || 'Tracked application' }}</h3>
+                        </div>
+                        <button class="modal-close" type="button" aria-label="Cancel edit" @click="cancelEdit">
+                            <UiIcon name="close" :size="17" />
+                        </button>
                     </header>
 
                     <form @submit.prevent="saveEdit(app.id)">
                         <div class="form-row">
-                            <div class="form-group">
+                            <div class="field">
                                 <label :for="`edit-status-${app.id}`">Stage</label>
-                                <select
-                                    :id="`edit-status-${app.id}`"
-                                    v-model="editStatus"
-                                    class="form-control"
-                                    required
-                                >
-                                    <option value="interested">Interested (Researching)</option>
-                                    <option value="preparing">Preparing application</option>
-                                    <option value="applied">Applied (Submitted)</option>
-                                    <option value="interview">Interview / Assessment</option>
-                                    <option value="successful">Successful / Offered</option>
+                                <select :id="`edit-status-${app.id}`" v-model="editStatus" required>
+                                    <option value="interested">Interested (researching)</option>
+                                    <option value="preparing">Preparing (gathering materials)</option>
+                                    <option value="applied">Applied (submitted)</option>
+                                    <option value="interview">Interview / assessment</option>
+                                    <option value="successful">Successful / offered</option>
                                     <option value="unsuccessful">Unsuccessful</option>
                                     <option value="user-reported">User-reported</option>
                                 </select>
                             </div>
 
-                            <div class="form-group">
-                                <label :for="`edit-applied-${app.id}`">Application date</label>
-                                <input
-                                    :id="`edit-applied-${app.id}`"
-                                    v-model="editAppliedAt"
-                                    type="date"
-                                    class="form-control"
-                                />
+                            <div class="field">
+                                <label :for="`edit-applied-${app.id}`">Date applied <span>optional</span></label>
+                                <input :id="`edit-applied-${app.id}`" v-model="editAppliedAt" type="date">
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label :for="`edit-notes-${app.id}`">Private notes</label>
+                        <div class="field">
+                            <label :for="`edit-notes-${app.id}`">Private notes <span>optional</span></label>
                             <textarea
                                 :id="`edit-notes-${app.id}`"
                                 v-model="editNotes"
-                                class="form-control"
                                 rows="3"
-                                placeholder="E.g. application confirmation number, next steps, interview dates, questions asked..."
+                                maxlength="2000"
+                                placeholder="Next step, contact person, interview date…"
                             ></textarea>
-                            <span class="field-hint">Only you can view and edit these notes.</span>
+                            <span class="field-hint">Only you can read these notes.</span>
                         </div>
 
-                        <div class="edit-form-actions">
+                        <div class="modal-actions">
                             <button class="button button-secondary" type="button" @click="cancelEdit">Cancel</button>
                             <button class="button button-primary" type="submit" :disabled="editSaving">
                                 {{ editSaving ? 'Saving…' : 'Save changes' }}
@@ -414,4 +382,3 @@ onMounted(() => {
         </div>
     </div>
 </template>
-

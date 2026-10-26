@@ -28,6 +28,8 @@ test('discovery component renders deterministic fixture data and a clear empty-f
         category: { name: 'Synthetic training' },
         location: null,
         deadline_at: null,
+        verified_at: '2026-10-12T09:00:00+00:00',
+        verification_status: 'verified',
     };
 
     const populated = await renderToString(createSSRApp(DiscoveryPage, {
@@ -40,13 +42,16 @@ test('discovery component renders deterministic fixture data and a clear empty-f
     assert.match(populated, /Synthetic training opportunity/);
     assert.match(populated, /Synthetic provider/);
     assert.match(populated, /Location not specified/);
-    assert.match(populated, /Browse without an account|Browse freely/);
-    assert.match(populated, /Good opportunities\./);
-    assert.match(populated, /Within your reach\./);
-    assert.match(populated, /Search jobs, scholarships, grants/);
+    assert.match(populated, /Ibadan pilot/);
+    assert.match(populated, /Oyo State/);
+    assert.match(populated, /Find what’s next/);
+    assert.match(populated, /closer to home/);
+    assert.match(populated, /Search a role, organisation or skill/);
+    assert.match(populated, /What a check means/);
+    assert.match(populated, /Source checked 12 Oct/);
+    assert.match(populated, /A check is not an endorsement/);
     assert.doesNotMatch(populated, /Illustrative preview · not live listings/);
-    assert.match(populated, /Example: source checked/);
-    assert.match(populated, /Example: applications open/);
+    assert.doesNotMatch(populated, /Example: applications open/);
     assert.match(populated, /aria-pressed="false"/);
     assert.match(populated, /Browse without an account/);
     for (const slug of ['jobs', 'scholarships', 'internships', 'grants', 'training', 'business-support', 'gigs', 'tenders']) {
@@ -60,8 +65,9 @@ test('discovery component renders deterministic fixture data and a clear empty-f
         opportunities: [],
         pagination: { total: 0, current_page: 1, last_page: 1 },
     }));
-    assert.match(empty, /No public opportunities to show yet/);
-    assert.match(empty, /We do not add sample listings to the live feed/);
+    assert.match(empty, /No live listings right now/);
+    assert.match(empty, /We don’t pad the feed with examples/);
+    assert.doesNotMatch(empty, /Synthetic/);
 });
 
 test('detail component renders trust, eligibility, source and safe external actions', async () => {
@@ -74,9 +80,10 @@ test('detail component renders trust, eligibility, source and safe external acti
         category: { name: 'Synthetic category' },
         publication_status: 'published',
         verification_status: 'verified',
+        verified_at: '2026-10-12T09:00:00+00:00',
         source_url: 'https://provider.example/source',
         application_url: 'https://provider.example/apply',
-        application_method: 'Apply on the provider website',
+        application_method: 'external_url',
         eligibility: 'Controlled test eligibility',
         deadline_at: null,
     };
@@ -93,13 +100,15 @@ test('detail component renders trust, eligibility, source and safe external acti
     }));
 
     assert.match(html, /Published on OyaFind/);
-    assert.match(html, /Source and details checked/);
+    assert.match(html, /Source and details checked 12 October 2026/);
     assert.match(html, /Controlled test eligibility/);
-    assert.match(html, /Apply on the provider website/);
+    assert.match(html, /Apply on the provider’s website/);
     assert.match(html, /provider\.example\/source/);
     assert.match(html, /rel="noopener noreferrer"/);
     assert.match(html, /do not guarantee provider safety, selection or payment/);
-    assert.match(html, /No report has been submitted/);
+    assert.match(html, /Track it privately/);
+    assert.match(html, /OyaFind does not submit applications or decide outcomes/);
+    assert.doesNotMatch(html, /Report this listing|No report has been submitted/);
 });
 
 test('unavailable detail view does not disclose details and offers a return path', async () => {

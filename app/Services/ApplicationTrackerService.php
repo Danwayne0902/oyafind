@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\ApplicationTracker;
-use App\Models\Opportunity;
 use App\Models\User;
 use App\Repositories\OpportunityDiscoveryRepository;
 use Carbon\CarbonImmutable;
@@ -35,7 +34,7 @@ class ApplicationTrackerService
         $applications = ApplicationTracker::query()
             ->where('user_id', $user->id)
             ->orderByDesc('updated_at')
-            ->with(['opportunity.category', 'opportunity.location.parent'])
+            ->with(['opportunity.category', 'opportunity.location.parent', 'opportunity.latestVerifiedCheck'])
             ->get();
 
         if ($applications->isEmpty()) {
@@ -80,8 +79,12 @@ class ApplicationTrackerService
         $status = $data['status'] ?? 'interested';
         if (! in_array($status, self::ALLOWED_STATUSES, true)) {
             throw ValidationException::withMessages([
-                'status' => ['The tracker status must be one of: ' . implode(', ', self::ALLOWED_STATUSES) . '.'],
+                'status' => ['The tracker status must be one of: '.implode(', ', self::ALLOWED_STATUSES).'.'],
             ]);
+        }
+
+        if ($this->opportunities->findPublicById($opportunityId) === null) {
+            throw new NotFoundHttpException('Opportunity not found.');
         }
 
         $appliedAt = ! empty($data['applied_at'])
@@ -120,7 +123,7 @@ class ApplicationTrackerService
         if (array_key_exists('status', $data)) {
             if (! in_array($data['status'], self::ALLOWED_STATUSES, true)) {
                 throw ValidationException::withMessages([
-                    'status' => ['The tracker status must be one of: ' . implode(', ', self::ALLOWED_STATUSES) . '.'],
+                    'status' => ['The tracker status must be one of: '.implode(', ', self::ALLOWED_STATUSES).'.'],
                 ]);
             }
             $tracker->status = $data['status'];
@@ -150,4 +153,3 @@ class ApplicationTrackerService
             ->delete();
     }
 }
-

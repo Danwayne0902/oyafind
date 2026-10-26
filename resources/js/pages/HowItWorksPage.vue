@@ -11,109 +11,101 @@ function toggleFaq(index) {
 const steps = [
     {
         number: '01',
-        title: 'Discover freely without barriers',
+        title: 'Browse without an account',
         icon: 'compass',
         tone: 'mint',
-        summary: 'Explore all public listings without creating an account or paying any subscription.',
-        details: 'Browse opportunities by keyword, category, or area. You get complete eligibility details, source information, and deadlines upfront with no hidden requirements.',
+        summary: 'Public listings are open to everyone. No signup, no paywall.',
+        details: 'Search by keyword, category or reviewed area. You can read the organisation, location, deadline, eligibility and application method before deciding whether to sign in.',
     },
     {
         number: '02',
-        title: 'Filter by human-reviewed locations',
+        title: 'Filter by a reviewed area',
         icon: 'pin',
         tone: 'blue',
-        summary: 'Find opportunities near you across Ibadan and Nigeria using coarse area pickers.',
-        details: 'We believe in privacy and low-data accessibility. OyaFind never requests device GPS or residential addresses. Instead, you filter by reviewed cities, states, and LGAs.',
+        summary: 'Use coarse areas from OyaFind’s own catalogue.',
+        details: 'The pilot starts with Ibadan and Oyo State. OyaFind never requests device GPS, an exact address, or a live map. Location is optional, and all-area browsing always remains available.',
     },
     {
         number: '03',
-        title: 'Check verified sources & apply direct',
+        title: 'Check the source, then apply there',
         icon: 'shield-check',
         tone: 'violet',
-        summary: 'Every public listing undergoes staff checks before being published.',
-        details: 'We confirm the authenticity of the organization, check that deadlines are active, and provide direct links to the official application portal. You apply directly—never through a middleman.',
+        summary: 'Every public listing has had its source and details checked.',
+        details: 'OyaFind reviews a listing before publication and shows when that check was recorded. You apply through the provider’s own channel. OyaFind does not submit applications or decide outcomes.',
     },
     {
         number: '04',
-        title: 'Personalize with a free account',
-        icon: 'users',
+        title: 'Save and track privately',
+        icon: 'bookmark',
         tone: 'amber',
-        summary: 'Register with email or phone to tailor your opportunity feed.',
-        details: 'Set your optional Home Area (e.g. Ibadan North, Oyo) and select the categories that match your aspirations—from scholarships to tech gigs.',
-    },
-    {
-        number: '05',
-        title: 'Track applications privately',
-        icon: 'calendar',
-        tone: 'mint',
-        summary: 'Stay organized with your own private application progress tracker.',
-        details: 'Save listings and record your status: Interested, Preparing, Applied, Interview, or Outcome. Your notes and application progress are 100% private to your account.',
+        summary: 'Create an account to keep a shortlist and record your own progress.',
+        details: 'Saving requires a verified email address or phone number. Your tracker stages, dates and notes are user-reported and visible only to you.',
     },
 ];
 
 const audiences = [
     {
-        title: 'Students & Graduates',
+        title: 'Students & graduates',
         icon: 'graduation-cap',
         tone: 'violet',
         benefits: [
-            'Find verified industrial training (SIWES) and internships.',
-            'Discover legitimate undergraduate and postgraduate scholarships.',
-            'Access graduate trainee programs and NYSC placement opportunities.',
+            'Find industrial training, internships and entry-level roles.',
+            'Browse scholarships, training and graduate programmes.',
+            'See the deadline and application channel before you start.',
         ],
     },
     {
-        title: 'Jobseekers & Artisans',
+        title: 'Jobseekers & skilled workers',
         icon: 'briefcase',
         tone: 'mint',
         benefits: [
-            'Explore full-time, part-time, and contract openings across Ibadan.',
-            'Discover trade gigs, freelance tasks, and technical opportunities.',
-            'Apply with confidence knowing every listing is vetted for zero-fee compliance.',
+            'Explore full-time, part-time and contract openings.',
+            'Find trade gigs, freelance work and technical roles.',
+            'Check the source and location before you spend time applying.',
         ],
     },
     {
-        title: 'Entrepreneurs & SMEs',
+        title: 'Entrepreneurs & small businesses',
         icon: 'chart',
         tone: 'amber',
         benefits: [
-            'Access non-repayable startup and agribusiness grants.',
-            'Join local business hubs, incubator cohorts, and mentorship programs.',
-            'Find formal public and private sector tenders for procurement bids.',
+            'Browse grants, business support and training.',
+            'Find public and private sector tenders.',
+            'Keep a private record of the opportunities you pursue.',
         ],
     },
     {
-        title: 'Employers & Organizers',
+        title: 'Organisations',
         icon: 'users',
         tone: 'blue',
         benefits: [
-            'Reach motivated, local talent in Ibadan and surrounding areas.',
-            'Submit listings easily for staff review and rapid publication.',
-            'Build trust with candidates through our verified provenance badge.',
+            'A staff-reviewed route to relevant local candidates.',
+            'Listing submission is planned for approved contributors.',
+            'Every listing is reviewed before it can be published.',
         ],
     },
 ];
 
 const faqs = [
     {
-        question: 'Does OyaFind charge jobseekers any fees?',
-        answer: 'Never. OyaFind is completely free for opportunity seekers. We will never ask you to pay to browse, apply, or attend interviews. Any opportunity provider demanding money to process applications is violating our terms and will be removed immediately.',
+        question: 'Do I need an account to use OyaFind?',
+        answer: 'No. Public listings, search, categories and area filters work without an account. You need an account to save opportunities or use the private application tracker, and your selected contact must be verified before saving is enabled.',
     },
     {
-        question: 'Do I apply through OyaFind or directly with the employer?',
-        answer: 'You apply directly through the original, official channel. OyaFind provides verified links to the employer portal, scholarship board, or application email. We are an independent directory, not an employment agency.',
+        question: 'What does “source and details checked” mean?',
+        answer: 'Before a listing is published, OyaFind reviews its source and details. The detailed checklist, evidence standard and recheck process are still being settled for the pilot. A check is not an endorsement or a guarantee of provider safety, selection or payment.',
     },
     {
-        question: 'Why does OyaFind use coarse locations instead of device GPS?',
-        answer: 'We prioritize your privacy and phone battery. Exact residential addresses and GPS coordinates are unnecessary for finding local opportunities. Choosing your general LGA or city gives you all relevant listings while keeping your personal location safe.',
+        question: 'Why does OyaFind use coarse areas instead of GPS?',
+        answer: 'A general area is enough to find relevant local opportunities, and it avoids collecting a precise home address. The picker uses reviewed areas from OyaFind’s own catalogue. It does not request GPS, call a geocoder or load map tiles.',
     },
     {
-        question: 'What is the 30-day freshness rule?',
-        answer: 'Opportunities with specific deadlines automatically expire when the deadline passes. Listings without fixed deadlines are rechecked by our staff every 30 days. If an organization does not re-confirm that the role remains open, the listing is hidden from public view.',
+        question: 'What happens when a deadline passes?',
+        answer: 'Listings with a deadline stop appearing when that deadline has passed. Listings without a deadline are rechecked every 30 days; if that check is overdue, the listing is hidden until it is confirmed again.',
     },
     {
-        question: 'How do I report a suspicious or expired listing?',
-        answer: 'Every listing on OyaFind includes a “Report” option. Anyone—even without an account—can flag a listing with a description of the issue. Our moderation team reviews reports promptly to protect the community.',
+        question: 'How do I report a problem with a listing?',
+        answer: 'Public reporting is a required part of the pilot, but it is not enabled in this build yet. Until it is, check the provider’s own information carefully before sharing personal details or paying anything.',
     },
 ];
 </script>
@@ -122,18 +114,17 @@ const faqs = [
     <section class="detailed-content-page how-it-works-page" aria-labelledby="how-heading">
         <header class="page-intro-header">
             <p class="eyebrow"><UiIcon name="compass" :size="15" /> How OyaFind works</p>
-            <h1 id="how-heading">Real opportunities. Clear, checked and closer to you.</h1>
+            <h1 id="how-heading">What we check, what we don’t, and how to use it.</h1>
             <p class="page-intro-copy">
-                We believe finding genuine work, scholarships, and grants shouldn’t involve scams, endless rumors, or paying for application forms.
-                Here is the standard we hold every opportunity to.
+                OyaFind is a local opportunity board for the Ibadan pilot. This page explains the standard a listing
+                has to meet before it appears, and what happens after you find one.
             </p>
         </header>
 
-        <!-- 5 Steps Section -->
-        <section class="how-steps-section" aria-label="Five steps to discovering opportunities">
+        <section class="how-steps-section" aria-label="Four steps to using OyaFind">
             <div class="section-title-wrap">
-                <p class="eyebrow">The journey</p>
-                <h2>Five simple steps from search to success</h2>
+                <p class="eyebrow">The path</p>
+                <h2>From a rumour to a checked listing</h2>
             </div>
 
             <div class="steps-grid">
@@ -151,12 +142,11 @@ const faqs = [
             </div>
         </section>
 
-        <!-- Audience Grid -->
-        <section class="how-audiences-section" aria-label="Opportunities by audience">
+        <section class="how-audiences-section" aria-label="Who OyaFind is for">
             <div class="section-title-wrap">
-                <p class="eyebrow">Tailored for everyone</p>
-                <h2>Who OyaFind is built for</h2>
-                <p class="section-subtitle">No matter where you are in your career, there is a pathway for you.</p>
+                <p class="eyebrow">Who it is for</p>
+                <h2>Different starting points, one board</h2>
+                <p class="section-subtitle">The service is open to everyone. Categories, search and area filters do the work.</p>
             </div>
 
             <div class="audiences-grid">
@@ -169,7 +159,7 @@ const faqs = [
                     </div>
                     <ul class="audience-list">
                         <li v-for="(benefit, bIndex) in item.benefits" :key="bIndex">
-                            <UiIcon name="shield-check" :size="16" />
+                            <UiIcon name="check" :size="16" />
                             <span>{{ benefit }}</span>
                         </li>
                     </ul>
@@ -177,36 +167,34 @@ const faqs = [
             </div>
         </section>
 
-        <!-- Trust Pillars -->
-        <section class="trust-pillars-section" aria-label="Trust and safety commitments">
+        <section class="trust-pillars-section" aria-label="What OyaFind commits to">
             <div class="pillar-card">
                 <span class="pillar-icon"><UiIcon name="shield-check" :size="26" /></span>
                 <div>
-                    <h3>Human-Verified Sources</h3>
-                    <p>No automated crawlers dumping unverified social media posts. Every listing is reviewed by team members before going live.</p>
+                    <h3>Reviewed before publication</h3>
+                    <p>Every listing is reviewed by OyaFind before it appears. Only listings whose source and details have been checked are published.</p>
                 </div>
             </div>
             <div class="pillar-card">
                 <span class="pillar-icon"><UiIcon name="calendar" :size="26" /></span>
                 <div>
-                    <h3>30-Day Freshness Assurance</h3>
-                    <p>Passed deadlines are marked expired immediately. Ongoing listings must be re-checked every 30 days or they are taken down.</p>
+                    <h3>The 30-day rule</h3>
+                    <p>Listings with a deadline expire when it passes. Listings without one are rechecked every 30 days or hidden from public view.</p>
                 </div>
             </div>
             <div class="pillar-card">
-                <span class="pillar-icon"><UiIcon name="coins" :size="26" /></span>
+                <span class="pillar-icon"><UiIcon name="arrow" :size="26" /></span>
                 <div>
-                    <h3>Zero-Tolerance for Scam Fees</h3>
-                    <p>We reject any posting asking candidates to pay for interview kits, aptitude tests, or application submissions.</p>
+                    <h3>Apply at the source</h3>
+                    <p>OyaFind sends you to the provider’s own channel. It does not submit applications, take payments or decide outcomes.</p>
                 </div>
             </div>
         </section>
 
-        <!-- FAQ Section -->
         <section class="how-faq-section" aria-labelledby="faq-heading">
             <div class="section-title-wrap">
                 <p class="eyebrow">Common questions</p>
-                <h2 id="faq-heading">Frequently asked questions</h2>
+                <h2 id="faq-heading">Straight answers</h2>
             </div>
 
             <div class="faq-accordion">
@@ -232,21 +220,19 @@ const faqs = [
             </div>
         </section>
 
-        <!-- Bottom CTA -->
         <div class="how-cta-banner">
             <div>
-                <h2>Ready to explore what’s next?</h2>
-                <p>Browse verified opportunities across Ibadan and Nigeria right now.</p>
+                <h2>Start with what is open now</h2>
+                <p>Browse the Ibadan pilot feed, or create an account to save and track.</p>
             </div>
             <div class="cta-actions">
                 <a class="button button-primary" href="/" data-internal-link>
                     Explore opportunities <UiIcon name="arrow" :size="16" />
                 </a>
                 <a class="button button-secondary" href="/register" data-internal-link>
-                    Create free account
+                    Create an account
                 </a>
             </div>
         </div>
     </section>
 </template>
-
