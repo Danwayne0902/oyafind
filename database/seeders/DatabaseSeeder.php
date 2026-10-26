@@ -20,15 +20,16 @@ class DatabaseSeeder extends Seeder
 
         if (! $adminExists) {
             User::query()->create([
-                'name'              => 'OyaFind Admin',
-                'email'             => 'admin@oyafind.ng',
-                'password'          => Hash::make(env('OYAFIND_SEED_ADMIN_PASSWORD', 'change-me-immediately')),
-                'role'              => 'admin',
-                'status'            => 'active',
+                'name' => 'OyaFind Admin',
+                'email' => 'admin@oyafind.ng',
+                'password' => Hash::make(env('OYAFIND_SEED_ADMIN_PASSWORD', 'change-me-immediately')),
+                'role' => 'admin',
+                'status' => 'active',
                 'email_verified_at' => now(),
             ]);
         }
 
         $this->call(LocationSeeder::class);
+        $this->call(SourceSeeder::class);
     }
 }

@@ -33,5 +33,14 @@
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <!-- Tests must not inherit a local reviewer allowlist. -->
+        <env name="OYAFIND_PUBLIC_DISCOVERY_ENABLED" force="true" value="false"/>
+        <env name="OYAFIND_PUBLIC_STAFF_REVIEWER_IDS" force="true" value=""/>
+        <env name="OYAFIND_PUBLIC_STAFF_REVIEWER_ROLES" force="true" value=""/>
+        <env name="OYAFIND_PUBLIC_VERIFIER_IDS" force="true" value=""/>
+        <env name="OYAFIND_PUBLIC_VERIFIER_ROLES" force="true" value=""/>
+        <env name="OYAFIND_PUBLIC_ALLOWED_CHECK_TYPES" force="true" value=""/>
+        <env name="OYAFIND_PUBLIC_REQUIRED_CHECK_TYPES" force="true" value=""/>
+        <env name="OYAFIND_PUBLIC_REQUIRE_DISTINCT_REVIEWERS" force="true" value=""/>
     </php>
 </phpunit>

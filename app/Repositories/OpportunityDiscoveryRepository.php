@@ -143,7 +143,7 @@ class OpportunityDiscoveryRepository
      *   distinct: true
      * }|null
      */
-    private function publicationPolicy(): ?array
+    public function publicationPolicy(): ?array
     {
         $configuration = config('oyafind.discovery');
         if (! is_array($configuration) || ($configuration['enabled'] ?? null) !== true) {
