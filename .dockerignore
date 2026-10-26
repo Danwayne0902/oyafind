@@ -1,0 +1,39 @@
+# Never ship local configuration or secrets into an image.
+# Patterns are anchored to the build context root, so nested env files need
+# their own ** entry; deploy/.env holds the production secrets.
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+
+# Dependencies are installed inside the build stages.
+/node_modules
+/vendor
+
+# Front-end output is produced by the assets stage.
+/public/build
+/public/hot
+/public/storage
+
+# Runtime state that must not be baked into an image.
+/.git
+/.github
+/.claude
+/.idea
+/.vscode
+/.zed
+/bootstrap/cache/*
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/pail
+
+# Development-only files.
+/tests
+/phpunit.xml
+/.phpunit.result.cache
+/.phpunit.cache
+/.DS_Store
+*.log

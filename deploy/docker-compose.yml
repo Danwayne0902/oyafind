@@ -1,0 +1,111 @@
+# OyaFind production stack for a single VM.
+#
+# Run from this directory:
+#   docker compose up -d --build
+#
+# Requires a .env file next to this file. Copy .env.production.example and fill
+# it in, or run provision-oracle.sh which does that for you.
+
+name: oyafind
+
+x-app-build: &app-build
+    context: ..
+    dockerfile: deploy/Dockerfile
+    target: app
+
+services:
+    mysql:
+        image: mysql:8.0
+        restart: unless-stopped
+        command:
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+            - --innodb-buffer-pool-size=256M
+            - --max-connections=100
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE:-oyafind}
+            MYSQL_USER: ${DB_USERNAME:-oyafind}
+            MYSQL_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD is required}
+        volumes:
+            - mysql-data:/var/lib/mysql
+        healthcheck:
+            test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+            interval: 10s
+            timeout: 5s
+            retries: 12
+            start_period: 40s
+        networks:
+            - oyafind
+
+    app:
+        build: *app-build
+        image: oyafind-app:latest
+        restart: unless-stopped
+        env_file:
+            - .env
+        environment:
+            DB_HOST: mysql
+            DB_PORT: "3306"
+        depends_on:
+            mysql:
+                condition: service_healthy
+        expose:
+            - "9000"
+        networks:
+            - oyafind
+
+    scheduler:
+        build: *app-build
+        # A distinct tag from the app service so the two builds never race to
+        # overwrite the same image name. Layers are shared, so this is nearly
+        # free on disk.
+        image: oyafind-scheduler:latest
+        restart: unless-stopped
+        env_file:
+            - .env
+        environment:
+            DB_HOST: mysql
+            DB_PORT: "3306"
+            # The app container owns migrations and cache warming.
+            RUN_MIGRATIONS: "false"
+            CACHE_APP_CONFIG: "false"
+        command: ["php", "artisan", "schedule:work"]
+        depends_on:
+            mysql:
+                condition: service_healthy
+            app:
+                condition: service_started
+        networks:
+            - oyafind
+
+    web:
+        build:
+            context: ..
+            dockerfile: deploy/Dockerfile
+            target: web
+        image: oyafind-web:latest
+        restart: unless-stopped
+        depends_on:
+            app:
+                condition: service_started
+        environment:
+            APP_DOMAIN: ${APP_DOMAIN:?APP_DOMAIN is required}
+            ACME_EMAIL: ${ACME_EMAIL:?ACME_EMAIL is required}
+        ports:
+            - "80:80"
+            - "443:443"
+            - "443:443/udp"
+        volumes:
+            - caddy-data:/data
+            - caddy-config:/config
+        networks:
+            - oyafind
+
+networks:
+    oyafind:
+
+volumes:
+    mysql-data:
+    caddy-data:
+    caddy-config:

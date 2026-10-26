@@ -1,0 +1,35 @@
+# Caddy terminates TLS and serves the built public directory.
+# Certificates come from Let's Encrypt automatically once DNS points here.
+
+{
+	email {$ACME_EMAIL}
+	admin off
+}
+
+{$APP_DOMAIN} {
+	root * /var/www/html/public
+
+	encode zstd gzip
+
+	# Vite emits content-hashed filenames under /build, so these are safe to
+	# cache for a year. Everything else keeps Caddy's default behaviour.
+	@immutable path /build/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	# Hands .php requests to PHP-FPM and falls back to public/index.php, which
+	# is what Laravel's router expects.
+	php_fastcgi app:9000
+
+	header {
+		-Server
+		X-Content-Type-Options nosniff
+		X-Frame-Options SAMEORIGIN
+		Referrer-Policy strict-origin-when-cross-origin
+		Strict-Transport-Security "max-age=15552000"
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

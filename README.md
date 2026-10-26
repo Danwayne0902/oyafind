@@ -121,6 +121,23 @@ php artisan opportunities:pending --status=filtered
 php artisan schedule:list
 ```
 
+## Deployment
+
+`deploy/` holds a single-VM production stack: MySQL, PHP-FPM, the scheduler and
+Caddy with automatic HTTPS, all in Docker. It targets an Oracle Cloud Always
+Free instance (Ubuntu 24.04, arm64) but runs on any 2 GB Ubuntu VPS.
+
+```bash
+sudo APP_DOMAIN=oyafind.com.ng ACME_EMAIL=you@example.com \
+     OYAFIND_REPO=git@github.com:Danwayne0902/oyafind.git \
+     ./deploy/provision-oracle.sh
+```
+
+The full runbook — domain and DNS, Oracle's two firewall layers, staff accounts,
+mail, backups and troubleshooting — is in [`deploy/README.md`](deploy/README.md).
+Production sets its own reviewer and verifier ids; the local demonstration policy
+is not reused.
+
 ## Tests
 
 ```bash
