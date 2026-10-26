@@ -1,6 +1,6 @@
 # OyaFind — Design
 
-**Direction:** *The Ibadan opportunity ledger.* A civic noticeboard for real openings: warm paper, precise rules, plain language, and evidence you can point at. Not a startup landing page, not a job-board clone.
+**Direction:** *The Nigerian opportunity ledger.* A civic noticeboard for real openings: warm paper, precise rules, plain language, and evidence you can point at. Not a startup landing page, not a job-board clone.
 
 **Surface mode:** Operate (browse, assess, save, track). Ambition shows as restraint, density and finish — not spectacle.
 
@@ -10,7 +10,7 @@
 
 The product's promise is that someone checked before publishing. That promise should be visible in the interface's behaviour: dates, source lines, distinct states, and copy that says exactly what was and was not checked. A soft gradient hero and floating sample cards imply a marketing product; a ledger implies a record.
 
-The pilot is local. The design should feel like it belongs to Ibadan and Oyo State, not to a generic "opportunities across Nigeria" platform. That means a visible pilot marker, reviewed-area language, and local density over national scale claims.
+The coverage is national. The design should feel like a trustworthy Nigerian public utility: a visible national marker, reviewed state/LGA language, and local density without overclaiming comprehensive coverage. The hero carries two small promise cards — what a check means, and how the national area catalogue works.
 
 ## Tokens
 
@@ -43,21 +43,23 @@ Never place lime text on white or paper. Ink on lime is the only lime pairing.
 - Micro label: `0.72rem`, weight 750, tracking `0.12em`, uppercase.
 - Numbers and dates: `font-variant-numeric: tabular-nums`.
 
-**Space:** 4px base. Page gutter `clamp(1rem, 4vw, 2.5rem)`. Section gap `4rem` desktop / `2.5rem` mobile. Card padding `1.15rem` mobile / `1.35rem` desktop.
+**Space:** 4px base. Page gutter `clamp(1rem, 1.4vw, 1.75rem)`, so the shell occupies roughly 96–98% of the viewport at desktop sizes. Section gap `4rem` desktop / `2.5rem` mobile. Card padding `1.15rem` mobile / `1.35rem` desktop.
 
-**Container:** `73rem` max. Feed surface uses a `minmax(0,1fr) 19rem` split at ≥1024px; single column below.
+**Container:** No fixed maximum. The shell fills the viewport minus the gutter. Feed surface uses a `minmax(0,1fr) 19rem` split at ≥1024px. The masthead becomes a two-column headline/search layout at ≥1650px, and the detail page becomes a two-column article/action layout at ≥1200px, so wide screens fill the ledger without long text lines.
 
 **Radii:** 10px controls, 14px cards, 999px chips. No 24px+ rounding on content panels.
 
 **Depth:** borders first. Shadows only on sticky/mobile overlays: `0 12px 30px rgb(16 28 61 / 12%)`. No coloured halos, no blur glows.
 
-**Motion:** 160–220ms `cubic-bezier(0.23, 1, 0.32, 1)`. One authored moment: the feed settles in with a 240ms fade/4px rise, staggered 30ms for the first six rows. Hover lift is 1px maximum. Reduced motion removes transforms and the feed animation.
+**Motion:** 160–220ms `cubic-bezier(0.23, 1, 0.32, 1)`. One authored moment: the feed settles in with a 240ms fade/4px rise, staggered 30ms for the first six rows. Hover lift is 2px with a soft shadow and a single sheen pass on buttons. Reduced motion removes transforms and the feed animation.
+
+**Loading and feedback:** Every route change and filter selection shows a 3px top progress bar plus a small “Loading page” pill. On phones the pill sits above the bottom navigation, so it never covers the headline. The feed uses skeletons and the detail page uses a spinner in the same language. Interactive controls carry a quiet synthesised click, generated with Web Audio (no audio asset); a persistent footer toggle controls it, and sound is never the only feedback for an action.
 
 ## Shell
 
-**Desktop header:** 68px, `--surface` with a 1px `--wire` bottom edge. Brand left; a `Pilot · Ibadan` marker next to it; nav (Explore, Categories, How it works); account actions right. Active nav is ink with a 2px lime underline inset from the text.
+**Desktop header:** 68px, `--surface` with a 1px `--wire` bottom edge. Brand left; a `Nigeria` marker next to it; nav (Explore, Categories, How it works); account actions right. Active nav is ink with a 2px lime underline inset from the text.
 
-**Mobile header:** 60px. Brand, compact pilot marker, and a menu button for secondary links. Core navigation moves to the bottom bar.
+**Mobile header:** 60px. Brand, compact national marker, and a menu button for secondary links. Core navigation moves to the bottom bar.
 
 **Bottom nav (≤760px):** four equal items — Explore, Saved, Tracker, Profile. 56px plus `env(safe-area-inset-bottom)`. Active item is trust green with a 4px lime dot above the label. Signed-out users see Profile as "Sign in". The bar is not shown on auth, verification or 404 screens.
 
@@ -65,7 +67,7 @@ Never place lime text on white or paper. Ink on lime is the only lime pairing.
 
 ## Explore (home)
 
-1. **Masthead** — pilot eyebrow (`IBADAN PILOT · OYO STATE`), display headline, one-sentence promise, search field, area button, then category chips. No hero illustration and no sample listings.
+1. **Masthead** — national eyebrow (`NIGERIA-WIDE · 36 STATES + FCT`), display headline with a short slanted lime stroke, one-sentence promise, search field, area button, category chips, and two promise cards (checks, national coverage). No hero illustration and no sample listings.
 2. **Feed** — section heading with live count and sort. Rows begin in the first viewport on a 390×844 phone (masthead is capped at ~430px tall).
 3. **Right rail (desktop)** — "What a check means", "The 30-day rule", "Saving is private". Sticky below the header. On mobile these become a compact disclosure below the feed.
 4. **Below the feed** — a short "How it works" three-step band linking to the full page. Categories live in the chip row and on `/categories`, not in a second wall of cards.
@@ -129,7 +131,7 @@ These are guide pages, not catalogues of promises. Category cards keep the icon 
 
 1. Say "source and details checked", not "verified opportunity".
 2. Show the check date or say it is not recorded.
-3. Say "Ibadan pilot" / "Oyo State"; never "across Nigeria".
+3. Say "Nigeria-wide" / "36 states + FCT" when describing coverage; never claim to list every opportunity in the country.
 4. No fee, safety, speed or outcome guarantees.
 5. No sample listings presented as real.
 6. No claims about reporting, alerts or notifications that the build cannot keep.

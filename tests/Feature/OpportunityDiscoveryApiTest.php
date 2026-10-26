@@ -328,6 +328,56 @@ class OpportunityDiscoveryApiTest extends TestCase
             ->assertJsonMissingPath('data.0.location.reviewed_by');
     }
 
+    public function test_state_filter_includes_opportunities_recorded_in_its_lgas(): void
+    {
+        $this->enableSyntheticPublicationPolicy();
+        $reviewer = User::query()->create(['name' => 'Synthetic geography reviewer']);
+        $reviewer->forceFill(['role' => 'staff'])->save();
+
+        $state = Location::query()->create([
+            'name' => 'Synthetic State',
+            'slug' => 'synthetic-state',
+            'location_type' => 'state',
+            'is_active' => true,
+            'reviewed_at' => $this->now,
+            'reviewed_by' => $reviewer->id,
+            'catalogue_origin' => 'oyafind_reviewed',
+        ]);
+        $lga = Location::query()->create([
+            'name' => 'Synthetic LGA',
+            'slug' => 'synthetic-lga',
+            'parent_id' => $state->id,
+            'location_type' => 'lga',
+            'is_active' => true,
+            'reviewed_at' => $this->now,
+            'reviewed_by' => $reviewer->id,
+            'catalogue_origin' => 'oyafind_reviewed',
+        ]);
+        Location::query()->create([
+            'name' => 'Other State',
+            'slug' => 'other-state',
+            'location_type' => 'state',
+            'is_active' => true,
+            'reviewed_at' => $this->now,
+            'reviewed_by' => $reviewer->id,
+            'catalogue_origin' => 'oyafind_reviewed',
+        ]);
+
+        $opportunity = $this->makeEligible('lga-bound-role');
+        $opportunity->forceFill(['location_id' => $lga->id])->save();
+
+        config(['oyafind.policies.location_catalogue' => true]);
+
+        $this->getJson('/api/v1/opportunities?location=synthetic-state')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.location.slug', 'synthetic-lga');
+
+        $this->getJson('/api/v1/opportunities?location=other-state')
+            ->assertOk()
+            ->assertJsonCount(0, 'data');
+    }
+
     public function test_category_and_opportunity_resources_are_allowlisted_and_detail_uses_stable_slug(): void
     {
         $this->enableSyntheticPublicationPolicy();

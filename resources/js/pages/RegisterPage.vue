@@ -99,7 +99,7 @@ onMounted(checkAvailability);
             <div class="account-story-copy">
                 <span class="account-story-mark"><img :src="'/brand/oyafind-mark-on-dark.svg'" alt=""></span>
                 <h1>Make room for<br><span>your next move.</span></h1>
-                <p>Discover opportunities for work, learning and business, starting with the Ibadan pilot.</p>
+                <p>Discover opportunities for work, learning and business in every state across Nigeria.</p>
                 <div class="register-category-row" aria-label="Opportunity types">
                     <span><UiIcon name="briefcase" :size="17" /> Jobs</span>
                     <span><UiIcon name="graduation-cap" :size="17" /> Scholarships</span>

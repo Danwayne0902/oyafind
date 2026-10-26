@@ -25,7 +25,12 @@ const {
 const selectedLabel = computed(() => {
     if (!props.selectedSlug) return '';
     const match = choices.value.find((choice) => choice.slug === props.selectedSlug);
-    return match ? displayName(match) : props.selectedSlug;
+    if (match) return displayName(match);
+    return props.selectedSlug
+        .split('-')
+        .filter(Boolean)
+        .map((part) => part[0].toUpperCase() + part.slice(1))
+        .join(' ');
 });
 
 function choose(slug) {
@@ -96,7 +101,7 @@ onUnmounted(() => {
                     type="search"
                     maxlength="100"
                     autocomplete="off"
-                    placeholder="Search Ibadan North, Oluyole…"
+                    placeholder="Search Lagos, Ibadan North, Abuja…"
                 >
                 <button class="button button-secondary button-sm" type="submit" :disabled="loading" :aria-busy="loading">
                     {{ loading ? 'Searching…' : 'Search' }}
@@ -138,7 +143,7 @@ onUnmounted(() => {
                 No reviewed areas match that search. You can still browse all areas.
             </p>
             <p class="area-note">
-                OyaFind uses reviewed, coarse areas only. No GPS or exact address is requested.
+                OyaFind uses reviewed, coarse areas across Nigeria’s 36 states and the FCT. No GPS or exact address is requested.
             </p>
         </div>
     </div>

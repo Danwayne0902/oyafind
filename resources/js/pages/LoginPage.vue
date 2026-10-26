@@ -48,7 +48,7 @@ async function submit() {
             <div class="account-story-copy">
                 <span class="account-story-mark"><img :src="'/brand/oyafind-mark-on-dark.svg'" alt=""></span>
                 <h1>Find what’s next.<br><span>Keep it moving.</span></h1>
-                <p>Jobs, scholarships, internships, grants, training and more, starting with the Ibadan pilot — so the next step feels easier to find.</p>
+                <p>Jobs, scholarships, internships, grants, training and more, across all 36 states and the FCT — so the next step feels easier to find.</p>
                 <ul class="account-value-list">
                     <li><UiIcon name="search" :size="19" /><span>Explore by category and reviewed area</span></li>
                     <li><UiIcon name="shield-check" :size="19" /><span>See when a source and its details were checked</span></li>

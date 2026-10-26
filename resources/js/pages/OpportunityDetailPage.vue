@@ -194,44 +194,46 @@ function formatRequirements(value) {
                 <p v-if="opportunity.application_instructions">{{ opportunity.application_instructions }}</p>
             </section>
 
-            <section class="source-box" aria-labelledby="source-heading">
-                <h2 id="source-heading">Source information</h2>
-                <p>Review the provider’s original information before applying.</p>
-                <a
-                    v-if="sourceUrl"
-                    class="text-link"
-                    :href="sourceUrl"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >Open source website <span aria-hidden="true">↗</span><span class="visually-hidden">(opens in a new tab)</span></a>
-                <p v-else class="muted-copy">A public source link is not available for this listing.</p>
-            </section>
+            <div class="detail-act">
+                <section class="source-box" aria-labelledby="source-heading">
+                    <h2 id="source-heading">Source information</h2>
+                    <p>Review the provider’s original information before applying.</p>
+                    <a
+                        v-if="sourceUrl"
+                        class="text-link"
+                        :href="sourceUrl"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >Open source website <span aria-hidden="true">↗</span><span class="visually-hidden">(opens in a new tab)</span></a>
+                    <p v-else class="muted-copy">A public source link is not available for this listing.</p>
+                </section>
 
-            <div class="detail-actions">
-                <a
-                    v-if="applicationUrl"
-                    class="button button-primary"
-                    :href="applicationUrl"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >Continue to provider <span aria-hidden="true">↗</span><span class="visually-hidden">(opens in a new tab)</span></a>
-                <span v-else class="button button-disabled" aria-disabled="true">Application link unavailable</span>
-                <SaveButton :saved="saved" :pending="savePending" @toggle="emit('save', opportunity)" />
-                <button class="button button-secondary" type="button" @click="emit('share')">Share</button>
+                <div class="detail-actions">
+                    <a
+                        v-if="applicationUrl"
+                        class="button button-primary"
+                        :href="applicationUrl"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >Continue to provider <span aria-hidden="true">↗</span><span class="visually-hidden">(opens in a new tab)</span></a>
+                    <span v-else class="button button-disabled" aria-disabled="true">Application link unavailable</span>
+                    <SaveButton :saved="saved" :pending="savePending" @toggle="emit('save', opportunity)" />
+                    <button class="button button-secondary" type="button" @click="emit('share')">Share</button>
+                </div>
+
+                <div class="detail-track-row">
+                    <span>Pursuing this one?</span>
+                    <a v-if="tracked" class="text-link" href="/tracker" data-internal-link>Open it in your tracker <span aria-hidden="true">→</span></a>
+                    <button v-else class="text-link" type="button" @click="emit('track', opportunity)">
+                        Track it privately <span aria-hidden="true">→</span>
+                    </button>
+                </div>
+
+                <p class="application-disclaimer">
+                    OyaFind does not submit applications or decide outcomes.
+                    Check details with the provider before sharing personal information.
+                </p>
             </div>
-
-            <div class="detail-track-row">
-                <span>Pursuing this one?</span>
-                <a v-if="tracked" class="text-link" href="/tracker" data-internal-link>Open it in your tracker <span aria-hidden="true">→</span></a>
-                <button v-else class="text-link" type="button" @click="emit('track', opportunity)">
-                    Track it privately <span aria-hidden="true">→</span>
-                </button>
-            </div>
-
-            <p class="application-disclaimer">
-                OyaFind does not submit applications or decide outcomes.
-                Check details with the provider before sharing personal information.
-            </p>
 
             <div class="share-feedback" aria-live="polite">
                 <p v-if="shareMessage" role="status">{{ shareMessage }}</p>

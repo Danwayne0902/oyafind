@@ -1,7 +1,7 @@
 # OyaFind — MVP Product Requirements Document
 
 **Working tagline:** Real opportunities. Closer to you.  
-**Pilot market:** Ibadan, Oyo State, Nigeria  
+**Market:** Nigeria — all 36 states and the Federal Capital Territory  
 **Pilot horizon:** 30 days  
 **Product form:** Mobile-first, installable PWA (working assumption)  
 **Status:** Approved PRD baseline; this decision update is pending user approval  
@@ -9,7 +9,7 @@
 
 ## 1. Executive summary
 
-OyaFind helps people discover and assess legitimate, relevant opportunities: jobs, gigs, internships, scholarships, training, grants, business support and tenders. The first pilot focuses on the Ibadan market and the needs of students, jobseekers, graduates, skilled workers and young entrepreneurs. The service remains open to everyone; audience needs are supported through categories, search and location filters rather than eligibility gates.
+OyaFind helps people discover and assess legitimate, relevant opportunities: jobs, gigs, internships, scholarships, training, grants, business support and tenders. The product covers the Nigerian market and the needs of students, jobseekers, graduates, skilled workers and young entrepreneurs. The service remains open to everyone; audience needs are supported through categories, search and location filters rather than eligibility gates.
 
 The MVP is intended to validate that people can find opportunities relevant to their circumstances, trust OyaFind enough to return, and that organisations see value in reaching local candidates or participants. Public browsing, search, details and sharing must work without an account. Registration is required to save opportunities and use the private application tracker. Trust is supported by review workflows, visible verification states, evidence records, user reports, expiry handling and staff audit history.
 
@@ -21,11 +21,11 @@ The experience must be affordable to use, simple on Android phones and tolerant 
 
 ### 2.1 Opportunity to be addressed
 
-People looking for work, education and business support often encounter opportunities scattered across sources and social channels. They need a low-friction way to find locally relevant listings, understand eligibility and deadlines, judge how recently a listing was checked, and reach the original application channel. Organisations need a credible way to reach relevant people in the pilot area. The brief identifies these needs as the product hypothesis; it does not include quantified user research or validated demand.
+People looking for work, education and business support often encounter opportunities scattered across sources and social channels. They need a low-friction way to find locally relevant listings, understand eligibility and deadlines, judge how recently a listing was checked, and reach the original application channel. Organisations need a credible way to reach relevant people in their state or LGA. The brief identifies these needs as the product hypothesis; it does not include quantified user research or validated demand.
 
 ### 2.2 Evidence status and validation plan
 
-The supplied brief establishes the intended audiences, pilot geography, core product hypothesis, candidate opportunity types and 30-day validation goals. It does **not** establish measured demand, verified conversion rates, willingness to pay, contact-verification delivery provider, verification service-level targets, or numeric success thresholds. These must not be represented as research findings.
+The supplied brief establishes the intended audiences, national geography, core product hypothesis, candidate opportunity types and 30-day validation goals. It does **not** establish measured demand, verified conversion rates, willingness to pay, contact-verification delivery provider, verification service-level targets, or numeric success thresholds. These must not be represented as research findings.
 
 During the pilot, the team should collect evidence that can confirm or challenge each hypothesis:
 
@@ -50,16 +50,16 @@ During the pilot, the team should collect evidence that can confirm or challenge
 
 ### 3.1 MVP goals
 
-1. Make relevant opportunities discoverable by category, text search and Ibadan-area location.
+1. Make relevant opportunities discoverable by category, text search and state/LGA location.
 2. Make listing source, eligibility, application method, deadline and verification state understandable.
 3. Let users browse and share public listings without signup; let signed-in users save listings and privately track their own application progress.
 4. Give authorised staff the minimum tools to review submissions, record verification evidence, handle reports and expire or archive listings.
-5. Deliver a usable, accessible, low-data mobile experience for the 30-day Ibadan pilot while keeping the service open to people outside the primary audiences.
+5. Deliver a usable, accessible, low-data mobile experience for the national launch while keeping the service open to people outside the primary audiences.
 
 ### 3.2 In scope
 
 - Public, paginated opportunity feed, search, category and location filters, listing details and sharing.
-- Ibadan launch geography through a searchable coarse location/area picker; selectable areas are published only after their names and hierarchy are human-reviewed.
+- National launch geography through a searchable coarse location/area picker covering all 36 states and the FCT; selectable areas are published only after their names and hierarchy are human-reviewed.
 - Account registration, sign-in, sign-out and basic profile/preferences.
 - Save/unsave listings and a private, manually maintained application tracker.
 - Listing submission by an authorised submitter, with staff review before public publication.
@@ -74,7 +74,7 @@ During the pilot, the team should collect evidence that can confirm or challenge
 - In-app payments, wallet, paid employer accounts or paid/sponsored placements.
 - Social network, comments, direct messaging, video feed or user-to-user contact exchange.
 - AI matching, complex recommendations, advanced employer analytics or premium career tools.
-- Multi-city launch or a claim of comprehensive coverage of every Ibadan opportunity.
+- A claim of comprehensive coverage of every opportunity in Nigeria.
 - OyaFind processing applications, deciding hiring outcomes, awarding grants or guaranteeing a listing/provider.
 - Automated identity/background checks, automated fraud adjudication or automated verification.
 - GPS location, exact-address collection, address geocoding, interactive maps/map tiles, or runtime requests to third-party location services.
@@ -116,7 +116,7 @@ Role assignment and every protected action are enforced by the server. The clien
 
 ### 5.1 Explicit MVP assumptions (not validated facts)
 
-1. The launch is city-level Ibadan, Oyo State, with optional finer areas only after the location list is human-validated. The exact geography approver remains open. No precise home address is required.
+1. The launch is national, covering all 36 states and the Federal Capital Territory, with optional finer areas only after the location list is human-validated. The exact geography approver remains open. No precise home address is required.
 2. Public listing access does not require registration. Saving and application tracking require registration and authentication.
 3. Application tracking is a private user-maintained record. OyaFind does not receive external application results automatically.
 4. A listing with a known deadline becomes expired when that deadline passes. A listing without a deadline must be rechecked by staff every 30 days from publication or its last completed recheck; when the 30-day interval is overdue, it must be hidden from public access and treated as expired until rechecked.
@@ -148,7 +148,7 @@ The code foundation exists, but no live database connection or migration against
 5. Account deletion, data-retention periods, privacy/legal policy, analytics consent and evidence retention.
 6. Whether employer/organisation records need a separate entity or whether organisation name on each listing is sufficient for pilot validation.
 7. Numeric launch success thresholds and who owns approval to continue, adjust or stop after day 30.
-8. Exact Ibadan location/area taxonomy, the exact approver for geography, and ownership of ongoing maintenance of labels and hierarchy.
+8. The national location/area taxonomy, the exact approver for geography, and ownership of ongoing maintenance of labels and hierarchy.
 9. Currency display convention, salary range representation and whether compensation visibility is optional or required for specific listing categories.
 10. Hosting/deployment details, including the deployed environment and operational ownership.
 
@@ -159,11 +159,11 @@ The code foundation exists, but no live database connection or migration against
 **Decision: `osm_optional`.** OyaFind may perform a one-time use/import from an appropriately bounded OSM/Geofabrik-derived source as a seed/reference for its own location catalogue, subject to an actual documented ODbL licensing review before use and human validation before choices become selectable. This does not authorize ongoing synchronization or establish that licensing review or human validation has already occurred. Applicable attribution and share-alike obligations must be met; imported data must retain source/provenance, retrieval date and dataset version or snapshot identifier. Serve choices from OyaFind's own catalogue; do not make the picker depend on a live third-party locator.
 
 - OpenStreetMap data is available under the ODbL; provide required attribution and license notice: [OpenStreetMap copyright and license](https://www.openstreetmap.org/copyright).
-- [Geofabrik's Nigeria extract](https://download.geofabrik.de/africa/nigeria.html) is a free raw PBF download, not a confirmed, ready-to-use Ibadan neighbourhood/LGA taxonomy. It is community-maintained source data; free access does not guarantee completeness, accuracy, currency or zero operating cost.
+- [Geofabrik's Nigeria extract](https://download.geofabrik.de/africa/nigeria.html) is a free raw PBF download, not a confirmed, ready-to-use Nigerian state/LGA taxonomy. It is community-maintained source data; free access does not guarantee completeness, accuracy, currency or zero operating cost.
 - Geofabrik's [technical notes](https://download.geofabrik.de/technical.html) distinguish its extract clipping polygon from actual administrative boundaries; the extract boundary must not be treated as authoritative geography.
 - Public [Nominatim usage policy](https://operations.osmfoundation.org/policies/nominatim/) limits use to at most one request per second and prohibits client-side autocomplete and systematic complete-place queries. Do not use the public Nominatim service as the runtime or autocomplete source for this preloaded picker.
 
-Exact selectable area names and the person/team accountable for validation remain open. Do not infer or publish unconfirmed Ibadan LGA or neighbourhood names. Include OSM attribution/ODbL disclosure and meet applicable share-alike obligations as established by the licensing review wherever required for displayed or derived data.
+Exact selectable area names and the person/team accountable for validation remain open. Do not infer or publish unconfirmed state, LGA or neighbourhood names. Include OSM attribution/ODbL disclosure and meet applicable share-alike obligations as established by the licensing review wherever required for displayed or derived data.
 
 ## 6. Functional requirements and user stories
 
@@ -366,7 +366,7 @@ The following is a complete proposed relational MVP model derived from the brief
 | `source_retrieved_at` | DATE | Yes | Retrieval date for imported source data |
 | `created_at`,`updated_at` | DATETIME | No | UTC |
 
-**Constraints:** unique `slug`; parent deletion restricted while children/listings refer to it. Seed only human-confirmed geography and area records. Do not model Ibadan as a single LGA.
+**Constraints:** unique `slug`; parent deletion restricted while children/listings refer to it. Seed only human-confirmed geography and area records. Do not model a state as a single LGA.
 
 For imported rows, populate the source/provenance fields, retrieval date and dataset version or snapshot identifier. These fields support traceability and do not imply that imported geography is authoritative or that an automated data pipeline is required.
 
@@ -595,7 +595,7 @@ Use a consistent envelope. Illustrative only; a public response may show `verifi
       "title": "Graduate Trainee Opportunity",
       "slug": "graduate-trainee-opportunity",
       "category": "Jobs",
-      "location": "Ibadan",
+      "location": "Lagos",
       "deadline_at": "2026-11-15T23:59:59Z",
       "verification_status": "verified"
     }
@@ -750,7 +750,7 @@ The pilot is not ready to launch until the responsible owner has confirmed each 
 
 - [ ] Product owner approves scope, open-decision resolutions and the user-facing meaning of each verification label.
 - [ ] Pilot location hierarchy and category taxonomy are reviewed; no unconfirmed neighbourhood/LGA claims are seeded.
-- [ ] Before any OSM-derived import, the ODbL licensing review has been completed and applicable attribution/share-alike obligations identified; any imported rows record source/provenance, retrieval date and dataset version or snapshot identifier; an accountable person has human-validated the Ibadan hierarchy and labels before publication, and required attribution/ODbL notice is present.
+- [ ] Before any OSM-derived import, the ODbL licensing review has been completed and applicable attribution/share-alike obligations identified; any imported rows record source/provenance, retrieval date and dataset version or snapshot identifier; an accountable person has human-validated the national hierarchy and labels before publication, and required attribution/ODbL notice is present.
 - [ ] The location picker is verified to use OyaFind's own catalogue, support search on constrained connections, work from a previously cached catalogue when offline, and make no GPS, geocoder, external locator or map-tile request.
 - [ ] Initial listings have source references, accurate deadlines/application methods and an assigned review/refresh owner.
 - [ ] Submission permission and staff provisioning process are tested; no public self-promotion to staff roles is possible.
@@ -767,7 +767,7 @@ The pilot is not ready to launch until the responsible owner has confirmed each 
 
 ## 14. Acceptance and definition of MVP readiness
 
-MVP is ready for the Ibadan pilot when:
+MVP is ready for the national launch when:
 
 1. All Requirement 1–8 acceptance criteria and the applicable non-functional requirements are testable and pass.
 2. A visitor can find and open a public listing without registration, apply via the stated external route, and report a concern.
@@ -782,6 +782,6 @@ MVP is ready for the Ibadan pilot when:
 
 ## 15. Traceability to the source brief
 
-This PRD carries forward the supplied brief's Ibadan launch, open-to-everyone audience, students/jobseekers/graduates/entrepreneurs focus, PWA-first recommendation, 30-day pilot, public browsing, search/filters, details, registration, bookmarks, application tracking, sharing, expiry, verification labels, reports, moderation and in-app-only notifications (no push). It also carries forward the proposed relational entities, API surface, private tracker constraint, role enforcement, low-data/offline caution and the stated exclusions of payments, social network, direct messaging, video feeds, complex recommendation and wallet.
+This PRD carries forward the supplied brief's national launch, open-to-everyone audience, students/jobseekers/graduates/entrepreneurs focus, PWA-first recommendation, 30-day pilot, public browsing, search/filters, details, registration, bookmarks, application tracking, sharing, expiry, verification labels, reports, moderation and in-app-only notifications (no push). It also carries forward the proposed relational entities, API surface, private tracker constraint, role enforcement, low-data/offline caution and the stated exclusions of payments, social network, direct messaging, video feeds, complex recommendation and wallet.
 
 Items where this PRD is more explicit—including non-public default for submitted listings, permission separation, EARS acceptance criteria, evidence auditability, accessibility, privacy/security, open decisions and proposed metrics—are requirements/assumptions for review, not claims that they were already implemented or validated.

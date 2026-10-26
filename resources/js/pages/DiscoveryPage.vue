@@ -85,50 +85,81 @@ function changeSort(event) {
     <section class="explore-page">
         <header class="masthead">
             <div class="masthead-inner">
-                <p class="pilot-eyebrow">
-                    <span>Ibadan pilot</span>
-                    <span class="pilot-sep" aria-hidden="true"></span>
-                    <span class="pilot-sub">Oyo State</span>
-                </p>
-                <h1>Find what’s next,<br><span class="masthead-highlight">closer to home.</span></h1>
-                <p class="masthead-copy">
-                    Jobs, scholarships, grants, training and gigs for people building a living in Ibadan.
-                    Every public listing has had its source and details checked before it appears.
-                </p>
+                <div class="masthead-lead">
+                    <p class="pilot-eyebrow">
+                        <span>Nigeria-wide</span>
+                        <span class="pilot-sep" aria-hidden="true"></span>
+                        <span class="pilot-sub">36 states + FCT</span>
+                    </p>
+                    <h1>
+                        Find what’s next,<br>
+                        <span class="masthead-highlight">closer to home.</span>
+                    </h1>
+                    <p class="masthead-copy">
+                        Jobs, scholarships, grants, training and gigs for people building a living anywhere in Nigeria.
+                        Every public listing records when its source and details were checked.
+                    </p>
 
-                <form class="explore-search" role="search" @submit.prevent="emit('search')">
-                    <UiIcon class="explore-search-icon" name="search" :size="20" />
-                    <label class="visually-hidden" for="opportunity-search">Search opportunities</label>
-                    <input
-                        id="opportunity-search"
-                        :value="query"
-                        type="search"
-                        maxlength="100"
-                        placeholder="Search a role, organisation or skill"
-                        autocomplete="off"
-                        @input="emit('update:query', $event.target.value)"
-                    >
-                    <button class="button button-primary" type="submit">
-                        Search <UiIcon name="arrow" :size="17" />
-                    </button>
-                </form>
-
-                <div class="filter-row">
-                    <LocationPicker :selected-slug="selectedLocation" @select="emit('location', $event)" />
-                    <span class="filter-row-label">Browse</span>
-                    <nav class="category-chips" aria-label="Browse by category">
-                        <a
-                            v-for="chip in categoryChips"
-                            :key="chip.slug"
-                            class="category-chip"
-                            :href="categoryHref(chip.slug)"
-                            data-internal-link
+                    <form class="explore-search" role="search" @submit.prevent="emit('search')">
+                        <UiIcon class="explore-search-icon" name="search" :size="20" />
+                        <label class="visually-hidden" for="opportunity-search">Search opportunities</label>
+                        <input
+                            id="opportunity-search"
+                            :value="query"
+                            type="search"
+                            maxlength="100"
+                            placeholder="Role, organisation or state"
+                            autocomplete="off"
+                            @input="emit('update:query', $event.target.value)"
                         >
-                            <UiIcon :name="chip.icon" :size="15" />
-                            {{ chip.name }}
-                        </a>
-                    </nav>
+                        <button class="button button-primary" type="submit">
+                            Search <UiIcon name="arrow" :size="17" />
+                        </button>
+                    </form>
+
+                    <div class="filter-row">
+                        <LocationPicker :selected-slug="selectedLocation" @select="emit('location', $event)" />
+                        <span class="filter-row-label">Browse</span>
+                        <nav class="category-chips" aria-label="Browse by category">
+                            <a
+                                v-for="chip in categoryChips"
+                                :key="chip.slug"
+                                class="category-chip"
+                                :href="categoryHref(chip.slug)"
+                                data-internal-link
+                            >
+                                <UiIcon :name="chip.icon" :size="15" />
+                                {{ chip.name }}
+                            </a>
+                        </nav>
+                    </div>
                 </div>
+
+                <aside class="masthead-cards" aria-label="What OyaFind does">
+                    <article class="masthead-card">
+                        <span class="masthead-card-icon"><UiIcon name="shield-check" :size="18" /></span>
+                        <p class="masthead-card-kicker">Checked before listing</p>
+                        <h2>Source and details checked, with the date shown.</h2>
+                        <p>Every public listing records when OyaFind last checked its source. A check is not an endorsement or a guarantee.</p>
+                        <a class="masthead-card-link" href="/how-it-works" data-internal-link>
+                            See what a check covers <span aria-hidden="true">→</span>
+                        </a>
+                    </article>
+
+                    <article class="masthead-card is-ink">
+                        <div class="masthead-card-top">
+                            <span class="masthead-card-icon"><UiIcon name="pin" :size="18" /></span>
+                            <span class="masthead-card-stat"><strong>36</strong><span>states + FCT</span></span>
+                        </div>
+                        <p class="masthead-card-kicker">One national ledger</p>
+                        <h2>Browse your state, your LGA, or the whole country.</h2>
+                        <p>Choose a reviewed area without sharing GPS or an exact address. All-area browsing stays available.</p>
+                        <a class="masthead-card-link" href="/categories" data-internal-link>
+                            Browse by category <span aria-hidden="true">→</span>
+                        </a>
+                    </article>
+                </aside>
+
                 <p v-if="categoriesError" class="masthead-note" role="status">{{ categoriesError }}</p>
             </div>
         </header>
@@ -196,7 +227,7 @@ function changeSort(event) {
                     <span class="empty-panel-icon" aria-hidden="true"><UiIcon name="search" :size="22" /></span>
                     <h2>{{ hasFilters ? 'Nothing matches this view yet' : 'No live listings right now' }}</h2>
                     <p v-if="hasFilters">
-                        Try a broader area, a different category, or clear the search. The pilot feed is still small while listings are checked.
+                        Try a broader area, a different category, or clear the search. The feed is still small while listings are checked.
                     </p>
                     <p v-else>
                         Listings appear here only after OyaFind has reviewed the source and details.

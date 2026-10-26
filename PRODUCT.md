@@ -2,14 +2,14 @@
 
 **Tagline:** Real opportunities. Closer to you.
 **Platform:** Web, mobile-first, installable PWA.
-**Pilot:** Ibadan, Oyo State, Nigeria — 30-day evidence-gathering launch.
+**Market:** Nigeria — all 36 states and the Federal Capital Territory.
 **Status:** Approved PRD baseline. This file records durable product truth only. It does not define a visual world; that lives in `DESIGN.md`.
 
 ## What it is
 
 OyaFind is a local opportunity board. It helps people find jobs, gigs, internships, scholarships, training, grants, business support and tenders that are relevant to where they live, and to judge whether a listing is worth their time before they pursue it.
 
-The pilot is deliberately narrow: Ibadan and the reviewed areas around it. OyaFind does not claim to cover every opportunity in Nigeria, and it must not describe itself as doing so.
+OyaFind covers Nigeria's 36 states and the Federal Capital Territory through a catalogue of reviewed states and local government areas. It does not claim to list every opportunity in the country, and it must not describe itself as doing so.
 
 ## Who it is for
 
@@ -38,7 +38,7 @@ Someone hears about an opportunity through a WhatsApp group or a friend, and can
 1. **Trust is specific, not decorative.** Publication status and verification status are different things, and the interface must never merge them into a vague "verified" glow.
 2. **No invented certainty.** OyaFind does not guarantee safety, selection, payment or outcomes, and must not claim checks it has not performed.
 3. **Browse first.** Public discovery works without an account. Accounts exist for saving and private tracking.
-4. **Local before national.** The pilot's language, locations and examples are Ibadan and Oyo State.
+4. **Local relevance, national reach.** Listings are organised by reviewed state and LGA areas across all 36 states and the FCT. Local relevance is the unit of discovery, not a single-city limit.
 5. **Low data, low friction.** Text-first, bounded lists, no autoplay media, no GPS, no maps, no third-party locator calls.
 6. **Mobile is the product.** The primary experience is a phone on an intermittent connection, not a desktop marketing page.
 7. **The feed is the front door.** The first screen is for finding something, not for reading a pitch.
@@ -66,7 +66,7 @@ Someone hears about an opportunity through a WhatsApp group or a friend, and can
 
 **In:** public paginated feed; search; category and coarse-area filters; listing detail and sharing; accounts; save/unsave; private tracker; staff-reviewed listing publication; verified source/detail records; expiry; PWA shell and conservative offline states.
 
-**Out:** payments, wallets, sponsored placements, messaging, comments, social features, AI matching, native apps, GPS, exact addresses, geocoding, interactive maps, multi-city launch.
+**Out:** payments, wallets, sponsored placements, messaging, comments, social features, AI matching, native apps, GPS, exact addresses, geocoding, interactive maps.
 
 ## Constraints
 
@@ -75,14 +75,14 @@ Someone hears about an opportunity through a WhatsApp group or a friend, and can
 - Analytics must not collect unnecessary personal information.
 - Public API responses exclude internal notes, submitter contacts and private evidence.
 - Accessibility target: WCAG 2.2 AA for the core routes.
-- Performance target (proposed, not validated): p75 LCP ≤ 2.5s and an agreed initial transfer budget on a representative Android device and pilot network.
+- Performance target (proposed, not validated): p75 LCP ≤ 2.5s and an agreed initial transfer budget on a representative Android device and mobile network.
 
 ## Open decisions
 
-Verification checklist and evidence standard; recheck operations beyond the 30-day rule; report reasons, triage and response commitments; account deletion and retention; privacy/legal policy; whether organisations need a separate entity; numeric pilot success thresholds; exact Ibadan area taxonomy and its approver; currency display convention; hosting and operational ownership.
+Verification checklist and evidence standard; recheck operations beyond the 30-day rule; report reasons, triage and response commitments; account deletion and retention; privacy/legal policy; whether organisations need a separate entity; numeric launch success thresholds; ongoing ownership of the national location taxonomy and its approver; currency display convention; hosting and operational ownership.
 
 ## Assumptions
 
 - The PWA form is retained from the brief and has not been validated with users.
 - Demand, conversion and willingness to pay are hypotheses, not research findings.
-- The 30-day pilot horizon is a planning assumption, not a launch date.
+- The 30-day measurement window is a planning assumption, not a launch date.

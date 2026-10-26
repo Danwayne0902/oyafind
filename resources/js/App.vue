@@ -21,6 +21,7 @@ import {
     unsaveOpportunity,
 } from './api/workspace.js';
 import { canonicalPageUrl, parsePublicRoute, safeExternalUrl, sharePageUrl, withLocationFilter } from './publicRoutes.js';
+import { useClickSound } from './useClickSound.js';
 
 const route = ref(parsePublicRoute(window.location));
 const menuOpen = ref(false);
@@ -33,6 +34,8 @@ const pagination = ref(null);
 const selectedOpportunity = ref(null);
 const loading = ref(false);
 const loadingDetail = ref(false);
+const isNavigating = ref(false);
+const { soundEnabled, toggleSound } = useClickSound();
 const error = ref('');
 const detailError = ref('');
 const categoriesError = ref('');
@@ -47,6 +50,9 @@ const notice = ref(null);
 let requestNumber = 0;
 let detailRequestNumber = 0;
 let noticeTimer = null;
+let navigationTimer = null;
+
+const pageBusy = computed(() => isNavigating.value || loading.value || loadingDetail.value);
 
 const userInitials = computed(() => (currentUser.value?.name ?? '')
     .trim()
@@ -158,7 +164,20 @@ function humanize(value = '') {
     return value.replaceAll('-', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function beginNavigation() {
+    window.clearTimeout(navigationTimer);
+    isNavigating.value = true;
+}
+
+function finishNavigation(delay = 180) {
+    window.clearTimeout(navigationTimer);
+    navigationTimer = window.setTimeout(() => {
+        isNavigating.value = false;
+    }, delay);
+}
+
 function navigate(path, { replace = false } = {}) {
+    beginNavigation();
     const method = replace ? 'replaceState' : 'pushState';
     window.history[method]({}, '', path);
     route.value = parsePublicRoute(window.location);
@@ -178,6 +197,7 @@ function navigate(path, { replace = false } = {}) {
 }
 
 function handlePopState() {
+    beginNavigation();
     route.value = parsePublicRoute(window.location);
     returnPath.value = `${window.location.pathname}${window.location.search}`;
     searchInput.value = route.value.query.q ?? '';
@@ -368,6 +388,7 @@ async function shareCurrentPage() {
 }
 
 watch(route, async (currentRoute) => {
+    beginNavigation();
     if (['register', 'login', 'profile', 'categories', 'how-it-works', 'verify-email', 'saved', 'tracker'].includes(currentRoute.name)) {
         requestNumber += 1;
         detailRequestNumber += 1;
@@ -375,12 +396,14 @@ watch(route, async (currentRoute) => {
         loadingDetail.value = false;
         selectedOpportunity.value = null;
         if (currentRoute.name === 'categories') void loadCategories();
+        finishNavigation(420);
         return;
     }
     if (currentRoute.name === 'opportunity') {
         requestNumber += 1;
         loading.value = false;
         await loadDetail(currentRoute.slug);
+        finishNavigation(220);
         return;
     }
     if (currentRoute.name === 'not-found') {
@@ -388,11 +411,13 @@ watch(route, async (currentRoute) => {
         selectedOpportunity.value = null;
         loading.value = false;
         error.value = '';
+        finishNavigation(420);
         return;
     }
     selectedOpportunity.value = null;
     void loadCategories();
     await loadFeed();
+    finishNavigation(180);
 }, { immediate: true });
 
 onMounted(() => {
@@ -405,12 +430,26 @@ onUnmounted(() => {
     window.removeEventListener('popstate', handlePopState);
     document.removeEventListener('click', handleInternalNavigation);
     window.clearTimeout(noticeTimer);
+    window.clearTimeout(navigationTimer);
 });
 </script>
 
 <template>
     <div class="site-shell" :class="{ 'has-bottom-nav': showBottomNav }">
         <a class="skip-link" href="#main-content">Skip to content</a>
+
+        <div class="page-loader" :class="{ 'is-active': pageBusy }" role="status" aria-live="polite">
+            <span class="page-loader-track" aria-hidden="true"><span class="page-loader-sweep"></span></span>
+            <span class="visually-hidden">Loading page…</span>
+        </div>
+
+        <Transition name="route-loader">
+            <div v-if="isNavigating" class="route-loader" role="status">
+                <UiIcon class="loading-spinner" name="loader" :size="15" />
+                <span>Loading page</span>
+            </div>
+        </Transition>
+
         <header class="site-header">
             <div class="header-inner">
                 <a class="brand" href="/" data-internal-link aria-label="OyaFind home">
@@ -419,8 +458,8 @@ onUnmounted(() => {
                 </a>
                 <a class="pilot-tag" href="/how-it-works" data-internal-link>
                     <span class="pilot-tag-dot" aria-hidden="true"></span>
-                    <span class="pilot-tag-long">Ibadan pilot</span>
-                    <span class="pilot-tag-short" aria-hidden="true">Ibadan</span>
+                    <span class="pilot-tag-long">Nigeria</span>
+                    <span class="pilot-tag-short" aria-hidden="true">Nigeria</span>
                 </a>
 
                 <button
@@ -459,7 +498,7 @@ onUnmounted(() => {
             </div>
         </header>
 
-        <main id="main-content" class="page-content">
+        <main id="main-content" class="page-content" :aria-busy="pageBusy">
             <template v-if="isNotFoundPage">
                 <section class="empty-panel">
                     <span class="empty-panel-icon" aria-hidden="true"><UiIcon name="compass" :size="22" /></span>
@@ -581,13 +620,17 @@ onUnmounted(() => {
             <div class="footer-brand-block">
                 <p class="footer-brand">Oya<span>Find</span></p>
                 <p>Real opportunities. Closer to you.</p>
-                <p class="footer-pilot">Ibadan pilot · Oyo State, Nigeria</p>
+                <p class="footer-pilot">Across Nigeria · 36 states + FCT</p>
             </div>
             <div class="footer-copy">
                 <p>OyaFind shares public listings. It does not submit applications, decide outcomes, or guarantee provider safety, selection or payment.</p>
                 <p class="footer-links">
                     <a href="/how-it-works" data-internal-link>How it works</a>
                     <a href="/categories" data-internal-link>Categories</a>
+                    <button class="sound-toggle" type="button" :aria-pressed="soundEnabled" @click="toggleSound">
+                        <UiIcon :name="soundEnabled ? 'volume' : 'volume-off'" :size="15" />
+                        {{ soundEnabled ? 'Sound on' : 'Sound off' }}
+                    </button>
                 </p>
             </div>
         </footer>

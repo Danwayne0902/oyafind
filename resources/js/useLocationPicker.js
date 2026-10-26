@@ -11,7 +11,10 @@ export function useLocationPicker(emit) {
     let requestNumber = 0;
 
     function displayName(location) {
-        return location.parent?.name ? `${location.name} — ${location.parent.name}` : location.name;
+        if (!location.parent?.name || location.parent.location_type === 'country') {
+            return location.name;
+        }
+        return `${location.name} — ${location.parent.name}`;
     }
 
     async function loadChoices(search = '') {

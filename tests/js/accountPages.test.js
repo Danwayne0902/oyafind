@@ -46,7 +46,7 @@ test('sign-in screen explains OyaFind and accepts an email or phone identifier a
     const html = await renderToString(createSSRApp(LoginPage));
 
     assert.match(html, /Email or phone number/);
-    assert.match(html, /starting with the Ibadan pilot/);
+    assert.match(html, /across all 36 states and the FCT/);
     assert.match(html, /Explore by category and reviewed area/);
     assert.match(html, /See when a source and its details were checked/);
     assert.match(html, /name="identifier"/);

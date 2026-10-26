@@ -20,7 +20,8 @@ defineEmits(['toggle']);
         :disabled="pending"
         @click="$emit('toggle')"
     >
-        <UiIcon :name="saved ? 'bookmark-check' : 'bookmark'" :size="16" />
+        <UiIcon v-if="pending" class="loading-spinner" name="loader" :size="16" />
+        <UiIcon v-else :name="saved ? 'bookmark-check' : 'bookmark'" :size="16" />
         <span>{{ pending ? (saved ? 'Removing…' : 'Saving…') : (saved ? 'Saved' : 'Save') }}</span>
     </button>
 </template>

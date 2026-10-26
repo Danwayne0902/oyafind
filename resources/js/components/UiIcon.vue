@@ -85,6 +85,14 @@ defineProps({
         <template v-else-if="name === 'loader'">
             <path d="M12 3a9 9 0 1 0 9 9" />
         </template>
+        <template v-else-if="name === 'volume'">
+            <path d="M11 5 6.5 9H3v6h3.5L11 19V5Z" />
+            <path d="M15 9.2a4 4 0 0 1 0 5.6M17.8 6.5a8 8 0 0 1 0 11" />
+        </template>
+        <template v-else-if="name === 'volume-off'">
+            <path d="M11 5 6.5 9H3v6h3.5L11 19V5Z" />
+            <path d="m16 10 4 4m0-4-4 4" />
+        </template>
         <template v-else-if="name === 'bookmark'">
             <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16Z" />
         </template>

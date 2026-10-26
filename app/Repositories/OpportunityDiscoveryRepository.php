@@ -96,8 +96,18 @@ class OpportunityDiscoveryRepository
                 return $query->whereRaw('1 = 0');
             }
 
-            $query->whereHas('location', fn (Builder $location) => $this->selectableLocation($location)
-                ->where('slug', $filters['location']));
+            $locationSlug = $filters['location'];
+            $query->whereHas('location', function (Builder $location) use ($locationSlug): void {
+                $this->selectableLocation($location);
+
+                // Selecting a state should include opportunities recorded in its
+                // LGAs, and selecting the country should include every state.
+                $location->where(function (Builder $match) use ($locationSlug): void {
+                    $match
+                        ->where('slug', $locationSlug)
+                        ->orWhereHas('parent', fn (Builder $parent) => $parent->where('slug', $locationSlug));
+                });
+            });
         }
 
         if (filled($filters['work_mode'] ?? null)) {

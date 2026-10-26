@@ -17,7 +17,7 @@ const allCategories = [
         tag: 'Employment',
         icon: 'briefcase',
         tone: 'mint',
-        description: 'Full-time, part-time and contract roles relevant to Ibadan and Oyo State.',
+        description: 'Full-time, part-time and contract roles across Nigeria.',
         targetAudience: 'Jobseekers, fresh graduates, skilled workers, and experienced professionals.',
         examples: ['Graduate Trainees', 'Operations Associates', 'Administrative Officers', 'Field Leads', 'Technical Specialists'],
     },

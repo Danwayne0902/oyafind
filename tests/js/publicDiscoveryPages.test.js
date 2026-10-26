@@ -42,11 +42,13 @@ test('discovery component renders deterministic fixture data and a clear empty-f
     assert.match(populated, /Synthetic training opportunity/);
     assert.match(populated, /Synthetic provider/);
     assert.match(populated, /Location not specified/);
-    assert.match(populated, /Ibadan pilot/);
-    assert.match(populated, /Oyo State/);
+    assert.match(populated, /Nigeria-wide/);
+    assert.match(populated, /36 states \+ FCT/);
     assert.match(populated, /Find what’s next/);
     assert.match(populated, /closer to home/);
-    assert.match(populated, /Search a role, organisation or skill/);
+    assert.match(populated, /Role, organisation or state/);
+    assert.match(populated, /Checked before listing/);
+    assert.match(populated, /One national ledger/);
     assert.match(populated, /What a check means/);
     assert.match(populated, /Source checked 12 Oct/);
     assert.match(populated, /A check is not an endorsement/);
