@@ -47,6 +47,10 @@ services:
         environment:
             DB_HOST: mysql
             DB_PORT: "3306"
+            # The container applies pending migrations on boot unless the
+            # caller disables it. provision-oracle.sh disables it for the
+            # first start so exactly one process owns the initial migrate.
+            RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
         depends_on:
             mysql:
                 condition: service_healthy

@@ -142,7 +142,11 @@ fi
 ###############################################################################
 log "building images and starting the stack"
 cd "$APP_DIR/deploy"
-docker compose up -d --build
+# The app container migrates on boot. Hand that job to this script for the
+# first start instead, so two `php artisan migrate` runs never race to create
+# the same table (which fails with "table already exists" and aborts the rest
+# of the setup).
+RUN_MIGRATIONS=false docker compose up -d --build
 
 log "waiting for the application container"
 for _ in $(seq 1 60); do
@@ -196,7 +200,11 @@ Four things still need you:
   4. Staff accounts
      Create a second staff user and put both ids in the publication policy
      before any listing can publish. See deploy/README.md.
-$( [ -n "$ADMIN_PASSWORD" ] && printf '\n  Seeded admin password: %s\n  Change it after the first sign-in.\n' "$ADMIN_PASSWORD" )
+$( if [ -n "$ADMIN_PASSWORD" ]; then
+       printf '\n  Seeded admin password: %s\n  Change it after the first sign-in.\n' "$ADMIN_PASSWORD"
+   else
+       printf '\n  Admin password: keep using the one already in %s\n  (OYAFIND_SEED_ADMIN_PASSWORD). Re-running this script never rotates it.\n' "$ENV_FILE"
+   fi )
 
 Check status with:
   cd $APP_DIR/deploy && docker compose ps
