@@ -9,6 +9,8 @@
 {$APP_DOMAIN} {
 	root * /var/www/html/public
 
+	# Canonical host below redirects www here, so links never fork.
+
 	encode zstd gzip
 
 	# Vite emits content-hashed filenames under /build, so these are safe to
@@ -27,6 +29,17 @@
 		Referrer-Policy strict-origin-when-cross-origin
 		Strict-Transport-Security "max-age=15552000"
 	}
+
+	log {
+		output stdout
+		format console
+	}
+}
+
+# The www host exists only so www.oyafind.com.ng works when someone types it.
+# It keeps its own certificate and permanently redirects to the apex host.
+www.{$APP_DOMAIN} {
+	redir https://{$APP_DOMAIN}{uri} permanent
 
 	log {
 		output stdout
