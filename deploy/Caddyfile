@@ -22,6 +22,10 @@
 	# is what Laravel's router expects.
 	php_fastcgi app:9000
 
+	# php_fastcgi only hands PHP requests to FPM; without this the built
+	# assets under /build would be sent to PHP and 404.
+	file_server
+
 	header {
 		-Server
 		X-Content-Type-Options nosniff
