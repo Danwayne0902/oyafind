@@ -36,6 +36,14 @@ return [
         'location_catalogue' => env('OYAFIND_LOCATION_CATALOGUE'),
         'notifications' => env('OYAFIND_NOTIFICATIONS'),
     ],
+    /*
+    | Owner-approved registration mode. `direct` creates an active account with
+    | an unverified contact; `email_verification` requires a working mailer.
+    | Unset falls back to the legacy local bypass, otherwise email verification.
+    */
+    'registration' => [
+        'mode' => env('OYAFIND_REGISTRATION_MODE'),
+    ],
     'email_verification' => [
         'link_expiration_minutes' => 60,
     ],

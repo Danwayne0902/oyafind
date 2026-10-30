@@ -94,61 +94,52 @@ cd /opt/oyafind/deploy && docker compose ps
 
 ---
 
-## Opening the publication pipeline
+## Accounts and registration
 
-Nothing publishes until two different people act. The policy lives in
-`deploy/.env` and fails closed: if a reviewer or verifier id is missing, the
-public feed stays empty rather than guessing.
+`OYAFIND_ACCOUNT_REGISTRATION=true` opens sign-up. `OYAFIND_REGISTRATION_MODE`
+controls what happens after the form is submitted:
 
-1. **Sign in as the seeded administrator** (`admin@oyafind.ng`, password from
-   the provisioning output) and change the password.
+| Mode | Behaviour |
+|---|---|
+| `direct` | The account is active immediately. Email or phone plus a password. The contact stays unverified, so actions that require verification (saving) stay locked. No mail is sent. |
+| `email_verification` | Only email addresses can register. The account stays `pending` until the signed link is opened. Requires a working mailer (see **Mail**). |
 
-2. **Create a second staff account.** Reviewer and verifier must be different
-   users:
+Switching to `email_verification` later does not retroactively verify existing
+contacts.
 
-   ```bash
-   cd /opt/oyafind/deploy
-   docker compose exec -T app php artisan tinker
-   ```
+`db:seed` creates the administrator and, when `OYAFIND_SEED_VERIFIER_PASSWORD`
+is set, a second account (`verifier@oyafind.ng`). Publishing needs two different
+allowlisted accounts, so that second account must exist before anything can go
+live.
 
-   ```php
-   \App\Models\User::create([
-       'name' => 'OyaFind Verifier',
-       'email' => 'verifier@oyafind.ng',
-       'password' => bcrypt('a-long-password'),
-       'role' => 'staff',
-       'status' => 'active',
-       'email_verified_at' => now(),
-   ]);
-   ```
+---
 
-3. **Note both ids** (`\App\Models\User::pluck('email', 'id')`) and set them:
+## Admin panel
 
-   ```ini
-   OYAFIND_PUBLIC_STAFF_REVIEWER_IDS=1
-   OYAFIND_PUBLIC_VERIFIER_IDS=2
-   ```
+Sign in at `/login` with an administrator account, then open `/admin`. The panel
+is server-rendered (Blade) and shares the same session as the public site.
 
-4. **Recreate the containers** so the cached config picks up the change.
-   Editing `.env` alone does not restart anything, and cached config would
-   otherwise keep the old ids:
+- **Listings** lists drafts, approved listings and live listings.
+- **New listing** saves a draft with a title, summary, description, category,
+  location, source link and either a deadline or a duration in days.
+- **Approve for publishing** records the staff approval (with the source
+  checked or a rationale) and queues the listing for verification.
+- **Publish listing** is only offered to the allowlisted verifier account. It
+  writes the required check records and makes the listing public.
+- **Withdraw** hides a live listing without deleting it. **Delete** soft-deletes
+  it.
 
-   ```bash
-   docker compose up -d --force-recreate
-   ```
+The panel follows the same evidence rules as ingestion: a staff approval and a
+separate verifier are always recorded, and the public feed only shows listings
+that satisfy the policy in `deploy/.env`.
 
-5. **Ingest, review, verify:**
+Ingested candidates are still handled from the CLI:
 
-   ```bash
-   docker compose exec -T app php artisan opportunities:ingest
-   docker compose exec -T app php artisan opportunities:pending --status=pending
-   docker compose exec -it app php artisan opportunities:review
-   docker compose exec -it app php artisan opportunities:pending --status=reviewed
-   docker compose exec -it app php artisan opportunities:verify
-   ```
-
-   Ingestion also runs every 30 minutes from the scheduler container. It only
-   refills the review queue — it can never publish.
+```bash
+docker compose exec -T app php artisan opportunities:ingest
+docker compose exec -T app php artisan opportunities:review --reviewer=1
+docker compose exec -T app php artisan opportunities:verify --verifier=2
+```
 
 ---
 

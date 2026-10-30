@@ -22,16 +22,17 @@ class AuthController extends Controller
     public function registrationStatus(AccountRegistrationService $registration): JsonResponse
     {
         $available = $registration->isAvailable();
+        $mode = $available ? $registration->registrationMode() : null;
 
         return response()->json([
             'data' => [
                 'available' => $available,
                 'message' => $available
-                    ? ($registration->registrationMode() === 'local_unverified'
-                        ? 'Local testing is enabled without email verification. Your contact remains unverified, so saving opportunities is unavailable.'
+                    ? ($mode === AccountRegistrationService::MODE_DIRECT
+                        ? 'You can sign up with an email address or phone number. Your contact stays unverified for now, so saving opportunities is not yet available.'
                         : null)
                     : $registration->unavailableMessage(),
-                'mode' => $available ? $registration->registrationMode() : null,
+                'mode' => $mode,
             ],
         ]);
     }
@@ -46,8 +47,8 @@ class AuthController extends Controller
             ], 503);
         }
 
-        if ($registration->registrationMode() === 'local_unverified') {
-            $user = $registration->registerLocally(
+        if ($registration->registrationMode() === AccountRegistrationService::MODE_DIRECT) {
+            $user = $registration->registerDirectly(
                 $request->validated('name'),
                 $request->validated('contact'),
                 $request->validated('password'),
@@ -57,9 +58,9 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             return response()->json([
-                'message' => 'Your local OyaFind account is ready. Your contact has not been verified, so saving opportunities remains unavailable.',
+                'message' => 'Your OyaFind account is ready. Your contact is not verified yet, so saving opportunities stays unavailable until verification is enabled.',
                 'data' => app(AccountAuthenticationService::class)->profile($user),
-                'registration_mode' => 'local_unverified',
+                'registration_mode' => AccountRegistrationService::MODE_DIRECT,
             ], 201);
         }
 
@@ -77,12 +78,12 @@ class AuthController extends Controller
             $request->validated('password'),
         )) {
             return response()->json([
-                'message' => 'Mailtrap did not confirm that the verification message was accepted. Check your sandbox inbox and local SMTP settings, then retry. No account is active.',
+                'message' => 'We could not send the verification message. Please try again in a moment.',
             ], 503);
         }
 
         return response()->json([
-            'message' => 'If this address can be registered, check your Mailtrap Email Sandbox inbox for a verification message. Sandbox messages are not delivered to real email inboxes.',
+            'message' => 'Check your inbox for a verification link, then sign in.',
         ], 202);
     }
 

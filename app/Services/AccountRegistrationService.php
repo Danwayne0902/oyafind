@@ -14,74 +14,64 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 final class AccountRegistrationService
 {
+    public const MODE_DIRECT = 'direct';
+
+    public const MODE_EMAIL_VERIFICATION = 'email_verification';
+
     public function __construct(
         private readonly PolicyConfiguration $policies,
     ) {}
 
     public function isAvailable(): bool
     {
-        if (! $this->localRegistrationAllowed()) {
+        if (! $this->registrationAllowed()) {
             return false;
         }
 
-        if ($this->localVerificationBypassEnabled()) {
+        if ($this->registrationMode() === self::MODE_DIRECT) {
             return true;
         }
 
-        $fromAddress = (string) config('mail.from.address');
-        $smtpHost = trim((string) config('mail.mailers.smtp.host'));
-        $smtpUsername = trim((string) config('mail.mailers.smtp.username'));
-        $smtpPassword = (string) config('mail.mailers.smtp.password');
-        $smtpPort = filter_var(config('mail.mailers.smtp.port'), FILTER_VALIDATE_INT);
-        $applicationUrl = (string) config('app.url');
-        $applicationHost = parse_url($applicationUrl, PHP_URL_HOST);
-        $signingKey = config('app.key');
-        $expirationMinutes = filter_var(
-            config('oyafind.email_verification.link_expiration_minutes'),
-            FILTER_VALIDATE_INT,
-            ['options' => ['min_range' => 1]],
-        );
-        $applicationUrlIsAddressable = filter_var($applicationUrl, FILTER_VALIDATE_URL) !== false
-            && is_string($applicationHost)
-            && ! in_array(strtolower($applicationHost), ['localhost', '127.0.0.1', '::1'], true)
-            && str_ends_with(strtolower($applicationHost), '.test');
-        $signingKeyIsConfigured = is_string($signingKey) && trim($signingKey) !== '';
-
-        return config('mail.default') === 'smtp'
-            && $smtpHost === 'sandbox.smtp.mailtrap.io'
-            && in_array($smtpPort, [25, 465, 587, 2525], true)
-            && $smtpUsername !== ''
-            && $smtpPassword !== ''
-            && filter_var($fromAddress, FILTER_VALIDATE_EMAIL) !== false
-            && $applicationUrlIsAddressable
-            && $signingKeyIsConfigured
-            && is_int($expirationMinutes);
+        return $this->emailDeliveryIsConfigured();
     }
 
+    /**
+     * Registration mode is an explicit, owner-approved decision. When the
+     * verification mailer is not set up (or the operator explicitly chooses
+     * it) accounts are created active with an unverified contact.
+     */
     public function registrationMode(): string
     {
-        return $this->localVerificationBypassEnabled()
-            ? 'local_unverified'
-            : 'email_verification';
+        $configured = config('oyafind.registration.mode');
+
+        if (is_string($configured) && in_array($configured, [self::MODE_DIRECT, self::MODE_EMAIL_VERIFICATION], true)) {
+            return $configured;
+        }
+
+        if ($this->legacyLocalBypassEnabled()) {
+            return self::MODE_DIRECT;
+        }
+
+        return self::MODE_EMAIL_VERIFICATION;
     }
 
     public function unavailableMessage(): string
     {
-        if (! $this->localRegistrationAllowed()) {
-            return 'Registration is disabled. It can only be enabled in local development with the account registration feature flag.';
+        if (! $this->registrationAllowed()) {
+            return 'Registration is currently closed. Please check back shortly.';
         }
 
-        if (! $this->localVerificationBypassEnabled()) {
-            return 'Mailtrap Email Sandbox is not fully configured. Set MAIL_MAILER=smtp, MAIL_HOST=sandbox.smtp.mailtrap.io, MAIL_PORT, MAIL_USERNAME and MAIL_PASSWORD in your local .env, and ensure APP_KEY and APP_URL=http://oyafind.test are set. No email has been sent.';
-        }
-
-        return 'Local registration without verification is enabled.';
+        return 'Registration is temporarily unavailable because the verification email service is not configured. Please try again later.';
     }
 
-    public function registerLocally(string $name, string $contact, string $password): User
+    /**
+     * Create an account that can sign in immediately. The contact stays
+     * unverified, so actions that require a verified contact remain locked.
+     */
+    public function registerDirectly(string $name, string $contact, string $password): User
     {
-        if (! $this->localVerificationBypassEnabled()) {
-            throw new \LogicException('Local registration without verification is not enabled.');
+        if (! $this->registrationAllowed()) {
+            throw new \LogicException('Registration is not enabled.');
         }
 
         $isEmail = filter_var($contact, FILTER_VALIDATE_EMAIL) !== false;
@@ -99,6 +89,9 @@ final class AccountRegistrationService
         return $user->fresh();
     }
 
+    /**
+     * Create or resume an account gated behind email verification.
+     */
     public function register(string $name, string $email, string $password): bool
     {
         $email = Str::lower(trim($email));
@@ -158,15 +151,49 @@ final class AccountRegistrationService
         return true;
     }
 
-    private function localRegistrationAllowed(): bool
+    private function emailDeliveryIsConfigured(): bool
     {
-        return config('app.env') === 'local'
-            && $this->policies->isEnabled('account_registration');
+        $mailer = config('mail.default');
+        $fromAddress = (string) config('mail.from.address');
+        $applicationUrl = (string) config('app.url');
+        $applicationHost = parse_url($applicationUrl, PHP_URL_HOST);
+        $signingKey = config('app.key');
+        $expirationMinutes = filter_var(
+            config('oyafind.email_verification.link_expiration_minutes'),
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]],
+        );
+        $applicationUrlIsAddressable = filter_var($applicationUrl, FILTER_VALIDATE_URL) !== false
+            && is_string($applicationHost)
+            && ! in_array(strtolower($applicationHost), ['localhost', '127.0.0.1', '::1'], true);
+
+        if (! in_array($mailer, ['smtp', 'ses', 'postmark', 'resend'], true)) {
+            return false;
+        }
+
+        $smtpIsConfigured = $mailer !== 'smtp'
+            || (trim((string) config('mail.mailers.smtp.host')) !== ''
+                && in_array(
+                    filter_var(config('mail.mailers.smtp.port'), FILTER_VALIDATE_INT),
+                    [25, 465, 587, 2525],
+                    true,
+                ));
+
+        return $smtpIsConfigured
+            && filter_var($fromAddress, FILTER_VALIDATE_EMAIL) !== false
+            && $applicationUrlIsAddressable
+            && is_string($signingKey) && trim($signingKey) !== ''
+            && is_int($expirationMinutes);
     }
 
-    private function localVerificationBypassEnabled(): bool
+    private function registrationAllowed(): bool
     {
-        return $this->localRegistrationAllowed()
+        return $this->policies->isEnabled('account_registration');
+    }
+
+    private function legacyLocalBypassEnabled(): bool
+    {
+        return config('app.env') === 'local'
             && config('oyafind.policies.local_registration_without_verification') === true;
     }
 }

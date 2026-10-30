@@ -42,13 +42,13 @@ class AccountAuthenticationApiTest extends TestCase
             ->assertStatus(503)
             ->assertJsonPath(
                 'message',
-                'Registration is disabled. It can only be enabled in local development with the account registration feature flag.',
+                'Registration is currently closed. Please check back shortly.',
             );
 
         $this->assertDatabaseCount('users', 0);
     }
 
-    public function test_registration_requires_the_owner_policy_and_explicit_smtp_configuration(): void
+    public function test_registration_email_verification_requires_a_working_mailer(): void
     {
         $this->getJson('/api/v1/auth/registration-status')
             ->assertOk()
@@ -56,13 +56,11 @@ class AccountAuthenticationApiTest extends TestCase
 
         config([
             'oyafind.policies.account_registration' => true,
-            'oyafind.policies.local_registration_without_verification' => false,
-            'mail.default' => 'smtp',
-            'mail.mailers.smtp.host' => 'sandbox.smtp.mailtrap.io',
-            'mail.mailers.smtp.port' => 2525,
-            'mail.from.address' => 'hello@oyafind.test',
-            'app.url' => 'http://oyafind.test',
-            'app.env' => 'local',
+            'oyafind.registration.mode' => 'email_verification',
+            'mail.default' => 'log',
+            'mail.from.address' => 'hello@oyafind.com.ng',
+            'app.url' => 'https://oyafind.com.ng',
+            'app.env' => 'production',
         ]);
 
         $this->getJson('/api/v1/auth/registration-status')
@@ -70,45 +68,40 @@ class AccountAuthenticationApiTest extends TestCase
             ->assertJsonPath('data.available', false)
             ->assertJsonPath(
                 'data.message',
-                'Mailtrap Email Sandbox is not fully configured. Set MAIL_MAILER=smtp, MAIL_HOST=sandbox.smtp.mailtrap.io, MAIL_PORT, MAIL_USERNAME and MAIL_PASSWORD in your local .env, and ensure APP_KEY and APP_URL=http://oyafind.test are set. No email has been sent.',
+                'Registration is temporarily unavailable because the verification email service is not configured. Please try again later.',
             );
 
         config([
-            'mail.mailers.smtp.username' => 'sandbox-user',
-            'mail.mailers.smtp.password' => 'synthetic-secret',
+            'mail.default' => 'smtp',
+            'mail.mailers.smtp.host' => 'smtp.eu.mailgun.org',
+            'mail.mailers.smtp.port' => 587,
         ]);
 
         $this->getJson('/api/v1/auth/registration-status')
             ->assertOk()
-            ->assertJsonPath('data.available', true);
-
-        config(['mail.mailers.smtp.host' => 'live.mailtrap.io']);
-        $this->getJson('/api/v1/auth/registration-status')
-            ->assertOk()
-            ->assertJsonPath('data.available', false);
+            ->assertJsonPath('data.available', true)
+            ->assertJsonPath('data.mode', 'email_verification');
 
         config([
-            'mail.mailers.smtp.host' => 'sandbox.smtp.mailtrap.io',
-            'app.env' => 'production',
+            'oyafind.registration.mode' => 'direct',
+            'mail.default' => 'log',
         ]);
+
         $this->getJson('/api/v1/auth/registration-status')
             ->assertOk()
-            ->assertJsonPath('data.available', false);
+            ->assertJsonPath('data.available', true)
+            ->assertJsonPath('data.mode', 'direct');
     }
 
-    public function test_registration_stays_disabled_when_sandbox_smtp_credentials_are_missing(): void
+    public function test_email_verification_registration_is_unavailable_without_a_real_mailer(): void
     {
         config([
             'app.env' => 'local',
             'app.url' => 'http://oyafind.test',
             'oyafind.policies.account_registration' => true,
-            'oyafind.policies.local_registration_without_verification' => false,
-            'mail.default' => 'smtp',
-            'mail.mailers.smtp.host' => 'sandbox.smtp.mailtrap.io',
-            'mail.mailers.smtp.port' => 2525,
-            'mail.mailers.smtp.username' => '',
-            'mail.mailers.smtp.password' => '',
-            'mail.from.address' => 'hello@oyafind.test',
+            'oyafind.registration.mode' => 'email_verification',
+            'mail.default' => 'log',
+            'mail.from.address' => 'hello@oyafind.com.ng',
         ]);
         Mail::fake();
 
@@ -116,7 +109,7 @@ class AccountAuthenticationApiTest extends TestCase
             ->assertStatus(503)
             ->assertJsonPath(
                 'message',
-                'Mailtrap Email Sandbox is not fully configured. Set MAIL_MAILER=smtp, MAIL_HOST=sandbox.smtp.mailtrap.io, MAIL_PORT, MAIL_USERNAME and MAIL_PASSWORD in your local .env, and ensure APP_KEY and APP_URL=http://oyafind.test are set. No email has been sent.',
+                'Registration is temporarily unavailable because the verification email service is not configured. Please try again later.',
             );
 
         $this->assertDatabaseCount('users', 0);
@@ -132,7 +125,7 @@ class AccountAuthenticationApiTest extends TestCase
             ->assertAccepted()
             ->assertJsonPath(
                 'message',
-                'If this address can be registered, check your Mailtrap Email Sandbox inbox for a verification message. Sandbox messages are not delivered to real email inboxes.',
+                'Check your inbox for a verification link, then sign in.',
             );
 
         $user = User::query()->where('email', 'user@example.test')->firstOrFail();
@@ -300,14 +293,14 @@ class AccountAuthenticationApiTest extends TestCase
         Mail::assertSent(VerifyAccountEmail::class, 1);
     }
 
-    public function test_local_registration_without_verification_creates_email_account_and_signs_user_in(): void
+    public function test_direct_registration_creates_active_email_account_and_signs_user_in(): void
     {
         $this->configureLocalRegistrationBypass();
         Mail::fake();
 
         $this->postJson('/api/v1/auth/register', $this->registrationPayload())
             ->assertCreated()
-            ->assertJsonPath('registration_mode', 'local_unverified')
+            ->assertJsonPath('registration_mode', 'direct')
             ->assertJsonPath('data.email', 'user@example.test')
             ->assertJsonPath('data.contact_verified', false)
             ->assertJsonPath('data.save_eligible', false);
@@ -321,7 +314,7 @@ class AccountAuthenticationApiTest extends TestCase
         Mail::assertNothingOutgoing();
     }
 
-    public function test_local_registration_without_verification_creates_phone_account(): void
+    public function test_direct_registration_creates_active_phone_account(): void
     {
         $this->configureLocalRegistrationBypass();
         Mail::fake();
@@ -346,22 +339,31 @@ class AccountAuthenticationApiTest extends TestCase
         Mail::assertNothingOutgoing();
     }
 
-    public function test_local_registration_without_verification_is_unavailable_outside_local_environment(): void
+    public function test_direct_registration_is_available_in_production_and_creates_an_active_account(): void
     {
         config([
-            'app.env' => 'testing',
+            'app.env' => 'production',
             'oyafind.policies.account_registration' => true,
-            'oyafind.policies.local_registration_without_verification' => true,
+            'oyafind.registration.mode' => 'direct',
         ]);
+        Mail::fake();
 
         $this->getJson('/api/v1/auth/registration-status')
             ->assertOk()
-            ->assertJsonPath('data.available', false);
+            ->assertJsonPath('data.available', true)
+            ->assertJsonPath('data.mode', 'direct');
 
         $this->postJson('/api/v1/auth/register', $this->registrationPayload())
-            ->assertStatus(503);
+            ->assertCreated()
+            ->assertJsonPath('registration_mode', 'direct')
+            ->assertJsonPath('data.email', 'user@example.test');
 
-        $this->assertDatabaseCount('users', 0);
+        $this->assertDatabaseHas('users', [
+            'email' => 'user@example.test',
+            'status' => 'active',
+            'email_verified_at' => null,
+        ]);
+        Mail::assertNothingOutgoing();
     }
 
     public function test_transport_failure_is_reported_and_removes_a_new_pending_account(): void
@@ -383,7 +385,7 @@ class AccountAuthenticationApiTest extends TestCase
             ->assertStatus(503)
             ->assertJsonPath(
                 'message',
-                'Mailtrap did not confirm that the verification message was accepted. Check your sandbox inbox and local SMTP settings, then retry. No account is active.',
+                'We could not send the verification message. Please try again in a moment.',
             );
 
         $this->assertDatabaseCount('users', 0);
@@ -682,8 +684,7 @@ class AccountAuthenticationApiTest extends TestCase
             'app.env' => 'local',
             'app.url' => 'http://oyafind.test',
             'oyafind.policies.account_registration' => true,
-            'oyafind.policies.local_registration_without_verification' => false,
-            'oyafind.policies.local_registration_without_verification' => true,
+            'oyafind.registration.mode' => 'direct',
         ]);
     }
 }

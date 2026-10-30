@@ -41,6 +41,36 @@ class User extends Authenticatable
         return $this->belongsTo(Location::class, 'home_location_id');
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->status === 'active' && $this->role === 'admin';
+    }
+
+    /**
+     * Publishing requires an allowlisted verifier account that is separate
+     * from the staff reviewer. The allowlist lives in configuration so the
+     * public feed cannot be opened by a stray role change.
+     */
+    public function isPublicationVerifier(): bool
+    {
+        if (! $this->isAdmin()) {
+            return false;
+        }
+
+        return in_array($this->id, (array) config('oyafind.discovery.verification.reviewer_ids', []), true)
+            && in_array($this->role, (array) config('oyafind.discovery.verification.reviewer_roles', []), true);
+    }
+
+    public function isStaffReviewer(): bool
+    {
+        if (! $this->isAdmin()) {
+            return false;
+        }
+
+        return in_array($this->id, (array) config('oyafind.discovery.staff_reviewer_ids', []), true)
+            && in_array($this->role, (array) config('oyafind.discovery.staff_reviewer_roles', []), true);
+    }
+
     public function submittedOpportunities(): HasMany
     {
         return $this->hasMany(Opportunity::class, 'submitted_by');

@@ -24,6 +24,13 @@ return Application::configure(basePath: dirname(__DIR__))
                 at: array_map('trim', explode(',', $proxies)),
             );
         }
+
+        $middleware->alias([
+            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+        ]);
+
+        // The sign-in screen is part of the Vue shell, not a named route.
+        $middleware->redirectGuestsTo('/login');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -476,6 +476,7 @@ onUnmounted(() => {
                         <a href="/" data-internal-link :aria-current="['home', 'search', 'category'].includes(route.name) ? 'page' : undefined">Explore</a>
                         <a v-if="currentUser" href="/saved" data-internal-link :aria-current="route.name === 'saved' ? 'page' : undefined">Saved</a>
                         <a v-if="currentUser" href="/tracker" data-internal-link :aria-current="route.name === 'tracker' ? 'page' : undefined">Tracker</a>
+                        <a v-if="currentUser?.is_admin" href="/admin">Admin</a>
                         <a href="/categories" data-internal-link :aria-current="['categories'].includes(route.name) ? 'page' : undefined">Categories</a>
                         <a href="/how-it-works" data-internal-link :aria-current="route.name === 'how-it-works' ? 'page' : undefined">How it works</a>
                     </nav>

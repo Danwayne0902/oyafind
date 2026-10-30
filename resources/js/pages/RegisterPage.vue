@@ -70,7 +70,7 @@ async function submit() {
             password: password.value,
             password_confirmation: passwordConfirmation.value,
         });
-        if (result.registration_mode === 'local_unverified') {
+        if (result.registration_mode === 'direct') {
             emit('authenticated', safeReturnPath());
             return;
         }
@@ -180,7 +180,7 @@ onMounted(checkAvailability);
                             autocomplete="username"
                             required
                             maxlength="190"
-                            placeholder="you@example.com"
+                            placeholder="you@example.com or +234…"
                             :aria-invalid="Boolean(fieldErrors.contact)"
                             :aria-describedby="fieldErrors.contact ? 'register-contact-hint register-contact-error' : 'register-contact-hint'"
                         >
@@ -253,7 +253,7 @@ onMounted(checkAvailability);
                         <p v-if="requestError && !hasFieldErrors" class="account-error" role="alert">{{ requestError }}</p>
                         <button class="button button-primary account-submit" type="submit" :disabled="submitting" :aria-busy="submitting">
                             <UiIcon v-if="submitting" class="loading-spinner" name="loader" :size="18" />
-                            {{ submitting ? (registrationMode === 'local_unverified' ? 'Creating account…' : 'Sending verification email…') : 'Create account' }}
+                            {{ submitting ? (registrationMode === 'direct' ? 'Creating account…' : 'Sending verification email…') : 'Create account' }}
                             <UiIcon v-if="!submitting" name="arrow" :size="18" />
                         </button>
                     </form>
@@ -261,8 +261,8 @@ onMounted(checkAvailability);
                         Already have an account? <a :href="loginHref" data-internal-link>Sign in</a>
                     </p>
                     <p class="account-privacy-note">
-                        <template v-if="registrationMode === 'local_unverified'">
-                            Your local account is active. Your contact remains unverified, so saving opportunities is disabled.
+                        <template v-if="registrationMode === 'direct'">
+                            Your account is created instantly. Your contact stays unverified, so saving opportunities is disabled until verification is enabled.
                         </template>
                         <template v-else>
                             Your account stays inactive until you verify. Unverified details remain pending until verified or manually deleted.

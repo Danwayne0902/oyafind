@@ -99,6 +99,7 @@ fi
 ###############################################################################
 ENV_FILE="$APP_DIR/deploy/.env"
 ADMIN_PASSWORD=""
+VERIFIER_PASSWORD=""
 
 if [ -f "$ENV_FILE" ]; then
     warn "keeping the existing $ENV_FILE"
@@ -109,6 +110,7 @@ else
     DB_PASSWORD_VALUE="$(openssl rand -hex 24)"
     DB_ROOT_PASSWORD_VALUE="$(openssl rand -hex 24)"
     ADMIN_PASSWORD="$(openssl rand -base64 18 | tr -d '/+=' | cut -c1-20)"
+    VERIFIER_PASSWORD="$(openssl rand -base64 18 | tr -d '/+=' | cut -c1-20)"
 
     cp "$APP_DIR/deploy/.env.production.example" "$ENV_FILE"
 
@@ -120,6 +122,7 @@ else
         -e "s|^DB_PASSWORD=.*|DB_PASSWORD=${DB_PASSWORD_VALUE}|" \
         -e "s|^DB_ROOT_PASSWORD=.*|DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD_VALUE}|" \
         -e "s|^OYAFIND_SEED_ADMIN_PASSWORD=.*|OYAFIND_SEED_ADMIN_PASSWORD=${ADMIN_PASSWORD}|" \
+        -e "s|^OYAFIND_SEED_VERIFIER_PASSWORD=.*|OYAFIND_SEED_VERIFIER_PASSWORD=${VERIFIER_PASSWORD}|" \
         -e "s|^MAIL_FROM_ADDRESS=.*|MAIL_FROM_ADDRESS=\"hello@${APP_DOMAIN}\"|" \
         "$ENV_FILE"
 
@@ -198,10 +201,12 @@ Four things still need you:
        cd $APP_DIR/deploy && docker compose up -d --force-recreate
 
   4. Staff accounts
-     Create a second staff user and put both ids in the publication policy
-     before any listing can publish. See deploy/README.md.
+     The admin (id 1) and verifier are seeded from .env. Open /admin after
+     signing in, create a listing, approve it, then sign in as the verifier to
+     publish it. Set OYAFIND_PUBLIC_VERIFIER_IDS to the verifier's id.
 $( if [ -n "$ADMIN_PASSWORD" ]; then
        printf '\n  Seeded admin password: %s\n  Change it after the first sign-in.\n' "$ADMIN_PASSWORD"
+       printf '  Seeded verifier password: %s\n' "$VERIFIER_PASSWORD"
    else
        printf '\n  Admin password: keep using the one already in %s\n  (OYAFIND_SEED_ADMIN_PASSWORD). Re-running this script never rotates it.\n' "$ENV_FILE"
    fi )

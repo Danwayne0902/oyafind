@@ -55,6 +55,7 @@ final class AccountAuthenticationService
             'phone' => $user->phone,
             'home_location_id' => $user->home_location_id,
             'interests' => $user->interests ?? [],
+            'is_admin' => $user->isAdmin(),
             'contact_verified' => $this->contactVerification->isSelectedContactVerified($user),
             'save_eligible' => $this->isSaveEligible($user),
         ];
