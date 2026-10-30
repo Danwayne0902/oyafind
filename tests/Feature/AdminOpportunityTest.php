@@ -54,6 +54,9 @@ class AdminOpportunityTest extends TestCase
 
     public function test_admin_can_create_edit_and_delete_a_draft_listing(): void
     {
+        $this->actingAs($this->admin)->get('/admin')->assertOk()->assertSee('Listings');
+        $this->actingAs($this->admin)->get('/admin/opportunities/create')->assertOk()->assertSee('New listing');
+
         $this->actingAs($this->admin)
             ->post('/admin/opportunities', $this->payload())
             ->assertRedirect();
