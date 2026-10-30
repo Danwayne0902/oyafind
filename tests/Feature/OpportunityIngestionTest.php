@@ -126,6 +126,43 @@ class OpportunityIngestionTest extends TestCase
         $this->assertSame(5, $source->fresh()->last_item_count);
     }
 
+    public function test_rss_ingestion_accepts_html_entities_and_raw_markup(): void
+    {
+        $source = $this->makeSource();
+
+        $feed = <<<'XML'
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Messy but real</title>
+    <item>
+      <title>Graduate Trainee &mdash; Lagos</title>
+      <link>https://jobs.example.test/graduate-trainee-lagos</link>
+      <guid>messy-1</guid>
+      <pubDate>Mon, 26 Oct 2026 08:00:00 +0000</pubDate>
+      <description><p>A <strong>paid</strong> programme in Lagos &mdash; apply through the source.</p></description>
+      <category>Graduate jobs</category>
+    </item>
+  </channel>
+</rss>
+XML;
+
+        Http::fake([
+            'jobs.example.test/feed' => Http::response($feed, 200, [
+                'Content-Type' => 'application/rss+xml',
+            ]),
+        ]);
+
+        $this->artisan('opportunities:ingest', ['--source' => $source->slug, '--limit' => 20])
+            ->assertSuccessful();
+
+        $this->assertDatabaseHas('source_items', [
+            'canonical_url' => 'https://jobs.example.test/graduate-trainee-lagos',
+            'status' => SourceItem::STATUS_PENDING,
+            'title' => 'Graduate Trainee — Lagos',
+        ]);
+    }
+
     public function test_repeat_ingestion_deduplicates_by_canonical_url(): void
     {
         $source = $this->makeSource();

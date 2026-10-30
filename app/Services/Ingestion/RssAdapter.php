@@ -31,7 +31,11 @@ class RssAdapter implements SourceAdapter
         $response->throw();
 
         $previous = libxml_use_internal_errors(true);
-        $xml = simplexml_load_string($response->body(), SimpleXMLElement::class, LIBXML_NOCDATA | LIBXML_NOERROR);
+        $xml = simplexml_load_string(
+            $this->sanitiseEntities($this->protectHtmlFields($response->body())),
+            SimpleXMLElement::class,
+            LIBXML_NOCDATA | LIBXML_NOERROR,
+        );
         libxml_clear_errors();
         libxml_use_internal_errors($previous);
 
@@ -73,6 +77,57 @@ class RssAdapter implements SourceAdapter
         }
 
         return $items;
+    }
+
+    /**
+     * Some feeds put raw HTML inside <description> without a CDATA wrapper,
+     * which is not well-formed XML. Wrapping those two fields in CDATA keeps
+     * the markup as text; the normaliser strips it afterwards.
+     */
+    private function protectHtmlFields(string $body): string
+    {
+        $body = preg_replace_callback(
+            '#<(description|content:encoded)>(.*?)</\1>#s',
+            static function (array $match): string {
+                $inner = $match[2];
+
+                if (str_starts_with(ltrim($inner), '<![CDATA[')) {
+                    return $match[0];
+                }
+
+                return '<'.$match[1].'><![CDATA['
+                    .str_replace(']]>', ']]]]><![CDATA[>', $inner)
+                    .']]></'.$match[1].'>';
+            },
+            $body,
+        );
+
+        return $body ?? '';
+    }
+
+    /**
+     * Real-world WordPress feeds emit HTML named entities (&mdash;, &nbsp;)
+     * and bare ampersands, both of which are invalid XML. Decode the named
+     * entities to UTF-8 and escape any remaining bare ampersands without
+     * touching the five predefined XML entities or numeric references.
+     */
+    private function sanitiseEntities(string $body): string
+    {
+        $body = preg_replace_callback(
+            '/&([a-zA-Z][a-zA-Z0-9]{1,31});/',
+            static function (array $match): string {
+                $decoded = html_entity_decode($match[0], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+                return $decoded === $match[0] ? '&amp;'.$match[1].';' : $decoded;
+            },
+            $body,
+        ) ?? $body;
+
+        return preg_replace(
+            '/&(?!#\d+;|#x[0-9a-fA-F]+;|amp;|lt;|gt;|quot;|apos;)/',
+            '&amp;',
+            $body,
+        ) ?? $body;
     }
 
     private function parseDate(string $value, string $timezone): ?CarbonImmutable
