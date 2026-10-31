@@ -27,6 +27,7 @@ class BulkReviewSourceItemsCommand extends Command
                             {--verifier= : Verifier id or email, must differ from the reviewer}
                             {--limit=400 : Maximum candidates to inspect}
                             {--per-category=25 : Maximum listings to publish per category}
+                            {--max-age-months=12 : Ignore candidates first published before this many months ago}
                             {--dry-run : Check the sources without approving anything}';
 
     protected $description = 'Check staged listings against their source pages, then approve and verify the ones that pass';
@@ -78,6 +79,8 @@ class BulkReviewSourceItemsCommand extends Command
 
         $dryRun = (bool) $this->option('dry-run');
         $perCategory = max(1, (int) $this->option('per-category'));
+        $maxAgeMonths = (int) $this->option('max-age-months');
+        $oldestAllowed = $maxAgeMonths > 0 ? now()->subMonths($maxAgeMonths) : null;
 
         $published = 0;
         $failed = 0;
@@ -100,6 +103,15 @@ class BulkReviewSourceItemsCommand extends Command
             }
 
             if ($item->deadline_at !== null && $item->deadline_at->isPast()) {
+                $skipped++;
+
+                continue;
+            }
+
+            // Category feeds on the scholarship sites still carry posts from
+            // years ago. A stale listing is worse than an empty page, so the
+            // queue drops anything older than the configured window.
+            if ($oldestAllowed !== null && $item->published_at !== null && $item->published_at->lt($oldestAllowed)) {
                 $skipped++;
 
                 continue;
