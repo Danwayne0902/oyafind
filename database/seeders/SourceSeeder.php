@@ -109,6 +109,17 @@ class SourceSeeder extends Seeder
                 'terms_url' => null,
             ],
             [
+                'name' => 'Freelancer.com projects',
+                'slug' => 'freelancer-projects',
+                'homepage_url' => 'https://www.freelancer.com',
+                'feed_url' => 'https://www.freelancer.com/rss.xml',
+                'adapter' => 'rss',
+                'default_category_slug' => 'gigs',
+                'timezone' => 'UTC',
+                'attribution' => 'Freelancer.com',
+                'terms_url' => 'https://www.freelancer.com/about/terms',
+            ],
+            [
                 'name' => 'World Bank procurement',
                 'slug' => 'world-bank-procurement',
                 'homepage_url' => 'https://projects.worldbank.org',
