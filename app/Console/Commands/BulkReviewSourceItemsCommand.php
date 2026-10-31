@@ -65,7 +65,7 @@ class BulkReviewSourceItemsCommand extends Command
 
         $items = SourceItem::query()
             ->pending()
-            ->with('source:id,name,slug')
+            ->with('source:id,name,slug,adapter,default_category_slug')
             ->orderByDesc('published_at')
             ->orderByDesc('id')
             ->limit(max(1, (int) $this->option('limit')))
@@ -103,6 +103,16 @@ class BulkReviewSourceItemsCommand extends Command
             }
 
             if ($item->deadline_at !== null && $item->deadline_at->isPast()) {
+                $skipped++;
+
+                continue;
+            }
+
+            // A job board's "Procurement Manager" ad is a job, not a tender,
+            // and "Business Support Officer" is a role, not a support
+            // programme. Keyword matching alone gets these wrong.
+            if ($item->source?->default_category_slug === 'jobs'
+                && in_array($slug, ['tenders', 'business-support'], true)) {
                 $skipped++;
 
                 continue;
@@ -181,6 +191,13 @@ class BulkReviewSourceItemsCommand extends Command
         }
 
         $body = $response->body();
+
+        // projects.worldbank.org renders notices client-side, so the title is
+        // never in the HTML. The adapter already validated the record against
+        // the procurement API; a 200 here is the strongest check available.
+        if ($item->source?->adapter === 'world_bank') {
+            return null;
+        }
 
         if ($this->mentionsTitle($body, (string) $item->title)) {
             return null;
