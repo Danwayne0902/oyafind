@@ -8,7 +8,15 @@ export function useLocationPicker(emit) {
     const state = ref('idle');
     const error = ref('');
     const loading = ref(false);
+    // States are loaded first. A state's local government areas are requested
+    // only when that state is expanded, so the picker never shows a flat list
+    // of states with unrelated LGAs mixed in.
+    const childrenByState = ref(Object.create(null));
+    const childrenLoading = ref('');
+    const childrenError = ref('');
+    const activeQuery = ref('');
     let requestNumber = 0;
+    let childrenRequestNumber = 0;
 
     function displayName(location) {
         if (!location.parent?.name || location.parent.location_type === 'country') {
@@ -19,13 +27,17 @@ export function useLocationPicker(emit) {
 
     async function loadChoices(search = '') {
         const currentRequest = ++requestNumber;
+        const normalizedSearch = typeof search === 'string' ? search.trim() : '';
         loading.value = true;
         error.value = '';
 
         try {
-            const result = await getLocationChoices(search);
+            // Searching spans the whole catalogue so someone can type an LGA
+            // directly; the empty default lists states only.
+            const result = await getLocationChoices(normalizedSearch, normalizedSearch ? {} : { type: 'state' });
             if (currentRequest !== requestNumber) return;
             choices.value = result.items;
+            activeQuery.value = normalizedSearch;
             state.value = result.state;
         } catch (requestError) {
             if (currentRequest !== requestNumber) return;
@@ -36,8 +48,27 @@ export function useLocationPicker(emit) {
         }
     }
 
+    async function loadChildren(stateSlug) {
+        if (!stateSlug || childrenByState.value[stateSlug]) return;
+        const currentRequest = ++childrenRequestNumber;
+        childrenLoading.value = stateSlug;
+        childrenError.value = '';
+
+        try {
+            const result = await getLocationChoices('', { type: 'lga', parent: stateSlug });
+            if (currentRequest !== childrenRequestNumber) return;
+            childrenByState.value = { ...childrenByState.value, [stateSlug]: result.items };
+        } catch (requestError) {
+            if (currentRequest !== childrenRequestNumber) return;
+            childrenError.value = requestError.message || 'The local areas could not be loaded.';
+        } finally {
+            if (currentRequest === childrenRequestNumber) childrenLoading.value = '';
+        }
+    }
+
     function openPicker() {
         isOpen.value = true;
+        query.value = '';
         void loadChoices();
     }
 
@@ -54,7 +85,7 @@ export function useLocationPicker(emit) {
     }
 
     function refreshWhenOnline() {
-        if (isOpen.value) void loadChoices(query.value);
+        if (isOpen.value) void loadChoices(activeQuery.value);
     }
 
     onMounted(() => {
@@ -63,6 +94,7 @@ export function useLocationPicker(emit) {
 
     onUnmounted(() => {
         requestNumber += 1;
+        childrenRequestNumber += 1;
         if (typeof window !== 'undefined') window.removeEventListener('online', refreshWhenOnline);
     });
 
@@ -73,8 +105,13 @@ export function useLocationPicker(emit) {
         state,
         error,
         loading,
+        activeQuery,
+        childrenByState,
+        childrenLoading,
+        childrenError,
         displayName,
         loadChoices,
+        loadChildren,
         openPicker,
         search,
         selectChoice,

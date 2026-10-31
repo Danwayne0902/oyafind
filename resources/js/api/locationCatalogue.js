@@ -1,5 +1,5 @@
 const API_PATH = '/api/v1/locations';
-const STORAGE_KEY = 'oyafind.public-location-catalogue.v1';
+const STORAGE_KEY = 'oyafind.public-location-catalogue.v2';
 const PAGE_SIZE = 100;
 const MAX_CACHED_QUERIES = 12;
 const MAX_CACHED_LOCATIONS = 100;
@@ -18,6 +18,14 @@ function getStorage() {
 
 function normalizeQuery(value) {
     return typeof value === 'string' ? value.trim().slice(0, 100) : '';
+}
+
+function normalizeFilter(value) {
+    return typeof value === 'string' && /^[A-Za-z0-9-]{1,100}$/.test(value) ? value : '';
+}
+
+function catalogueKey(query, type, parent) {
+    return `${query}|${type}|${parent}`;
 }
 
 function publicLocation(location) {
@@ -90,9 +98,9 @@ function writeCache(storage, cache) {
     }
 }
 
-function cachedItems(cache, query) {
-    const exact = cache?.queries && Object.hasOwn(cache.queries, query)
-        ? cache.queries[query]
+function cachedItems(cache, key, query) {
+    const exact = cache?.queries && Object.hasOwn(cache.queries, key)
+        ? cache.queries[key]
         : null;
     if (exact) return exact.items;
 
@@ -116,14 +124,21 @@ export async function getLocationChoices(query = '', {
     storage = getStorage(),
     fetchImpl = globalThis.fetch,
     now = () => new Date(),
+    type = '',
+    parent = '',
 } = {}) {
     const normalizedQuery = normalizeQuery(query);
+    const normalizedType = normalizeFilter(type);
+    const normalizedParent = normalizeFilter(parent);
+    const key = catalogueKey(normalizedQuery, normalizedType, normalizedParent);
     let cache = readCache(storage);
-    const previous = cache?.queries && Object.hasOwn(cache.queries, normalizedQuery)
-        ? cache.queries[normalizedQuery]
+    const previous = cache?.queries && Object.hasOwn(cache.queries, key)
+        ? cache.queries[key]
         : null;
     const params = new URLSearchParams({ limit: String(PAGE_SIZE) });
     if (normalizedQuery) params.set('q', normalizedQuery);
+    if (normalizedType) params.set('type', normalizedType);
+    if (normalizedParent) params.set('parent', normalizedParent);
 
     const headers = { Accept: 'application/json' };
     if (previous?.etag) headers['If-None-Match'] = previous.etag;
@@ -137,7 +152,7 @@ export async function getLocationChoices(query = '', {
             credentials: 'same-origin',
         });
     } catch {
-        const items = cachedItems(cache, normalizedQuery);
+        const items = cachedItems(cache, key, normalizedQuery);
         const hasCachedCatalogue = cache && Object.keys(cache.queries).length > 0;
         if (hasCachedCatalogue) {
             return {
@@ -168,7 +183,7 @@ export async function getLocationChoices(query = '', {
             etag: response.headers.get('ETag') ?? previous.etag,
             fetchedAt: now().toISOString(),
         };
-        cache.queries[normalizedQuery] = refreshed;
+        cache.queries[key] = refreshed;
         writeCache(storage, cache);
 
         return {
@@ -181,7 +196,7 @@ export async function getLocationChoices(query = '', {
     }
 
     if (!response.ok) {
-        const items = cachedItems(cache, normalizedQuery);
+        const items = cachedItems(cache, key, normalizedQuery);
         if (cache && Object.keys(cache.queries).length > 0) {
             return {
                 items,
@@ -211,7 +226,7 @@ export async function getLocationChoices(query = '', {
     const items = payload.data.map(publicLocation).filter(Boolean).slice(0, MAX_CACHED_LOCATIONS);
     const etag = response.headers.get('ETag');
     const fetchedAt = now().toISOString();
-    cache.queries[normalizedQuery] = { etag, fetchedAt, items };
+    cache.queries[key] = { etag, fetchedAt, items };
     writeCache(storage, cache);
 
     return {

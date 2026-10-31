@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\OpportunityController as AdminOpportunityController;
+use App\Http\Controllers\PublicPageController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -31,9 +33,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/opportunities/{opportunity}/withdraw', [AdminOpportunityController::class, 'withdraw'])->name('opportunities.withdraw');
 });
 
-Route::get('/', function () {
-    return view('app');
-});
+Route::get('/', [PublicPageController::class, 'home'])->name('home');
 
 /*
  * Short category links. The category pages live at /categories/{slug}, so a
@@ -50,15 +50,16 @@ foreach ([
 // Staff sign in through the same screen as everyone else.
 Route::redirect('/admin/login', '/login', 302);
 
-Route::view('/search', 'app');
-Route::view('/categories', 'app');
-Route::view('/how-it-works', 'app');
-Route::view('/register', 'app');
-Route::view('/login', 'app');
-Route::view('/profile', 'app');
-Route::view('/saved', 'app');
-Route::view('/tracker', 'app');
-Route::view('/my-opportunities', 'app');
-Route::view('/verify-email/{user}/{hash}', 'app')->name('email-verification.page');
-Route::view('/categories/{slug}', 'app')->where('slug', '[A-Za-z0-9-]+');
-Route::view('/opportunities/{slug}', 'app')->where('slug', '[A-Za-z0-9-]+');
+Route::get('/search', fn () => app(PublicPageController::class)->page('search'));
+Route::get('/categories', [PublicPageController::class, 'categories'])->name('categories.index');
+Route::get('/how-it-works', fn () => app(PublicPageController::class)->page('how-it-works'))->name('how-it-works');
+Route::get('/register', fn () => app(PublicPageController::class)->page('register'))->name('register');
+Route::get('/login', fn () => app(PublicPageController::class)->page('login'))->name('login');
+Route::get('/profile', fn () => app(PublicPageController::class)->page('profile'))->name('profile');
+Route::get('/saved', fn () => app(PublicPageController::class)->page('saved'))->name('saved');
+Route::get('/tracker', fn () => app(PublicPageController::class)->page('tracker'))->name('tracker');
+Route::get('/my-opportunities', fn () => app(PublicPageController::class)->page('my-opportunities'))->name('my-opportunities');
+Route::get('/verify-email/{user}/{hash}', fn () => app(PublicPageController::class)->page('verify-email'))->name('email-verification.page');
+Route::get('/categories/{slug}', [PublicPageController::class, 'category'])->where('slug', '[A-Za-z0-9-]+')->name('categories.show');
+Route::get('/opportunities/{slug}', [PublicPageController::class, 'opportunity'])->where('slug', '[A-Za-z0-9-]+')->name('opportunities.show');
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class LocationIndexRequest extends FormRequest
 {
@@ -17,6 +18,10 @@ class LocationIndexRequest extends FormRequest
             'q' => ['sometimes', 'nullable', 'string', 'max:100'],
             'limit' => ['sometimes', 'integer', 'min:1', 'max:100'],
             'cursor' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:'.PHP_INT_MAX],
+            // The picker shows states first and asks for one state's LGAs only
+            // when it is expanded, so the catalogue is never a flat mixed list.
+            'type' => ['sometimes', 'nullable', 'string', Rule::in(['country', 'state', 'lga'])],
+            'parent' => ['sometimes', 'nullable', 'string', 'max:100', 'regex:/^[A-Za-z0-9-]+$/'],
         ];
 
         foreach (array_diff(array_keys($this->query->all()), array_keys($rules)) as $parameter) {

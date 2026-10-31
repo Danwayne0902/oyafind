@@ -18,6 +18,8 @@ class LocationController extends Controller
             $filters['q'] ?? null,
             (int) ($filters['limit'] ?? 20),
             isset($filters['cursor']) ? (int) $filters['cursor'] : null,
+            $filters['type'] ?? null,
+            $filters['parent'] ?? null,
         );
 
         $body = [

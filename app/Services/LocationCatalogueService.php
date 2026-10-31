@@ -26,8 +26,13 @@ class LocationCatalogueService
      *     nextCursor: int|null
      * }
      */
-    public function searchReviewedLocations(?string $query, int $limit, ?int $cursor): array
-    {
+    public function searchReviewedLocations(
+        ?string $query,
+        int $limit,
+        ?int $cursor,
+        ?string $type = null,
+        ?string $parent = null,
+    ): array {
         if (! $this->policies->isEnabled('location_catalogue')) {
             return $this->emptyCatalogue();
         }
@@ -37,6 +42,14 @@ class LocationCatalogueService
         $pageQuery = $this->selectableLocations();
         if ($cursor !== null) {
             $pageQuery->where('id', '>', $cursor);
+        }
+
+        if ($type !== null) {
+            $pageQuery->where('location_type', $type);
+        }
+
+        if ($parent !== null) {
+            $pageQuery->whereHas('parent', fn (Builder $query) => $query->where('slug', $parent));
         }
 
         $search = trim($query ?? '');
@@ -80,6 +93,7 @@ class LocationCatalogueService
             if ($location->parent_id && isset($parents[$location->parent_id])) {
                 $location->setRelation('parent', $parents[$location->parent_id]);
             }
+
             return $location;
         });
 
@@ -145,6 +159,7 @@ class LocationCatalogueService
 
         try {
             $result = DB::select("SHOW INDEX FROM locations WHERE Key_name = 'locations_name_fulltext'");
+
             return ! empty($result);
         } catch (\Throwable $e) {
             return false;
@@ -155,6 +170,7 @@ class LocationCatalogueService
     {
         $escaped = preg_replace('/[+\-><\(\)~*"@]/', ' ', $query);
         $escaped = trim(preg_replace('/\s+/', ' ', $escaped) ?? $query);
+
         return $escaped;
     }
 

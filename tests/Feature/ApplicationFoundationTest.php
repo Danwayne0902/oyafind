@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ApplicationFoundationTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_public_application_shell_is_available_without_geography_policy(): void
     {
         config(['oyafind.policies.location_catalogue' => null]);

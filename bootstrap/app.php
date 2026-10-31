@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -26,8 +28,12 @@ return Application::configure(basePath: dirname(__DIR__))
         }
 
         $middleware->alias([
-            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'admin' => EnsureUserIsAdmin::class,
         ]);
+
+        // Browser hardening applies to every response, including Blade and
+        // JSON errors, so it is appended globally rather than per route group.
+        $middleware->append(SecurityHeaders::class);
 
         // The sign-in screen is part of the Vue shell, not a named route.
         $middleware->redirectGuestsTo('/login');

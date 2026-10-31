@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { getLocationChoices } from '../../resources/js/api/locationCatalogue.js';
 
-const STORAGE_KEY = 'oyafind.public-location-catalogue.v1';
+const STORAGE_KEY = 'oyafind.public-location-catalogue.v2';
 
 function createStorage() {
     const values = new Map();
@@ -126,8 +126,8 @@ test('a changed catalogue version invalidates prior cached query results', async
 
     const stored = JSON.parse(storage.getItem(STORAGE_KEY));
     assert.equal(stored.version, 'synthetic-v2');
-    assert.deepEqual(Object.keys(stored.queries), ['new']);
-    assert.equal(stored.queries.new.items[0].slug, 'synthetic-new-area');
+    assert.deepEqual(Object.keys(stored.queries), ['new||']);
+    assert.equal(stored.queries['new||'].items[0].slug, 'synthetic-new-area');
     assert.doesNotMatch(JSON.stringify(stored), /synthetic-area"/);
 });
 
@@ -175,4 +175,44 @@ test('search sends bounded query text only to the same-origin OyaFind endpoint',
     assert.equal(url.searchParams.get('q'), 'Synthetic Area');
     assert.equal(url.searchParams.get('limit'), '100');
     assert.equal(result.items[0].slug, 'synthetic-area');
+});
+
+test('state and parent filters are sent as bounded catalogue parameters', async () => {
+    const storage = createStorage();
+    let requestedUrl;
+    await getLocationChoices('', {
+        storage,
+        type: 'lga',
+        parent: 'oyo',
+        fetchImpl: async (url) => {
+            requestedUrl = url;
+            return catalogueResponse({ data: [syntheticArea] });
+        },
+    });
+
+    const url = new URL(requestedUrl, 'https://oyafind.test');
+    assert.equal(url.searchParams.get('type'), 'lga');
+    assert.equal(url.searchParams.get('parent'), 'oyo');
+    assert.equal(url.searchParams.get('q'), null);
+
+    const stored = JSON.parse(storage.getItem(STORAGE_KEY));
+    assert.deepEqual(Object.keys(stored.queries), ['|lga|oyo']);
+});
+
+test('invalid type or parent values are never forwarded to the API', async () => {
+    const storage = createStorage();
+    let requestedUrl;
+    await getLocationChoices('', {
+        storage,
+        type: 'not a type',
+        parent: '../etc/passwd',
+        fetchImpl: async (url) => {
+            requestedUrl = url;
+            return catalogueResponse({ data: [syntheticArea] });
+        },
+    });
+
+    const url = new URL(requestedUrl, 'https://oyafind.test');
+    assert.equal(url.searchParams.get('type'), null);
+    assert.equal(url.searchParams.get('parent'), null);
 });

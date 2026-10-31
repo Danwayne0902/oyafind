@@ -294,6 +294,69 @@ class LocationCatalogueApiTest extends TestCase
         $this->seed(LocationSeeder::class);
     }
 
+    public function test_type_and_parent_filters_keep_states_and_lgas_in_separate_levels(): void
+    {
+        config(['oyafind.policies.location_catalogue' => true]);
+        $reviewer = User::query()->create(['name' => 'Synthetic Reviewer']);
+
+        $oyo = $this->makeReviewedLocation($reviewer, [
+            'name' => 'Synthetic Oyo',
+            'slug' => 'synthetic-oyo',
+            'location_type' => 'state',
+        ]);
+        $lagos = $this->makeReviewedLocation($reviewer, [
+            'name' => 'Synthetic Lagos',
+            'slug' => 'synthetic-lagos',
+            'location_type' => 'state',
+        ]);
+
+        $this->makeReviewedLocation($reviewer, [
+            'name' => 'Synthetic Ibadan North',
+            'slug' => 'synthetic-ibadan-north',
+            'location_type' => 'lga',
+            'parent_id' => $oyo->id,
+        ]);
+        $this->makeReviewedLocation($reviewer, [
+            'name' => 'Synthetic Ibadan South',
+            'slug' => 'synthetic-ibadan-south',
+            'location_type' => 'lga',
+            'parent_id' => $oyo->id,
+        ]);
+        $this->makeReviewedLocation($reviewer, [
+            'name' => 'Synthetic Ikeja',
+            'slug' => 'synthetic-ikeja',
+            'location_type' => 'lga',
+            'parent_id' => $lagos->id,
+        ]);
+
+        $states = $this->getJson('/api/v1/locations?type=state')->assertOk();
+        $this->assertSame(
+            ['Synthetic Lagos', 'Synthetic Oyo'],
+            collect($states->json('data'))->pluck('name')->sort()->values()->all(),
+        );
+        $this->assertSame(
+            ['state'],
+            collect($states->json('data'))->pluck('location_type')->unique()->values()->all(),
+        );
+
+        $oyoChildren = $this->getJson('/api/v1/locations?type=lga&parent=synthetic-oyo')->assertOk();
+        $this->assertSame(
+            ['Synthetic Ibadan North', 'Synthetic Ibadan South'],
+            collect($oyoChildren->json('data'))->pluck('name')->sort()->values()->all(),
+        );
+        $this->assertSame(
+            ['synthetic-oyo'],
+            collect($oyoChildren->json('data'))
+                ->pluck('parent.slug')
+                ->unique()
+                ->values()
+                ->all(),
+        );
+
+        $this->getJson('/api/v1/locations?type=planet')->assertStatus(422);
+        $this->getJson('/api/v1/locations?parent=not a slug')->assertStatus(422);
+    }
+
     private function makeReviewedLocation(User $reviewer, array $overrides = []): Location
     {
         return Location::query()->create(array_merge([

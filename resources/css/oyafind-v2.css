@@ -1306,6 +1306,81 @@ textarea:focus-visible {
     padding: 0.25rem 0;
 }
 
+/* A state row and its local areas form one group, so the child list can never
+   be mistaken for more states in the same flat column. */
+.area-group {
+    display: grid;
+    gap: 1px;
+    min-width: 0;
+}
+
+.area-row {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+}
+
+.area-row .area-option {
+    min-width: 0;
+    flex: 1;
+}
+
+.area-option-label {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.05rem;
+}
+
+.area-option-label small {
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 550;
+    letter-spacing: 0;
+}
+
+.area-toggle {
+    display: inline-flex;
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.area-toggle:hover {
+    background: var(--surface-2);
+    color: var(--ink);
+}
+
+.area-toggle svg {
+    transition: transform 160ms var(--ease-out);
+}
+
+.area-toggle[aria-expanded='true'] svg {
+    transform: rotate(180deg);
+}
+
+.area-children {
+    display: grid;
+    gap: 1px;
+    margin: 0.1rem 0 0.35rem 0.6rem;
+    padding-left: 0.55rem;
+    border-left: 2px solid var(--wire);
+}
+
+.area-option-child {
+    min-height: 2.15rem;
+    padding-left: 0.5rem;
+    color: var(--ink-2);
+    font-size: 0.82rem;
+}
+
 .area-option {
     display: flex;
     min-height: 2.4rem;
@@ -4760,4 +4835,118 @@ textarea:focus-visible {
     .detail-page {
         width: 100%;
     }
+}
+
+/* --------------------------------------------------------------------------
+   Server-rendered fallback
+   --------------------------------------------------------------------------
+   This block exists in the initial HTML for crawlers and no-JavaScript
+   visitors. Vue replaces it as soon as it mounts, so it stays intentionally
+   simple and never competes with the app's own layout. */
+
+.seo-fallback {
+    width: min(72rem, 100% - 2rem);
+    margin: 0 auto;
+    padding: 1.25rem 0 3rem;
+    color: var(--ink);
+}
+
+.seo-fallback-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--wire);
+}
+
+.seo-fallback-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--ink);
+    font-size: 1.15rem;
+    font-weight: 750;
+    text-decoration: none;
+}
+
+.seo-fallback-head nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+}
+
+.seo-fallback-head nav a {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.seo-fallback-main {
+    display: grid;
+    gap: 1rem;
+    padding-top: 1.75rem;
+}
+
+.seo-fallback-main h1 {
+    max-width: 22ch;
+    margin: 0;
+    font-size: clamp(1.9rem, 5vw, 3rem);
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+}
+
+.seo-fallback-main p {
+    max-width: 60ch;
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.seo-fallback-meta {
+    font-size: 0.85rem;
+}
+
+.seo-fallback-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.seo-fallback-links a {
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--wire);
+    border-radius: 999px;
+    color: var(--trust-dark);
+    font-size: 0.82rem;
+    font-weight: 650;
+    text-decoration: none;
+}
+
+.seo-fallback-list {
+    display: grid;
+    max-width: 60rem;
+    gap: 0.35rem;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.seo-fallback-list li {
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--wire);
+}
+
+.seo-fallback-list a {
+    color: var(--ink);
+    font-weight: 650;
+    text-decoration: none;
+}
+
+.seo-fallback-list span {
+    color: var(--muted);
+    font-size: 0.8rem;
 }

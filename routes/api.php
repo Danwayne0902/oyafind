@@ -12,18 +12,25 @@ use Illuminate\Support\Facades\Route;
 Route::get('/v1/health', fn () => response()->json(['status' => 'ok']))
     ->name('api.v1.health');
 
-Route::get('/v1/locations', [LocationController::class, 'index'])
-    ->name('api.v1.locations.index');
+/*
+ * Public read endpoints are unauthenticated, so they carry a generous but
+ * finite per-client limit. A real visitor never comes close; a scraper or a
+ * runaway client is stopped before it can saturate PHP workers.
+ */
+Route::middleware('throttle:120,1')->group(function (): void {
+    Route::get('/v1/locations', [LocationController::class, 'index'])
+        ->name('api.v1.locations.index');
 
-Route::get('/v1/opportunities', [OpportunityController::class, 'index'])
-    ->name('api.v1.opportunities.index');
+    Route::get('/v1/opportunities', [OpportunityController::class, 'index'])
+        ->name('api.v1.opportunities.index');
 
-Route::get('/v1/opportunities/{slug}', [OpportunityController::class, 'show'])
-    ->where('slug', '[A-Za-z0-9-]+')
-    ->name('api.v1.opportunities.show');
+    Route::get('/v1/opportunities/{slug}', [OpportunityController::class, 'show'])
+        ->where('slug', '[A-Za-z0-9-]+')
+        ->name('api.v1.opportunities.show');
 
-Route::get('/v1/categories', [CategoryController::class, 'index'])
-    ->name('api.v1.categories.index');
+    Route::get('/v1/categories', [CategoryController::class, 'index'])
+        ->name('api.v1.categories.index');
+});
 
 // These routes opt into Laravel's session and CSRF middleware while remaining
 // under the versioned API namespace and JSON response conventions.

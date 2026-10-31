@@ -42,8 +42,8 @@ test('discovery component renders deterministic fixture data and a clear empty-f
     assert.match(populated, /Synthetic training opportunity/);
     assert.match(populated, /Synthetic provider/);
     assert.match(populated, /Location not specified/);
-    assert.match(populated, /Nigeria-wide/);
-    assert.match(populated, /36 states \+ FCT/);
+    assert.match(populated, /Within Nigeria/);
+    assert.match(populated, /&amp; beyond/);
     assert.match(populated, /Find what’s next/);
     assert.match(populated, /closer to home/);
     assert.match(populated, /Role, organisation or state/);

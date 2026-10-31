@@ -1,2 +1,14 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+Disallow: /saved
+Disallow: /tracker
+Disallow: /my-opportunities
+Disallow: /verify-email/
+Disallow: /search
+
+Sitemap: https://oyafind.com.ng/sitemap.xml

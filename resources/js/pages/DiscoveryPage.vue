@@ -87,9 +87,8 @@ function changeSort(event) {
             <div class="masthead-inner">
                 <div class="masthead-lead">
                     <p class="pilot-eyebrow">
-                        <span>Nigeria-wide</span>
-                        <span class="pilot-sep" aria-hidden="true"></span>
-                        <span class="pilot-sub">36 states + FCT</span>
+                        <span>Within Nigeria</span>
+                        <span class="pilot-sub">&amp; beyond</span>
                     </p>
                     <h1>
                         Find what’s next,<br>

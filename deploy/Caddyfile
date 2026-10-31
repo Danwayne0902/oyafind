@@ -29,10 +29,19 @@
 	header {
 		-Server
 		X-Content-Type-Options nosniff
-		X-Frame-Options SAMEORIGIN
+		X-Frame-Options DENY
 		Referrer-Policy strict-origin-when-cross-origin
-		Strict-Transport-Security "max-age=15552000"
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+		Cross-Origin-Opener-Policy same-origin
+		Cross-Origin-Resource-Policy same-origin
+		X-Permitted-Cross-Domain-Policies none
 	}
+
+	# A browser should never guess a type, and PHP must not be reachable
+	# through any path other than the front controller.
+	@hidden path /.env* /.git* /vendor/* /composer.* /package.json
+	respond @hidden 404
 
 	log {
 		output stdout

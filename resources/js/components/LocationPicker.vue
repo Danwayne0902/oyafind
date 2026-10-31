@@ -9,6 +9,7 @@ const props = defineProps({
 
 const emit = defineEmits(['select']);
 const root = ref(null);
+const expandedState = ref('');
 const {
     isOpen,
     query,
@@ -16,11 +17,18 @@ const {
     state,
     error,
     loading,
+    activeQuery,
+    childrenByState,
+    childrenLoading,
+    childrenError,
     displayName,
     openPicker,
     search,
     loadChoices,
+    loadChildren,
 } = useLocationPicker(emit);
+
+const searchMode = computed(() => activeQuery.value !== '');
 
 const selectedLabel = computed(() => {
     if (!props.selectedSlug) return '';
@@ -33,9 +41,96 @@ const selectedLabel = computed(() => {
         .join(' ');
 });
 
+/*
+ * The default view is a list of states. A state's LGAs are shown as children
+ * only when that state is expanded, never as peers of the states themselves.
+ * A search spans the whole catalogue, so results are grouped back under the
+ * state each local area belongs to.
+ */
+const groups = computed(() => {
+    if (!searchMode.value) {
+        return choices.value
+            .filter((choice) => choice.location_type === 'state' || !choice.location_type)
+            .map((choice) => ({
+                state: choice,
+                children: childrenByState.value[choice.slug] ?? [],
+                standalone: false,
+            }));
+    }
+
+    const grouped = new Map();
+
+    for (const choice of choices.value) {
+        if (choice.location_type === 'state') {
+            if (!grouped.has(choice.slug)) {
+                grouped.set(choice.slug, { state: choice, children: [], standalone: false });
+            }
+            continue;
+        }
+
+        if (!choice.parent) {
+            grouped.set(`solo:${choice.slug}`, { state: choice, children: [], standalone: true });
+            continue;
+        }
+
+        const key = choice.parent.slug;
+        if (!grouped.has(key)) {
+            grouped.set(key, {
+                state: {
+                    name: choice.parent.name,
+                    slug: choice.parent.slug,
+                    location_type: choice.parent.location_type ?? 'state',
+                },
+                children: [],
+                standalone: false,
+            });
+        }
+        grouped.get(key).children.push(choice);
+    }
+
+    return [...grouped.values()];
+});
+
+function isExpanded(group) {
+    return !searchMode.value && expandedState.value === group.state.slug;
+}
+
+function isSelected(group) {
+    return props.selectedSlug === group.state.slug;
+}
+
+function toggle(group) {
+    if (isExpanded(group)) {
+        expandedState.value = '';
+        return;
+    }
+
+    expandedState.value = group.state.slug;
+    void loadChildren(group.state.slug);
+}
+
 function choose(slug) {
     emit('select', slug);
     isOpen.value = false;
+}
+
+function chooseState(group) {
+    if (group.standalone) {
+        choose(group.state.slug);
+        return;
+    }
+
+    emit('select', group.state.slug);
+
+    // In search results a tap is a selection, so the panel closes. In the
+    // state list it opens the state's LGAs underneath without hiding them.
+    if (searchMode.value) {
+        isOpen.value = false;
+        return;
+    }
+
+    expandedState.value = group.state.slug;
+    void loadChildren(group.state.slug);
 }
 
 function close() {
@@ -101,7 +196,7 @@ onUnmounted(() => {
                     type="search"
                     maxlength="100"
                     autocomplete="off"
-                    placeholder="Search Lagos, Ibadan North, Abuja…"
+                    placeholder="Search a state, LGA or Abuja…"
                 >
                 <button class="button button-secondary button-sm" type="submit" :disabled="loading" :aria-busy="loading">
                     {{ loading ? 'Searching…' : 'Search' }}
@@ -124,26 +219,69 @@ onUnmounted(() => {
                 >
                     All areas
                 </button>
-                <button
-                    v-for="choice in choices"
-                    :key="choice.id"
-                    class="area-option"
-                    :class="{ 'is-selected': choice.slug === selectedSlug }"
-                    type="button"
-                    role="option"
-                    :aria-selected="choice.slug === selectedSlug"
-                    @click="choose(choice.slug)"
-                >
-                    <span>{{ displayName(choice) }}</span>
-                    <UiIcon v-if="choice.slug === selectedSlug" name="check" :size="15" />
-                </button>
+
+                <div v-for="group in groups" :key="group.state.slug" class="area-group">
+                    <div class="area-row">
+                        <button
+                            class="area-option area-option-parent"
+                            :class="{ 'is-selected': isSelected(group) }"
+                            type="button"
+                            role="option"
+                            :aria-selected="isSelected(group)"
+                            @click="chooseState(group)"
+                        >
+                            <span class="area-option-label">
+                                <span>{{ group.state.name }}</span>
+                                <small v-if="!searchMode && group.children.length">
+                                    {{ group.children.length }} local area{{ group.children.length === 1 ? '' : 's' }}
+                                </small>
+                            </span>
+                            <UiIcon v-if="isSelected(group)" name="check" :size="15" />
+                        </button>
+                        <button
+                            v-if="!group.standalone"
+                            class="area-toggle"
+                            type="button"
+                            :aria-expanded="isExpanded(group)"
+                            :aria-label="`${isExpanded(group) ? 'Hide' : 'Show'} local areas in ${group.state.name}`"
+                            @click.stop="toggle(group)"
+                        >
+                            <UiIcon name="chevron-down" :size="15" />
+                        </button>
+                    </div>
+
+                    <div v-if="isExpanded(group)" class="area-children" role="group" :aria-label="`Local areas in ${group.state.name}`">
+                        <p v-if="childrenLoading === group.state.slug" class="area-state">Loading local areas…</p>
+                        <p v-else-if="childrenError && !group.children.length" class="area-state is-error" role="alert">
+                            {{ childrenError }}
+                        </p>
+                        <template v-else>
+                            <button
+                                v-for="child in group.children"
+                                :key="child.id"
+                                class="area-option area-option-child"
+                                :class="{ 'is-selected': child.slug === selectedSlug }"
+                                type="button"
+                                role="option"
+                                :aria-selected="child.slug === selectedSlug"
+                                @click="choose(child.slug)"
+                            >
+                                <span>{{ child.name }}</span>
+                                <UiIcon v-if="child.slug === selectedSlug" name="check" :size="15" />
+                            </button>
+                            <p v-if="!group.children.length && childrenLoading !== group.state.slug" class="area-state">
+                                No local areas have been reviewed for {{ group.state.name }} yet. Choosing the state covers every area inside it.
+                            </p>
+                        </template>
+                    </div>
+                </div>
             </div>
 
-            <p v-if="!loading && !error && !choices.length" class="area-state">
+            <p v-if="!loading && !error && !groups.length" class="area-state">
                 No reviewed areas match that search. You can still browse all areas.
             </p>
             <p class="area-note">
-                OyaFind uses reviewed, coarse areas across Nigeria’s 36 states and the FCT. No GPS or exact address is requested.
+                OyaFind uses reviewed, coarse areas across Nigeria and beyond. No GPS or exact address is requested.
             </p>
         </div>
     </div>

@@ -499,6 +499,28 @@ class AccountAuthenticationApiTest extends TestCase
         $this->getJson('/api/v1/me')->assertUnauthorized();
     }
 
+    public function test_repeated_failed_logins_for_one_identifier_are_throttled(): void
+    {
+        $this->createUser([
+            'email' => 'throttle@example.test',
+            'status' => 'active',
+        ]);
+
+        for ($attempt = 0; $attempt < 5; $attempt++) {
+            $this->postJson('/api/v1/auth/login', [
+                'identifier' => 'throttle@example.test',
+                'password' => 'wrong password',
+            ])->assertStatus(422);
+        }
+
+        $this->postJson('/api/v1/auth/login', [
+            'identifier' => 'throttle@example.test',
+            'password' => 'correct horse battery staple',
+        ])
+            ->assertStatus(429)
+            ->assertHeader('Retry-After');
+    }
+
     public function test_sign_out_invalidates_the_session_and_protected_profile_access(): void
     {
         $this->signIn($this->createUser([

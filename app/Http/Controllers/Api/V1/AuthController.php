@@ -11,6 +11,8 @@ use App\Services\AccountRegistrationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -127,23 +129,50 @@ class AuthController extends Controller
         LoginRequest $request,
         AccountAuthenticationService $authentication,
     ): JsonResponse {
+        // The route-level throttle stops one client hammering the endpoint.
+        // This second limit is keyed by the identifier itself, so a distributed
+        // attempt against one account is slowed without locking out everyone
+        // who shares an office or mobile network IP.
+        $throttleKey = $this->loginThrottleKey($request);
+        $maxAttempts = 5;
+
+        if (RateLimiter::tooManyAttempts($throttleKey, $maxAttempts)) {
+            $retryAfter = RateLimiter::availableIn($throttleKey);
+
+            return response()
+                ->json([
+                    'message' => 'Too many sign-in attempts for this account. Try again in '.max(1, (int) ceil($retryAfter / 60)).' minute(s).',
+                ], 429)
+                ->header('Retry-After', (string) $retryAfter);
+        }
+
         $user = $authentication->authenticate(
             $request->validated('identifier'),
             $request->validated('password'),
         );
 
         if (! $user) {
+            RateLimiter::hit($throttleKey, 900);
+
             return response()->json([
                 'message' => 'The provided credentials are invalid or the account is unavailable.',
             ], 422);
         }
 
+        RateLimiter::clear($throttleKey);
         Auth::guard('web')->login($user);
         $request->session()->regenerate();
 
         return response()->json([
             'data' => $authentication->profile($user),
         ]);
+    }
+
+    private function loginThrottleKey(Request $request): string
+    {
+        $identifier = Str::lower(trim((string) $request->input('identifier')));
+
+        return 'login-attempt:'.hash('sha256', $identifier).'|'.$request->ip();
     }
 
     public function logout(Request $request): JsonResponse

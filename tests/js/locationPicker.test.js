@@ -199,3 +199,49 @@ test('picker open, search, select and clear actions use the public catalogue cli
     assert.match(findByText(root, 'fresh').text, /fresh/);
     app.unmount();
 });
+
+test('default list requests states and only asks for one state\u2019s lgas when it is expanded', async (t) => {
+    const originalFetch = globalThis.fetch;
+    const originalStorage = globalThis.localStorage;
+    const storage = new Map();
+    globalThis.localStorage = {
+        getItem: (key) => storage.get(key) ?? null,
+        setItem: (key, value) => storage.set(key, value),
+    };
+    t.after(() => {
+        globalThis.fetch = originalFetch;
+        if (typeof originalStorage === 'undefined') delete globalThis.localStorage;
+        else globalThis.localStorage = originalStorage;
+    });
+
+    const urls = [];
+    globalThis.fetch = async (url) => {
+        urls.push(new URL(url, 'https://oyafind.test'));
+        const params = urls.at(-1).searchParams;
+        const data = params.get('type') === 'lga'
+            ? [{ id: 2, name: 'Ibadan North', slug: 'ibadan-north', location_type: 'lga', parent: { id: 1, name: 'Oyo', slug: 'oyo', location_type: 'state' } }]
+            : [{ id: 1, name: 'Oyo', slug: 'oyo', location_type: 'state', parent: { id: 9, name: 'Nigeria', slug: 'nigeria', location_type: 'country' } }];
+        return new Response(JSON.stringify({
+            data,
+            meta: { catalogueVersion: 'synthetic-v1', nextCursor: null },
+        }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json', 'X-Catalogue-Version': 'synthetic-v1' },
+        });
+    };
+
+    const picker = useLocationPicker(() => {});
+    await picker.loadChoices();
+
+    assert.equal(urls[0].searchParams.get('type'), 'state');
+    assert.equal(urls[0].searchParams.get('parent'), null);
+    assert.equal(picker.choices.value.length, 1);
+    assert.equal(picker.choices.value[0].location_type, 'state');
+
+    await picker.loadChildren('oyo');
+
+    assert.equal(urls[1].searchParams.get('type'), 'lga');
+    assert.equal(urls[1].searchParams.get('parent'), 'oyo');
+    assert.equal(picker.childrenByState.value.oyo.length, 1);
+    assert.equal(picker.childrenByState.value.oyo[0].slug, 'ibadan-north');
+});
