@@ -35,6 +35,21 @@ Route::get('/', function () {
     return view('app');
 });
 
+/*
+ * Short category links. The category pages live at /categories/{slug}, so a
+ * typed or shared /jobs lands on the canonical URL instead of a 404. These
+ * redirect rather than render so search engines index one address per page.
+ */
+foreach ([
+    'jobs', 'gigs', 'internships', 'scholarships',
+    'training', 'grants', 'business-support', 'tenders',
+] as $categorySlug) {
+    Route::redirect('/'.$categorySlug, '/categories/'.$categorySlug, 301);
+}
+
+// Staff sign in through the same screen as everyone else.
+Route::redirect('/admin/login', '/login', 302);
+
 Route::view('/search', 'app');
 Route::view('/categories', 'app');
 Route::view('/how-it-works', 'app');
