@@ -278,6 +278,37 @@ class LocationCatalogueApiTest extends TestCase
         ]);
     }
 
+    public function test_location_seeder_loads_the_full_national_catalogue_from_shipped_csv(): void
+    {
+        config(['oyafind.policies.location_catalogue' => true]);
+
+        $admin = User::query()->create(['name' => 'Catalogue reviewer']);
+        $admin->forceFill(['role' => 'admin'])->save();
+
+        $this->seed(LocationSeeder::class);
+
+        $this->assertSame(37, Location::query()->where('location_type', 'state')->count());
+        $this->assertSame(774, Location::query()->where('location_type', 'lga')->count());
+        $this->assertSame(20, Location::query()
+            ->where('location_type', 'lga')
+            ->whereHas('parent', fn ($parent) => $parent->where('slug', 'lagos'))
+            ->count());
+        $this->assertSame(44, Location::query()
+            ->where('location_type', 'lga')
+            ->whereHas('parent', fn ($parent) => $parent->where('slug', 'kano'))
+            ->count());
+
+        $regions = $this->getJson('/api/v1/locations?type=region&limit=100')->assertOk();
+        $this->assertSame(4, count($regions->json('data')));
+
+        $africanCountries = $this->getJson('/api/v1/locations?parent=africa&limit=100')->assertOk();
+        $this->assertSame(7, count($africanCountries->json('data')));
+        $this->assertSame(
+            ['country'],
+            collect($africanCountries->json('data'))->pluck('location_type')->unique()->values()->all(),
+        );
+    }
+
     public function test_location_seeder_rejects_a_configured_record_without_review_provenance(): void
     {
         config([

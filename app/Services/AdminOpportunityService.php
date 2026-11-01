@@ -36,6 +36,7 @@ final class AdminOpportunityService
         }
 
         $this->guardDeadline($opportunity);
+        $this->guardLocation($opportunity, 'sending it for review');
 
         $evidenceReference = trim($evidenceReference);
         $rationale = trim($rationale);
@@ -71,6 +72,7 @@ final class AdminOpportunityService
         }
 
         $this->guardDeadline($opportunity);
+        $this->guardLocation($opportunity, 'publishing it');
 
         $review = AuditEvent::query()
             ->where('entity_type', 'opportunity')
@@ -162,6 +164,28 @@ final class AdminOpportunityService
     {
         if ($opportunity->deadline_at !== null && $opportunity->deadline_at->isPast()) {
             throw new RuntimeException('The listing deadline has passed. Update the deadline first.');
+        }
+    }
+
+    /**
+     * A public listing must point at a location a visitor can trust. Drafts
+     * may be incomplete, but nothing reaches review or publication until a
+     * reviewed catalogue entry is chosen.
+     */
+    private function guardLocation(Opportunity $opportunity, string $action): void
+    {
+        $location = $opportunity->location;
+
+        $selectable = $location !== null
+            && $location->is_active
+            && $location->reviewed_at !== null
+            && $location->reviewed_by !== null
+            && filled($location->catalogue_origin);
+
+        if (! $selectable) {
+            throw new RuntimeException(
+                "Choose a reviewed location before {$action}. Public listings cannot say 'Location not specified'."
+            );
         }
     }
 

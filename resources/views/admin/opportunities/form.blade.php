@@ -74,11 +74,12 @@
                     <div class="field">
                         <label for="location_id">Location</label>
                         <select id="location_id" name="location_id" @disabled(! $editable)>
-                            <option value="">Nationwide / not stated</option>
+                            <option value="">Choose a reviewed area</option>
                             @foreach ($locations as $location)
                                 <option value="{{ $location->id }}" @selected((int) old('location_id', $opportunity->location_id) === $location->id)>{{ $location->name }}</option>
                             @endforeach
                         </select>
+                        <p class="hint">Required before review or publication. Choose a state, LGA, country or region; never leave a public listing without a location.</p>
                         @error('location_id')<p class="err">{{ $message }}</p>@enderror
                     </div>
                 </div>

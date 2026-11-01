@@ -207,11 +207,13 @@ onMounted(() => {
 
                     <p class="ledger-org">
                         {{ item.opportunity.organisation_name || 'Organisation not listed' }}
-                        <span aria-hidden="true">·</span>
-                        <span class="op-org-location">
-                            <UiIcon name="pin" :size="13" />
-                            {{ item.opportunity.location?.name || 'Location not specified' }}
-                        </span>
+                        <template v-if="item.opportunity.location?.name">
+                            <span aria-hidden="true">·</span>
+                            <span class="op-org-location">
+                                <UiIcon name="pin" :size="13" />
+                                {{ item.opportunity.location.name }}
+                            </span>
+                        </template>
                     </p>
                     <p class="ledger-summary">{{ item.opportunity.summary }}</p>
 

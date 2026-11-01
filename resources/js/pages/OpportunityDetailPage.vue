@@ -130,11 +130,13 @@ function formatRequirements(value) {
                 <h1>{{ opportunity.title }}</h1>
                 <p class="detail-organisation">
                     {{ displayText(opportunity.organisation_name, 'Organisation not listed') }}
-                    <span aria-hidden="true">·</span>
-                    <span class="op-org-location">
-                        <UiIcon name="pin" :size="14" />
-                        {{ opportunity.location?.name || 'Location not specified' }}
-                    </span>
+                    <template v-if="opportunity.location?.name">
+                        <span aria-hidden="true">·</span>
+                        <span class="op-org-location">
+                            <UiIcon name="pin" :size="14" />
+                            {{ opportunity.location.name }}
+                        </span>
+                    </template>
                     <template v-if="amount">
                         <span aria-hidden="true">·</span>
                         <strong class="detail-amount">{{ amount }}</strong>

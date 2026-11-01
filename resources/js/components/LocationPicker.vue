@@ -50,7 +50,7 @@ const selectedLabel = computed(() => {
 const groups = computed(() => {
     if (!searchMode.value) {
         return choices.value
-            .filter((choice) => choice.location_type === 'state' || !choice.location_type)
+            .filter((choice) => ['state', 'region'].includes(choice.location_type) || !choice.location_type)
             .map((choice) => ({
                 state: choice,
                 children: childrenByState.value[choice.slug] ?? [],
@@ -90,6 +90,15 @@ const groups = computed(() => {
 
     return [...grouped.values()];
 });
+
+function isRegion(group) {
+    return group.state.location_type === 'region';
+}
+
+function childNoun(group, count) {
+    if (isRegion(group)) return count === 1 ? 'country' : 'countries';
+    return count === 1 ? 'local area' : 'local areas';
+}
 
 function isExpanded(group) {
     return !searchMode.value && expandedState.value === group.state.slug;
@@ -196,7 +205,7 @@ onUnmounted(() => {
                     type="search"
                     maxlength="100"
                     autocomplete="off"
-                    placeholder="Search a state, LGA or Abuja…"
+                    placeholder="Search a state, LGA or country…"
                 >
                 <button class="button button-secondary button-sm" type="submit" :disabled="loading" :aria-busy="loading">
                     {{ loading ? 'Searching…' : 'Search' }}
@@ -233,7 +242,7 @@ onUnmounted(() => {
                             <span class="area-option-label">
                                 <span>{{ group.state.name }}</span>
                                 <small v-if="!searchMode && group.children.length">
-                                    {{ group.children.length }} local area{{ group.children.length === 1 ? '' : 's' }}
+                                    {{ group.children.length }} {{ childNoun(group, group.children.length) }}
                                 </small>
                             </span>
                             <UiIcon v-if="isSelected(group)" name="check" :size="15" />
@@ -243,14 +252,14 @@ onUnmounted(() => {
                             class="area-toggle"
                             type="button"
                             :aria-expanded="isExpanded(group)"
-                            :aria-label="`${isExpanded(group) ? 'Hide' : 'Show'} local areas in ${group.state.name}`"
+                            :aria-label="`${isExpanded(group) ? 'Hide' : 'Show'} ${childNoun(group, 2)} in ${group.state.name}`"
                             @click.stop="toggle(group)"
                         >
                             <UiIcon name="chevron-down" :size="15" />
                         </button>
                     </div>
 
-                    <div v-if="isExpanded(group)" class="area-children" role="group" :aria-label="`Local areas in ${group.state.name}`">
+                    <div v-if="isExpanded(group)" class="area-children" role="group" :aria-label="`${isRegion(group) ? 'Countries' : 'Local areas'} in ${group.state.name}`">
                         <p v-if="childrenLoading === group.state.slug" class="area-state">Loading local areas…</p>
                         <p v-else-if="childrenError && !group.children.length" class="area-state is-error" role="alert">
                             {{ childrenError }}
@@ -270,7 +279,12 @@ onUnmounted(() => {
                                 <UiIcon v-if="child.slug === selectedSlug" name="check" :size="15" />
                             </button>
                             <p v-if="!group.children.length && childrenLoading !== group.state.slug" class="area-state">
-                                No local areas have been reviewed for {{ group.state.name }} yet. Choosing the state covers every area inside it.
+                                <template v-if="isRegion(group)">
+                                    No countries are listed for {{ group.state.name }} yet. Choosing the region covers every opportunity inside it.
+                                </template>
+                                <template v-else>
+                                    No local areas have been reviewed for {{ group.state.name }} yet. Choosing the state covers every area inside it.
+                                </template>
                             </p>
                         </template>
                     </div>

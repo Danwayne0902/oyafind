@@ -81,11 +81,13 @@ const amount = computed(() => {
 
         <p class="op-org">
             <span>{{ opportunity.organisation_name || 'Organisation not listed' }}</span>
-            <span class="op-org-sep" aria-hidden="true">·</span>
-            <span class="op-org-location">
-                <UiIcon name="pin" :size="13" />
-                {{ opportunity.location?.name || 'Location not specified' }}
-            </span>
+            <template v-if="opportunity.location?.name">
+                <span class="op-org-sep" aria-hidden="true">·</span>
+                <span class="op-org-location">
+                    <UiIcon name="pin" :size="13" />
+                    {{ opportunity.location.name }}
+                </span>
+            </template>
             <span v-if="amount" class="op-org-sep" aria-hidden="true">·</span>
             <span v-if="amount" class="op-amount">{{ amount }}</span>
         </p>

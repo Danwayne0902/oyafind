@@ -165,7 +165,12 @@ test('picker open, search, select and clear actions use the public catalogue cli
     await new Promise((resolve) => setTimeout(resolve, 0));
     await nextTick();
     assert.ok(findNode(root, (node) => node.type === 'select'));
-    assert.equal(urls.length, 1);
+    // The default view loads Nigerian states and beyond-Nigeria regions.
+    assert.equal(urls.length, 2);
+    assert.deepEqual(
+        urls.map((url) => new URL(url, 'https://oyafind.test').searchParams.get('type')).sort(),
+        ['region', 'state'],
+    );
 
     const input = findNode(root, (node) => node.type === 'input');
     input.props.onInput({ target: { value: 'Synthetic Area' } });
@@ -175,7 +180,7 @@ test('picker open, search, select and clear actions use the public catalogue cli
     await new Promise((resolve) => setTimeout(resolve, 0));
     await nextTick();
 
-    assert.equal(new URL(urls[1], 'https://oyafind.test').searchParams.get('q'), 'Synthetic Area');
+    assert.equal(new URL(urls[2], 'https://oyafind.test').searchParams.get('q'), 'Synthetic Area');
     const select = findNode(root, (node) => node.type === 'select');
     select.props.onChange({ target: { value: 'synthetic-area' } });
     assert.equal(selected, 'synthetic-area');
@@ -218,9 +223,14 @@ test('default list requests states and only asks for one state\u2019s lgas when 
     globalThis.fetch = async (url) => {
         urls.push(new URL(url, 'https://oyafind.test'));
         const params = urls.at(-1).searchParams;
-        const data = params.get('type') === 'lga'
-            ? [{ id: 2, name: 'Ibadan North', slug: 'ibadan-north', location_type: 'lga', parent: { id: 1, name: 'Oyo', slug: 'oyo', location_type: 'state' } }]
-            : [{ id: 1, name: 'Oyo', slug: 'oyo', location_type: 'state', parent: { id: 9, name: 'Nigeria', slug: 'nigeria', location_type: 'country' } }];
+        let data = [];
+        if (params.get('parent') === 'oyo') {
+            data = [{ id: 2, name: 'Ibadan North', slug: 'ibadan-north', location_type: 'lga', parent: { id: 1, name: 'Oyo', slug: 'oyo', location_type: 'state' } }];
+        } else if (params.get('type') === 'region') {
+            data = [{ id: 3, name: 'Remote / Online', slug: 'remote', location_type: 'region', parent: null }];
+        } else {
+            data = [{ id: 1, name: 'Oyo', slug: 'oyo', location_type: 'state', parent: { id: 9, name: 'Nigeria', slug: 'nigeria', location_type: 'country' } }];
+        }
         return new Response(JSON.stringify({
             data,
             meta: { catalogueVersion: 'synthetic-v1', nextCursor: null },
@@ -233,15 +243,15 @@ test('default list requests states and only asks for one state\u2019s lgas when 
     const picker = useLocationPicker(() => {});
     await picker.loadChoices();
 
-    assert.equal(urls[0].searchParams.get('type'), 'state');
-    assert.equal(urls[0].searchParams.get('parent'), null);
-    assert.equal(picker.choices.value.length, 1);
-    assert.equal(picker.choices.value[0].location_type, 'state');
+    assert.equal(urls.length, 2);
+    assert.deepEqual(urls.map((url) => url.searchParams.get('type')).sort(), ['region', 'state']);
+    assert.equal(picker.choices.value.length, 2);
+    assert.deepEqual(picker.choices.value.map((choice) => choice.location_type), ['state', 'region']);
 
     await picker.loadChildren('oyo');
 
-    assert.equal(urls[1].searchParams.get('type'), 'lga');
-    assert.equal(urls[1].searchParams.get('parent'), 'oyo');
+    assert.equal(urls[2].searchParams.get('type'), null);
+    assert.equal(urls[2].searchParams.get('parent'), 'oyo');
     assert.equal(picker.childrenByState.value.oyo.length, 1);
     assert.equal(picker.childrenByState.value.oyo[0].slug, 'ibadan-north');
 });

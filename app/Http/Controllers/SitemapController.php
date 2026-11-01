@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Location;
 use App\Repositories\OpportunityDiscoveryRepository;
+use Carbon\CarbonInterface;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 
 /**
  * The sitemap is generated from the same evidence-backed discovery query that
@@ -153,7 +153,7 @@ class SitemapController extends Controller
             ->header('Cache-Control', 'public, max-age=1800');
     }
 
-    private function lastmod(?Carbon $date): ?string
+    private function lastmod(?CarbonInterface $date): ?string
     {
         return $date?->toDateString();
     }

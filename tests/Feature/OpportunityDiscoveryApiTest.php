@@ -54,6 +54,27 @@ class OpportunityDiscoveryApiTest extends TestCase
         parent::tearDown();
     }
 
+    public function test_sitemap_includes_only_live_listings_with_a_real_lastmod(): void
+    {
+        $this->enableSyntheticPublicationPolicy();
+        config(['app.url' => 'https://oyafind.com.ng']);
+
+        $this->makeEligible('sitemap-live-listing');
+        $this->makeOpportunity(['slug' => 'sitemap-unverified-listing']);
+
+        $body = (string) $this->get('/sitemap.xml')->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression(
+            '#<loc>https://oyafind\.com\.ng/opportunities/sitemap-live-listing</loc>\s*<lastmod>2026-10-21</lastmod>#',
+            $body,
+        );
+        $this->assertStringNotContainsString('sitemap-unverified-listing', $body);
+
+        $locations = [];
+        preg_match_all('#<loc>(.*?)</loc>#', $body, $locations);
+        $this->assertSame($locations[1], array_values(array_unique($locations[1])));
+    }
+
     public function test_missing_publication_policy_fails_closed_even_for_forged_listing_fields(): void
     {
         $this->makeOpportunity([

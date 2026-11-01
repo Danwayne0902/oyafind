@@ -1,0 +1,19 @@
+name,slug,parent_slug,location_type,catalogue_origin,reviewed_at
+Africa,africa,,region,oyafind_reviewed,2026-10-23 00:00:00
+Asia-Pacific,asia-pacific,,region,oyafind_reviewed,2026-10-23 00:00:00
+Global / Multiple locations,global,,region,oyafind_reviewed,2026-10-23 00:00:00
+Remote / Online,remote,,region,oyafind_reviewed,2026-10-23 00:00:00
+South Africa,south-africa,africa,country,oyafind_reviewed,2026-10-23 00:00:00
+Kenya,kenya,africa,country,oyafind_reviewed,2026-10-23 00:00:00
+Ethiopia,ethiopia,africa,country,oyafind_reviewed,2026-10-23 00:00:00
+Ghana,ghana,africa,country,oyafind_reviewed,2026-10-23 00:00:00
+Senegal,senegal,africa,country,oyafind_reviewed,2026-10-23 00:00:00
+Egypt,egypt,africa,country,oyafind_reviewed,2026-10-23 00:00:00
+Mauritius,mauritius,africa,country,oyafind_reviewed,2026-10-23 00:00:00
+United States,united-states,global,country,oyafind_reviewed,2026-10-23 00:00:00
+United Kingdom,united-kingdom,global,country,oyafind_reviewed,2026-10-23 00:00:00
+Canada,canada,global,country,oyafind_reviewed,2026-10-23 00:00:00
+France,france,global,country,oyafind_reviewed,2026-10-23 00:00:00
+Belgium,belgium,global,country,oyafind_reviewed,2026-10-23 00:00:00
+Denmark,denmark,global,country,oyafind_reviewed,2026-10-23 00:00:00
+Qatar,qatar,global,country,oyafind_reviewed,2026-10-23 00:00:00

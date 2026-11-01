@@ -8,9 +8,10 @@ export function useLocationPicker(emit) {
     const state = ref('idle');
     const error = ref('');
     const loading = ref(false);
-    // States are loaded first. A state's local government areas are requested
-    // only when that state is expanded, so the picker never shows a flat list
-    // of states with unrelated LGAs mixed in.
+    // The default view lists Nigerian states and the beyond-Nigeria regions.
+    // A parent's children (LGAs for a state, countries for a region) are
+    // requested only when it is expanded, so the picker never shows a flat
+    // mixed list of every level at once.
     const childrenByState = ref(Object.create(null));
     const childrenLoading = ref('');
     const childrenError = ref('');
@@ -19,10 +20,25 @@ export function useLocationPicker(emit) {
     let childrenRequestNumber = 0;
 
     function displayName(location) {
-        if (!location.parent?.name || location.parent.location_type === 'country') {
+        // Only LGAs need their state for context. Countries and regions are
+        // already unambiguous on their own.
+        if (!location.parent?.name || location.parent.location_type !== 'state') {
             return location.name;
         }
         return `${location.name} — ${location.parent.name}`;
+    }
+
+    async function loadDefaultChoices() {
+        const [states, regions] = await Promise.all([
+            getLocationChoices('', { type: 'state' }),
+            getLocationChoices('', { type: 'region' }),
+        ]);
+
+        return {
+            items: [...states.items, ...regions.items],
+            state: states.state === 'stale' || regions.state === 'stale' ? 'stale' : states.state,
+            catalogueVersion: states.catalogueVersion ?? regions.catalogueVersion,
+        };
     }
 
     async function loadChoices(search = '') {
@@ -33,8 +49,11 @@ export function useLocationPicker(emit) {
 
         try {
             // Searching spans the whole catalogue so someone can type an LGA
-            // directly; the empty default lists states only.
-            const result = await getLocationChoices(normalizedSearch, normalizedSearch ? {} : { type: 'state' });
+            // or country directly; the empty default lists states plus the
+            // beyond-Nigeria regions.
+            const result = normalizedSearch
+                ? await getLocationChoices(normalizedSearch)
+                : await loadDefaultChoices();
             if (currentRequest !== requestNumber) return;
             choices.value = result.items;
             activeQuery.value = normalizedSearch;
@@ -55,12 +74,14 @@ export function useLocationPicker(emit) {
         childrenError.value = '';
 
         try {
-            const result = await getLocationChoices('', { type: 'lga', parent: stateSlug });
+            // No type filter: a state returns its LGAs and a region returns
+            // its countries, so the hierarchy stays intact.
+            const result = await getLocationChoices('', { parent: stateSlug });
             if (currentRequest !== childrenRequestNumber) return;
             childrenByState.value = { ...childrenByState.value, [stateSlug]: result.items };
         } catch (requestError) {
             if (currentRequest !== childrenRequestNumber) return;
-            childrenError.value = requestError.message || 'The local areas could not be loaded.';
+            childrenError.value = requestError.message || 'The smaller areas could not be loaded.';
         } finally {
             if (currentRequest === childrenRequestNumber) childrenLoading.value = '';
         }

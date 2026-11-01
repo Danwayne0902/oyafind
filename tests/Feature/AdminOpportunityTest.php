@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
+use App\Models\Location;
 use App\Models\Opportunity;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -15,6 +16,8 @@ class AdminOpportunityTest extends TestCase
     private User $admin;
 
     private User $verifier;
+
+    private Location $location;
 
     protected function setUp(): void
     {
@@ -41,6 +44,16 @@ class AdminOpportunityTest extends TestCase
             'slug' => 'jobs',
             'is_active' => true,
             'sort_order' => 0,
+        ]);
+
+        $this->location = Location::query()->create([
+            'name' => 'Synthetic Lagos',
+            'slug' => 'synthetic-lagos',
+            'location_type' => 'state',
+            'is_active' => true,
+            'reviewed_at' => now(),
+            'reviewed_by' => $this->admin->id,
+            'catalogue_origin' => 'oyafind_reviewed',
         ]);
     }
 
@@ -147,6 +160,35 @@ class AdminOpportunityTest extends TestCase
         $this->assertSame('reviewed', $opportunity->fresh()->status);
     }
 
+    public function test_review_requires_a_reviewed_location_before_a_listing_can_progress(): void
+    {
+        $this->actingAs($this->admin)
+            ->post('/admin/opportunities', $this->payload(['location_id' => null]))
+            ->assertRedirect();
+
+        $opportunity = Opportunity::query()->firstOrFail();
+
+        $this->actingAs($this->admin)
+            ->post("/admin/opportunities/{$opportunity->id}/review", [
+                'rationale' => 'Checked the source page.',
+            ])
+            ->assertSessionHasErrors('review');
+
+        $this->assertSame('draft', $opportunity->fresh()->status);
+
+        $this->actingAs($this->admin)
+            ->put("/admin/opportunities/{$opportunity->id}", $this->payload())
+            ->assertRedirect();
+
+        $this->actingAs($this->admin)
+            ->post("/admin/opportunities/{$opportunity->id}/review", [
+                'rationale' => 'Location confirmed against the source page.',
+            ])
+            ->assertRedirect();
+
+        $this->assertSame('reviewed', $opportunity->fresh()->status);
+    }
+
     private function makeUser(string $email, string $role): User
     {
         $user = new User([
@@ -170,7 +212,7 @@ class AdminOpportunityTest extends TestCase
             'summary' => 'A paid twelve-month graduate programme in Lagos.',
             'description' => 'A short original description with a link to the source listing.',
             'category_id' => Category::query()->value('id'),
-            'location_id' => null,
+            'location_id' => $this->location->id,
             'organisation_name' => 'Example Group',
             'source_url' => 'https://example.com/jobs/1',
             'application_url' => null,

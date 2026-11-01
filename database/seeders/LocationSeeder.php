@@ -14,9 +14,9 @@ class LocationSeeder extends Seeder
     /**
      * Seed only explicitly configured, selectable records with review details.
      *
-     * The seeder prefers CSV files under database/seeders/data/nigeria/
-     * (states.csv, lgas.csv) when present, otherwise falls back to
-     * config('oyafind.location_catalogue_seed_records').
+     * The seeder prefers CSV files under database/seeders/data/ when present
+     * (nigeria/states.csv, nigeria/lgas.csv, global/locations.csv),
+     * otherwise it falls back to config('oyafind.location_catalogue_seed_records').
      */
     public function run(PolicyConfiguration $policies): void
     {
@@ -94,11 +94,15 @@ class LocationSeeder extends Seeder
         $dataDir = database_path('seeders/data/nigeria');
         $statesPath = $dataDir.'/states.csv';
         $lgasPath = $dataDir.'/lgas.csv';
+        $globalPath = database_path('seeders/data/global/locations.csv');
 
         if (is_file($statesPath) && is_file($lgasPath)) {
             $records = [];
             $records = array_merge($records, $this->readCsv($statesPath));
             $records = array_merge($records, $this->readCsv($lgasPath));
+            if (is_file($globalPath)) {
+                $records = array_merge($records, $this->readCsv($globalPath));
+            }
             return $records;
         }
 
