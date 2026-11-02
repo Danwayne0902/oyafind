@@ -101,7 +101,10 @@ function childNoun(group, count) {
 }
 
 function isExpanded(group) {
-    return !searchMode.value && expandedState.value === group.state.slug;
+    // Search results are already a narrow list, so show the matching children
+    // inline. In the default list only the expanded parent shows its children.
+    if (searchMode.value) return group.children.length > 0;
+    return expandedState.value === group.state.slug;
 }
 
 function isSelected(group) {
@@ -248,7 +251,7 @@ onUnmounted(() => {
                             <UiIcon v-if="isSelected(group)" name="check" :size="15" />
                         </button>
                         <button
-                            v-if="!group.standalone"
+                            v-if="!group.standalone && !searchMode"
                             class="area-toggle"
                             type="button"
                             :aria-expanded="isExpanded(group)"
