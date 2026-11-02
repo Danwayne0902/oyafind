@@ -63,3 +63,4 @@ Route::get('/verify-email/{user}/{hash}', fn () => app(PublicPageController::cla
 Route::get('/categories/{slug}', [PublicPageController::class, 'category'])->where('slug', '[A-Za-z0-9-]+')->name('categories.show');
 Route::get('/opportunities/{slug}', [PublicPageController::class, 'opportunity'])->where('slug', '[A-Za-z0-9-]+')->name('opportunities.show');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+Route::get('/feed.xml', App\Http\Controllers\FeedController::class)->name('feed');

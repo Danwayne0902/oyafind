@@ -49,6 +49,25 @@ return [
     ],
 
     /*
+    | Sign-in defence. The rate limiter stops bursts from one IP; the lockout
+    | remembers failures per account so a distributed guess is stopped too.
+    | Both are active at once and neither replaces the other.
+    */
+    'auth' => [
+        'max_attempts' => (int) env('OYAFIND_LOGIN_MAX_ATTEMPTS', 5),
+        'decay_minutes' => (int) env('OYAFIND_LOGIN_DECAY_MINUTES', 15),
+        'lockout_minutes' => (int) env('OYAFIND_LOGIN_LOCKOUT_MINUTES', 15),
+        'ip_attempts_per_minute' => (int) env('OYAFIND_LOGIN_IP_ATTEMPTS_PER_MINUTE', 10),
+        'identifier_attempts_per_minute' => (int) env('OYAFIND_LOGIN_IDENTIFIER_ATTEMPTS_PER_MINUTE', 5),
+    ],
+
+    /*
+    | Extra disposable email domains to reject at registration, on top of the
+    | bundled blocklist in resources/data/disposable-email-domains.txt.
+    */
+    'registration_blocked_email_domains' => $csv(env('OYAFIND_REGISTRATION_BLOCKED_EMAIL_DOMAINS')),
+
+    /*
     |--------------------------------------------------------------------------
     | Public opportunity publication policy
     |--------------------------------------------------------------------------
@@ -126,5 +145,16 @@ return [
         // The shipped catalogue under database/seeders/data/nigeria/ is the
         // authoritative source. Keeping this empty makes LocationSeeder load
         // the full states + 774 LGA CSV instead of a partial inline subset.
+    ],
+
+    /*
+    | Search metadata that is not derived from the catalogue. `same_as` accepts
+    | comma-separated profile URLs (social accounts, directories) that prove
+    | the publisher identity to search engines. Leave it empty until the
+    | profiles actually exist — never point it at an account OyaFind does not
+    | control.
+    */
+    'seo' => [
+        'same_as' => $csv(env('OYAFIND_SEO_SAME_AS')),
     ],
 ];

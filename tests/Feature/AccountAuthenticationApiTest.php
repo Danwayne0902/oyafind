@@ -506,12 +506,19 @@ class AccountAuthenticationApiTest extends TestCase
             'status' => 'active',
         ]);
 
-        for ($attempt = 0; $attempt < 5; $attempt++) {
+        for ($attempt = 0; $attempt < 4; $attempt++) {
             $this->postJson('/api/v1/auth/login', [
                 'identifier' => 'throttle@example.test',
                 'password' => 'wrong password',
             ])->assertStatus(422);
         }
+
+        // The fifth failure locks the account, and the correct password no
+        // longer helps until the lockout window passes.
+        $this->postJson('/api/v1/auth/login', [
+            'identifier' => 'throttle@example.test',
+            'password' => 'wrong password',
+        ])->assertStatus(429);
 
         $this->postJson('/api/v1/auth/login', [
             'identifier' => 'throttle@example.test',

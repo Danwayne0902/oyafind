@@ -21,3 +21,12 @@ Schedule::command('opportunities:ingest')
 Schedule::command('opportunities:expire')
     ->hourly()
     ->withoutOverlapping(10);
+
+/*
+ * Lockout counters only matter for the decay window; older rows are noise.
+ */
+Schedule::call(function (): void {
+    \App\Models\LoginAttempt::query()
+        ->where('last_failed_at', '<', now()->subDays(30))
+        ->delete();
+})->daily()->name('prune-login-attempts');

@@ -1,8 +1,13 @@
 *.log
 .DS_Store
+# Local secrets never leave the machine. Only the checked-in examples are
+# allowed, and the negations must come after the broad patterns.
 .env
-.env.backup
-.env.production
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!deploy/.env.production.example
 .phpactor.json
 .phpunit.result.cache
 /.fleet

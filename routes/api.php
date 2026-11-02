@@ -49,7 +49,7 @@ Route::middleware('web')->prefix('/v1')->group(function (): void {
         ->middleware(['signed', 'throttle:6,1'])
         ->name('api.v1.auth.verify-email.confirm');
     Route::post('/auth/login', [AuthController::class, 'login'])
-        ->middleware('throttle:6,1')
+        ->middleware('throttle:login')
         ->name('api.v1.auth.login');
     Route::post('/auth/logout', [AuthController::class, 'logout'])
         ->middleware('auth:web')

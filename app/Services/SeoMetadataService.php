@@ -5,6 +5,9 @@ namespace App\Services;
 use App\Models\Category;
 use App\Models\Location;
 use App\Models\Opportunity;
+use App\Repositories\OpportunityDiscoveryRepository;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -15,8 +18,34 @@ use Illuminate\Support\Str;
  */
 class SeoMetadataService
 {
+    /**
+     * ISO 3166-1 alpha-2 codes for the beyond-Nigeria countries in the
+     * catalogue. Google Jobs validates addressCountry against this list, so a
+     * missing entry is omitted rather than guessed.
+     *
+     * @var array<string, string>
+     */
+    private const COUNTRY_CODES = [
+        'nigeria' => 'NG',
+        'united-states' => 'US',
+        'united-kingdom' => 'GB',
+        'canada' => 'CA',
+        'france' => 'FR',
+        'belgium' => 'BE',
+        'denmark' => 'DK',
+        'qatar' => 'QA',
+        'mauritius' => 'MU',
+        'south-africa' => 'ZA',
+        'kenya' => 'KE',
+        'ethiopia' => 'ET',
+        'ghana' => 'GH',
+        'senegal' => 'SN',
+        'egypt' => 'EG',
+    ];
+
     public function __construct(
         private readonly DiscoveryService $discovery,
+        private readonly OpportunityDiscoveryRepository $opportunities,
     ) {}
 
     /**
@@ -206,12 +235,17 @@ class SeoMetadataService
             'fallback' => [
                 'h1' => $heading,
                 'intro' => $description,
-                'links' => $this->discovery->listPublicCategories()
-                    ->map(fn (Category $item): array => [
-                        'label' => $item->name,
-                        'url' => $this->url('/categories/'.$item->slug),
-                    ])
-                    ->all(),
+                'links' => array_merge(
+                    $this->areaLinks($category),
+                    $this->discovery->listPublicCategories()
+                        ->reject(fn (Category $item): bool => $item->id === $category->id)
+                        ->map(fn (Category $item): array => [
+                            'label' => 'All '.$item->name,
+                            'url' => $this->url('/categories/'.$item->slug),
+                        ])
+                        ->values()
+                        ->all(),
+                ),
                 'items' => $this->fallbackItems($items),
             ],
         ]);
@@ -255,6 +289,20 @@ class SeoMetadataService
             $schemas[] = $listingSchema;
         }
 
+        $links = [
+            ['label' => 'All '.$category->name, 'url' => $this->url('/categories/'.$category->slug)],
+        ];
+
+        if ($location !== null) {
+            $area = $this->areaForLocation($location);
+            $links[] = [
+                'label' => $category->name.' in '.$area->name,
+                'url' => $this->url('/categories/'.$category->slug).'?location='.urlencode($area->slug),
+            ];
+        }
+
+        $links[] = ['label' => 'Browse every category', 'url' => $this->url('/categories')];
+
         return $this->page([
             'title' => Str::limit($opportunity->title, 62, '').' | OyaFind',
             'description' => $description,
@@ -271,9 +319,7 @@ class SeoMetadataService
                         ? 'Deadline '.$opportunity->deadline_at->format('j F Y')
                         : null,
                 ])),
-                'links' => [
-                    ['label' => 'All '.$category->name, 'url' => $this->url('/categories/'.$category->slug)],
-                ],
+                'links' => $links,
                 'sourceUrl' => $opportunity->source_url ?: $opportunity->application_url,
                 'items' => [],
             ],
@@ -352,7 +398,7 @@ class SeoMetadataService
      */
     private function page(array $values): array
     {
-        return array_merge([
+        $page = array_merge([
             'title' => 'OyaFind',
             'description' => 'Opportunities for work, learning and business in Nigeria and beyond.',
             'canonical' => $this->url('/'),
@@ -367,6 +413,36 @@ class SeoMetadataService
                 'items' => [],
             ],
         ], $values);
+
+        $page['jsonLd'] = $this->withBaseSchemas((array) $page['jsonLd']);
+
+        return $page;
+    }
+
+    /**
+     * Every page carries the site identity, even when a caller forgot it.
+     * Search engines use the Organization + WebSite pair to connect listings to
+     * one publisher and to show the site name in results.
+     *
+     * @param  list<array<string, mixed>>  $schemas
+     * @return list<array<string, mixed>>
+     */
+    private function withBaseSchemas(array $schemas): array
+    {
+        $types = array_map(
+            static fn (array $schema): string => (string) ($schema['@type'] ?? ''),
+            $schemas,
+        );
+
+        if (! in_array('Organization', $types, true)) {
+            array_unshift($schemas, $this->organisationSchema());
+        }
+
+        if (! in_array('WebSite', $types, true)) {
+            array_unshift($schemas, $this->websiteSchema());
+        }
+
+        return array_values($schemas);
     }
 
     /**
@@ -399,13 +475,23 @@ class SeoMetadataService
     {
         $category = $opportunity->category?->slug;
         $description = Str::limit(strip_tags((string) $opportunity->description), 5000, '');
-        $location = [
+        $location = $opportunity->location;
+        $area = $location !== null ? $this->areaForLocation($location) : null;
+        $isRemote = $location !== null
+            && ($location->slug === 'remote' || $location->parent?->slug === 'remote');
+        $countryCode = $this->countryCodeFor($location);
+        $posted = $opportunity->published_at ?? $opportunity->created_at;
+
+        $place = [
             '@type' => 'Place',
             'address' => array_filter([
                 '@type' => 'PostalAddress',
-                'addressLocality' => $opportunity->location?->name,
-                'addressCountry' => 'NG',
-            ]),
+                'addressLocality' => $location?->name,
+                'addressRegion' => $area !== null && $location !== null && $area->id !== $location->id
+                    ? $area->name
+                    : null,
+                'addressCountry' => $countryCode,
+            ], static fn (mixed $value): bool => $value !== null && $value !== ''),
         ];
 
         if ($category === 'jobs') {
@@ -414,14 +500,20 @@ class SeoMetadataService
                 '@type' => 'JobPosting',
                 'title' => $opportunity->title,
                 'description' => $description,
-                'datePosted' => $opportunity->published_at?->toIso8601String(),
+                'identifier' => [
+                    '@type' => 'PropertyValue',
+                    'name' => 'OyaFind',
+                    'value' => (string) $opportunity->id,
+                ],
+                'datePosted' => $posted?->toIso8601String(),
                 'validThrough' => $opportunity->deadline_at?->toIso8601String(),
                 'employmentType' => $this->employmentType($opportunity),
                 'hiringOrganization' => [
                     '@type' => 'Organization',
                     'name' => $opportunity->organisation_name,
                 ],
-                'jobLocation' => $location,
+                'jobLocation' => $isRemote ? null : $place,
+                'jobLocationType' => $isRemote ? 'TELECOMMUTE' : null,
                 'url' => $this->url('/opportunities/'.$opportunity->slug),
                 'directApply' => false,
             ];
@@ -500,14 +592,148 @@ class SeoMetadataService
      */
     private function organisationSchema(): array
     {
-        return [
+        $sameAs = array_values(array_filter(
+            array_map(
+                static fn (mixed $url): string => is_string($url) ? trim($url) : '',
+                (array) config('oyafind.seo.same_as', []),
+            ),
+            static fn (string $url): bool => $url !== '',
+        ));
+
+        return array_filter([
             '@context' => 'https://schema.org',
             '@type' => 'Organization',
             'name' => 'OyaFind',
             'url' => $this->url('/'),
             'logo' => $this->url('/icons/oyafind-light-512.png'),
             'description' => 'OyaFind shares source-checked opportunities for work, learning and business in Nigeria and beyond.',
+            'areaServed' => [
+                ['@type' => 'Country', 'name' => 'Nigeria'],
+            ],
+            'knowsLanguage' => 'en-NG',
+            'sameAs' => $sameAs === [] ? null : $sameAs,
+        ], static fn (mixed $value): bool => $value !== null);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function websiteSchema(): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            'name' => 'OyaFind',
+            'alternateName' => 'OyaFind Nigeria',
+            'url' => $this->url('/'),
+            'inLanguage' => 'en-NG',
+            'publisher' => [
+                '@type' => 'Organization',
+                'name' => 'OyaFind',
+                'url' => $this->url('/'),
+            ],
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => [
+                    '@type' => 'EntryPoint',
+                    'urlTemplate' => $this->url('/search').'?q={search_term_string}',
+                ],
+                'query-input' => 'required name=search_term_string',
+            ],
         ];
+    }
+
+    /**
+     * The area a listing belongs to for navigation: an LGA is grouped under
+     * its state, everything else stands for itself. This keeps "Jobs in Lagos"
+     * links pointing at the state rather than at the country or one LGA.
+     */
+    private function areaForLocation(Location $location): Location
+    {
+        if ($location->location_type === 'lga' && $location->parent !== null) {
+            return $location->parent;
+        }
+
+        return $location;
+    }
+
+    /**
+     * Crawlable links from a category page to the areas that actually hold
+     * listings in that category. They reuse the public discovery query, so a
+     * link can never advertise a withdrawn or unverified listing.
+     *
+     * @return list<array{label: string, url: string}>
+     */
+    private function areaLinks(Category $category, int $limit = 10): array
+    {
+        $query = $this->opportunities->publicListingQuery(['category' => $category->slug]);
+
+        if ($query === null) {
+            return [];
+        }
+
+        /** @var Collection<int, int> $counts */
+        $counts = $query
+            ->whereNotNull('location_id')
+            ->select('location_id', DB::raw('count(*) as aggregate'))
+            ->groupBy('location_id')
+            ->pluck('aggregate', 'location_id');
+
+        if ($counts->isEmpty()) {
+            return [];
+        }
+
+        $locations = Location::query()
+            ->whereIn('id', $counts->keys()->all())
+            ->with('parent')
+            ->get()
+            ->keyBy('id');
+
+        $tallies = [];
+        foreach ($counts as $locationId => $count) {
+            $location = $locations->get((int) $locationId);
+            if ($location === null) {
+                continue;
+            }
+
+            $area = $this->areaForLocation($location);
+            $tallies[$area->id] = ($tallies[$area->id] ?? 0) + (int) $count;
+        }
+
+        arsort($tallies);
+
+        $areaIds = array_slice(array_keys($tallies), 0, $limit);
+        $areas = Location::query()->whereIn('id', $areaIds)->get()->keyBy('id');
+
+        $links = [];
+        foreach ($areaIds as $areaId) {
+            $area = $areas->get((int) $areaId);
+            if ($area === null) {
+                continue;
+            }
+
+            $links[] = [
+                'label' => $category->name.' in '.$area->name,
+                'url' => $this->url('/categories/'.$category->slug).'?location='.urlencode($area->slug),
+            ];
+        }
+
+        return $links;
+    }
+
+    private function countryCodeFor(?Location $location): ?string
+    {
+        if ($location === null) {
+            return null;
+        }
+
+        foreach ([$location, $location->parent] as $candidate) {
+            if ($candidate !== null && isset(self::COUNTRY_CODES[$candidate->slug])) {
+                return self::COUNTRY_CODES[$candidate->slug];
+            }
+        }
+
+        return null;
     }
 
     private function url(string $path): string

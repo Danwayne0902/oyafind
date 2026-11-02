@@ -5,6 +5,18 @@
 
     RewriteEngine On
 
+    # Dotfiles are never public. The ACME challenge path is exempt so
+    # certificate validation keeps working if this file is ever used instead
+    # of Caddy.
+    RewriteRule "(^|/)\.(?!well-known/)" - [F,L]
+
+    # Repository and runtime paths that must not be reachable even when the
+    # document root is misconfigured.
+    RewriteRule "(^|/)(vendor|storage|bootstrap|database|tests|deploy|node_modules)/" - [F,L]
+
+    # Build metadata that should never be downloadable.
+    RewriteRule "(^|/)(composer\.(json|lock)|package(-lock)?\.json|artisan|phpunit\.xml(\.dist)?|Dockerfile|docker-compose\.ya?ml|README\.md|AGENTS\.md)$" - [F,L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

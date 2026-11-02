@@ -8,11 +8,10 @@ use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use App\Services\AccountAuthenticationService;
 use App\Services\AccountRegistrationService;
+use App\Services\LoginLockoutService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -128,38 +127,36 @@ class AuthController extends Controller
     public function login(
         LoginRequest $request,
         AccountAuthenticationService $authentication,
+        LoginLockoutService $lockout,
     ): JsonResponse {
-        // The route-level throttle stops one client hammering the endpoint.
-        // This second limit is keyed by the identifier itself, so a distributed
-        // attempt against one account is slowed without locking out everyone
-        // who shares an office or mobile network IP.
-        $throttleKey = $this->loginThrottleKey($request);
-        $maxAttempts = 5;
+        $identifier = (string) $request->validated('identifier');
 
-        if (RateLimiter::tooManyAttempts($throttleKey, $maxAttempts)) {
-            $retryAfter = RateLimiter::availableIn($throttleKey);
-
-            return response()
-                ->json([
-                    'message' => 'Too many sign-in attempts for this account. Try again in '.max(1, (int) ceil($retryAfter / 60)).' minute(s).',
-                ], 429)
-                ->header('Retry-After', (string) $retryAfter);
+        // The route's `login` limiter already capped this IP and this
+        // IP + identifier pair. The lockout is the durable layer: it keeps
+        // counting failures for the account even when the attacker changes IP.
+        $state = $lockout->status($identifier);
+        if ($state['locked']) {
+            return $this->lockedResponse($state['retry_after']);
         }
 
         $user = $authentication->authenticate(
-            $request->validated('identifier'),
+            $identifier,
             $request->validated('password'),
         );
 
         if (! $user) {
-            RateLimiter::hit($throttleKey, 900);
+            $state = $lockout->recordFailure($identifier);
+
+            if ($state['locked']) {
+                return $this->lockedResponse($state['retry_after']);
+            }
 
             return response()->json([
                 'message' => 'The provided credentials are invalid or the account is unavailable.',
             ], 422);
         }
 
-        RateLimiter::clear($throttleKey);
+        $lockout->clear($identifier);
         Auth::guard('web')->login($user);
         $request->session()->regenerate();
 
@@ -168,11 +165,15 @@ class AuthController extends Controller
         ]);
     }
 
-    private function loginThrottleKey(Request $request): string
+    private function lockedResponse(int $retryAfter): JsonResponse
     {
-        $identifier = Str::lower(trim((string) $request->input('identifier')));
+        $minutes = max(1, (int) ceil($retryAfter / 60));
 
-        return 'login-attempt:'.hash('sha256', $identifier).'|'.$request->ip();
+        return response()
+            ->json([
+                'message' => 'Too many failed sign-in attempts. Try again in '.$minutes.' minute(s).',
+            ], 429)
+            ->header('Retry-After', (string) max(1, $retryAfter));
     }
 
     public function logout(Request $request): JsonResponse

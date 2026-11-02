@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
+use App\Rules\NotDisposableEmail;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
@@ -33,7 +34,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:120'],
-            'contact' => ['required', 'string', 'max:190'],
+            'contact' => ['required', 'string', 'max:190', new NotDisposableEmail()],
             'password' => ['required', 'string', 'min:12', 'max:255', 'confirmed'],
             'role' => ['prohibited'],
             'status' => ['prohibited'],

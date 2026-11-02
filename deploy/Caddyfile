@@ -40,8 +40,21 @@
 
 	# A browser should never guess a type, and PHP must not be reachable
 	# through any path other than the front controller.
-	@hidden path /.env* /.git* /vendor/* /composer.* /package.json
+	#
+	# Dotfiles are never public: .env, .git, .htaccess and friends are all
+	# refused. Caddy answers ACME challenges from its own automation handler
+	# before site routes run, so /.well-known is not affected by this rule.
+	@hidden path_regexp hidden (^|/)\.
 	respond @hidden 404
+
+	# Repository and runtime directories. These live above the document root
+	# today, so this is defence in depth for a misconfigured root.
+	@internal path_regexp internal ^/(vendor|storage|bootstrap|database|tests|deploy|node_modules)(/|$)
+	respond @internal 404
+
+	# Build and repository metadata that should never be downloadable.
+	@metadata path_regexp metadata ^/(composer\.(json|lock)|package(-lock)?\.json|artisan|phpunit\.xml(\.dist)?|Dockerfile|docker-compose\.ya?ml|README\.md|AGENTS\.md)$
+	respond @metadata 404
 
 	log {
 		output stdout

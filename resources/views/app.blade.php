@@ -35,6 +35,10 @@
     <meta name="description" content="{{ $pageMeta['description'] }}">
     <link rel="canonical" href="{{ $pageMeta['canonical'] }}">
     <meta name="robots" content="{{ $pageMeta['robots'] }}">
+    @if (! empty(config('services.google.site_verification')))
+        <meta name="google-site-verification" content="{{ config('services.google.site_verification') }}">
+    @endif
+    <link rel="alternate" type="application/rss+xml" title="OyaFind — latest opportunities" href="{{ url('/feed.xml') }}">
     <meta property="og:site_name" content="OyaFind">
     <meta property="og:type" content="{{ $pageMeta['type'] }}">
     <meta property="og:title" content="{{ $pageMeta['title'] }}">
