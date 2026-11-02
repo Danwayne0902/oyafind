@@ -54,6 +54,13 @@ class OpportunityDiscoveryApiTest extends TestCase
         parent::tearDown();
     }
 
+    public function test_api_validation_errors_stay_json_even_without_a_json_accept_header(): void
+    {
+        $this->get('/api/v1/opportunities?per_page=500', ['Accept' => 'text/html'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('per_page');
+    }
+
     public function test_sitemap_includes_only_live_listings_with_a_real_lastmod(): void
     {
         $this->enableSyntheticPublicationPolicy();

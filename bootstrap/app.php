@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\ForceJsonResponse;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -30,6 +31,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => EnsureUserIsAdmin::class,
         ]);
+
+        // API errors must stay JSON even when the caller omits Accept.
+        $middleware->api(prepend: [ForceJsonResponse::class]);
 
         // Browser hardening applies to every response, including Blade and
         // JSON errors, so it is appended globally rather than per route group.
