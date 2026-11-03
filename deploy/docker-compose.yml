@@ -54,6 +54,24 @@ services:
         networks:
             - oyafind
 
+    # Browser database client for the owner. It is published on the VM
+    # loopback only, so it is reachable through the same SSH tunnel as MySQL
+    # and never from the public internet. Adminer still asks for the database
+    # credentials; the default server is pre-filled so no host name is typed.
+    adminer:
+        image: adminer:4
+        restart: unless-stopped
+        environment:
+            ADMINER_DEFAULT_SERVER: mysql
+            ADMINER_DESIGN: pepa-linha
+        ports:
+            - "127.0.0.1:8081:8080"
+        depends_on:
+            mysql:
+                condition: service_healthy
+        networks:
+            - oyafind
+
     app:
         build: *app-build
         image: oyafind-app:latest
