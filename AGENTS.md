@@ -34,6 +34,10 @@ every session, even when a task seems to make an exception obvious.
 
 - Production host: `ubuntu@145.241.204.16`, repo at `/opt/oyafind`, compose
   files in `/opt/oyafind/deploy` (root-owned; use `sudo git pull --ff-only`).
+- Database access: `db-access` publishes `127.0.0.1:13306` on the VM; connect
+  through `ssh -N -L 13306:127.0.0.1:13306 ubuntu@145.241.204.16`. Credentials
+  live in `deploy/.env` (`DB_USERNAME`/`DB_PASSWORD`). Never publish MySQL on a
+  public interface.
 - Code changes require `sudo docker compose build app scheduler web` and
   `up -d --force-recreate app scheduler web`; images have no bind mounts, so
   CSV, view, and PHP changes only appear after a rebuild.

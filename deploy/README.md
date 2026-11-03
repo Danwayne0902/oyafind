@@ -189,6 +189,22 @@ make restore-db FILE=/var/backups/oyafind/db-20261026T021500Z.sql.gz
 **Renewing certificates** — automatic. Caddy renews at 30 days remaining and
 persists them in the `caddy-data` volume.
 
+**Database access**
+
+MySQL is not published on a public interface. The `db-access` service forwards
+`127.0.0.1:13306` on the VM to the `mysql` container, so connect through an SSH
+tunnel:
+
+```bash
+ssh -N -L 13306:127.0.0.1:13306 ubuntu@145.241.204.16
+# then, from another terminal:
+mysql -h 127.0.0.1 -P 13306 -u oyafind -p oyafind
+```
+
+Use the `DB_USERNAME` / `DB_PASSWORD` values from `deploy/.env`. Point
+TablePlus/DBeaver at `127.0.0.1:13306` with the same SSH host as the tunnel.
+Take a backup (`sudo make backup`) before any manual write.
+
 **Disk** — the stack idles around 1.2 GB of RAM and grows the database slowly.
 `docker system prune -af --volumes` is safe only after you have restored from a
 backup at least once, because it can remove images you would need mid-rollback.
