@@ -64,6 +64,23 @@ class DeploymentHardeningTest extends TestCase
     }
 
     /**
+     * Database tooling must never be reachable from the public internet. This
+     * pins both ports to the loopback interface so a future edit cannot quietly
+     * publish MySQL or Adminer to the world.
+     */
+    public function test_database_access_services_are_bound_to_loopback_only(): void
+    {
+        $compose = (string) file_get_contents(base_path('deploy/docker-compose.yml'));
+
+        $this->assertStringContainsString('"127.0.0.1:13306:3306"', $compose);
+        $this->assertStringContainsString('"127.0.0.1:8081:8080"', $compose);
+
+        // A bare "8081:8080" would bind every interface; fail on that shape.
+        $this->assertDoesNotMatchRegularExpression('/^\s*-\s*"?(3306|8081):/m', $compose);
+        $this->assertStringNotContainsString('"0.0.0.0:', $compose);
+    }
+
+    /**
      * @return list<string>|null
      */
     private function gitTrackedFiles(): ?array

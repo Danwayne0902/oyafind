@@ -201,9 +201,46 @@ ssh -N -L 13306:127.0.0.1:13306 ubuntu@145.241.204.16
 mysql -h 127.0.0.1 -P 13306 -u oyafind -p oyafind
 ```
 
+**Browser database access (Adminer)**
+
+There is no cPanel on this VM — the stack is self-managed. For a browser
+interface, the `adminer` service listens on `127.0.0.1:8081` and is reachable
+only through an SSH tunnel:
+
+```bash
+ssh -N -L 8081:127.0.0.1:8081 ubuntu@145.241.204.16
+# then open http://127.0.0.1:8081 in a browser
+```
+
+Log in with:
+
+| Field | Value |
+|---|---|
+| Server | `mysql` (pre-filled) |
+| Username | `DB_USERNAME` from `deploy/.env` |
+| Password | `DB_PASSWORD` from `deploy/.env` |
+| Database | `oyafind` |
+
+Both ports are bound to `127.0.0.1` on purpose. Nothing is published on the
+public interface, and neither service answers on the domain or the VM's public
+IP. Do not change these bindings to `0.0.0.0` or `8081:8080`; a database UI on
+the open internet is found and attacked within hours. Take a backup
+(`sudo make backup`) before any manual write, and close the tunnel when done.
+
 Use the `DB_USERNAME` / `DB_PASSWORD` values from `deploy/.env`. Point
 TablePlus/DBeaver at `127.0.0.1:13306` with the same SSH host as the tunnel.
 Take a backup (`sudo make backup`) before any manual write.
+
+**Downloading a backup**
+
+```bash
+scp -i ~/.ssh/id_ed25519 \
+  ubuntu@145.241.204.16:/var/backups/oyafind/db-20261103T065306Z.sql.gz .
+```
+
+Restore with `make restore-db FILE=...` only after you have confirmed the dump
+is intact (`zcat FILE | tail -3` should end with `-- Dump completed`).
+
 
 **Disk** — the stack idles around 1.2 GB of RAM and grows the database slowly.
 `docker system prune -af --volumes` is safe only after you have restored from a

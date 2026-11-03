@@ -38,6 +38,9 @@ every session, even when a task seems to make an exception obvious.
   through `ssh -N -L 13306:127.0.0.1:13306 ubuntu@145.241.204.16`. Credentials
   live in `deploy/.env` (`DB_USERNAME`/`DB_PASSWORD`). Never publish MySQL on a
   public interface.
+- Browser database access: `adminer` on `127.0.0.1:8081` (`ssh -N -L
+  8081:127.0.0.1:8081 ...`, server `mysql`). It must stay loopback-only; there
+  is no cPanel on this host.
 - Code changes require `sudo docker compose build app scheduler web` and
   `up -d --force-recreate app scheduler web`; images have no bind mounts, so
   CSV, view, and PHP changes only appear after a rebuild.
