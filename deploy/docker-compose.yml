@@ -39,14 +39,15 @@ services:
             - oyafind
 
     # Loopback-only MySQL proxy for the owner's SSH tunnel. It listens on
-    # 127.0.0.1:3306 on the VM and forwards to the mysql service, so the
-    # database is never reachable from the public internet.
+    # 127.0.0.1:13306 on the VM (3306 belongs to the host's own MySQL) and
+    # forwards to the mysql service, so the database is never reachable from
+    # the public internet.
     db-access:
         image: alpine/socat
         restart: unless-stopped
         command: tcp-listen:3306,fork,reuseaddr tcp-connect:mysql:3306
         ports:
-            - "127.0.0.1:3306:3306"
+            - "127.0.0.1:13306:3306"
         depends_on:
             mysql:
                 condition: service_healthy
