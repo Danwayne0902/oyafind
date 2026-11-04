@@ -52,15 +52,40 @@ signup pushes you to a paid plan, use Option B or C instead of paying.
 
 **Steps**
 
-1. Sign up at `zoho.com/mail` → *Business Email* → *Forever Free*.
-2. Verify the mobile number (Zoho requires SMS verification).
-3. Add the existing domain `oyafind.com.ng`; Zoho gives you a TXT record to
-   prove ownership. Add it at AfeesHost (your DNS host) and verify.
-4. Create the mailbox `hello@oyafind.com.ng` and note the exact **MX** and
-   **SPF** values Zoho's console shows for your data centre — they differ by
-   region, so copy them rather than using values from a blog.
-5. Add the MX records **after** the mailbox exists, so mail is never sent to a
-   server that does not yet have the account.
+1. Go to `zoho.com/mail` → **Business Email** → the *Forever Free* card. Do not
+   start a trial; a trial later downgrades to free and loses users.
+2. Sign up with an address you already read (a personal one is fine here), then
+   verify the mobile number — Zoho requires SMS verification.
+3. Create the organisation named **OyaFind**, then **Add an existing domain** →
+   `oyafind.com.ng`.
+4. Zoho shows a TXT record to prove ownership. Add it at AfeesHost
+   (cPanel → *Zone Editor* → `oyafind.com.ng` → *Add Record*, type TXT), wait a
+   few minutes, then click verify. `./scripts/mail-check.sh` will not show it —
+   verification TXT records are provider-specific.
+5. Create the mailbox `hello@oyafind.com.ng`. Do this **before** touching MX.
+6. Open the admin console → *Domains* → `oyafind.com.ng` → **MX** and copy the
+   three host names for your region (they are not interchangeable):
+
+   | Data centre | MX hosts | SPF include |
+   |---|---|---|
+   | US | `mx.zoho.com`, `mx2.zoho.com`, `mx3.zoho.com` | `include:zoho.com` |
+   | EU | `mx.zoho.eu`, `mx2.zoho.eu`, `mx3.zoho.eu` | `include:zoho.eu` |
+   | India | `mx.zoho.in`, `mx2.zoho.in`, `mx3.zoho.in` | `include:zoho.in` |
+
+   Whichever rows the console shows is the one that is true for you.
+7. Add the MX records at AfeesHost, priorities 10 / 20 / 50.
+8. Enable **DKIM** in the Zoho console and copy the `zoho._domainkey` TXT value
+   into DNS. Then update the existing SPF line to
+   `v=spf1 include:spf.brevo.com include:zoho.<region> -all` — **one** record,
+   never a second one.
+9. Add DMARC: `_dmarc` → `v=DMARC1; p=none; rua=mailto:dmarc@oyafind.com.ng; fo=1`.
+10. Run `./scripts/mail-check.sh`. It also tells you which Zoho region answered,
+    so a US/EU mismatch shows up immediately instead of as missing mail.
+
+**What to send back for verification:** the output of `./scripts/mail-check.sh`
+and one test message sent from `hello@oyafind.com.ng` to a Gmail address you
+own. The Gmail *Show original* panel should list `SPF: PASS`, `DKIM: PASS`,
+`DMARC: PASS`.
 
 ## Option B — the mailbox your registrar may already include
 

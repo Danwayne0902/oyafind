@@ -14,7 +14,7 @@
 set -uo pipefail
 
 DOMAIN="${1:-oyafind.com.ng}"
-DKIM_SELECTORS="${DKIM_SELECTORS:-brevo mail default s1 s2 k1 google}"
+DKIM_SELECTORS="${DKIM_SELECTORS:-zoho zmail brevo mail default s1 s2 k1 google}"
 
 pass() { printf '  \033[32mPASS\033[0m  %s\n' "$1"; }
 fail() { printf '  \033[31mFAIL\033[0m  %s\n' "$1"; }
@@ -83,4 +83,29 @@ if [ -n "${mx}" ] && [ -n "${spf}" ] && [ "${dkim_found}" -eq 1 ] && [ -n "${dma
     pass "${DOMAIN} can both send and receive; safe to use for social accounts"
 else
     fail "Not ready to be published as a brand address yet"
+fi
+
+# --- Which mailbox provider is answering -------------------------------------
+# Zoho runs separate data centres with different host names, so "is it Zoho"
+# is really "which Zoho". This matters because MX and SPF must name the same
+# region, and a mismatch silently drops mail.
+if [ -n "${mx}" ]; then
+    echo
+    echo "Mailbox provider"
+    case "${mx}" in
+        *zoho.eu*)    echo "        Zoho Mail, EU data centre (mx.zoho.eu, include:zoho.eu)" ;;
+        *zoho.in*)    echo "        Zoho Mail, India data centre (mx.zoho.in, include:zoho.in)" ;;
+        *zoho.com*)   echo "        Zoho Mail, US data centre (mx.zoho.com, include:zoho.com)" ;;
+        *zoho*)       echo "        Zoho Mail, other region — copy MX and SPF from the admin console" ;;
+        *afeeshost*|*afees*) echo "        AfeesHost cPanel mail (host-managed SPF/DKIM)" ;;
+        *)            echo "        Unrecognised: $(echo "${mx}" | head -1)" ;;
+    esac
+
+    if [ -n "${spf}" ] && echo "${mx}" | grep -qi zoho; then
+        if echo "${spf}" | grep -qi 'include:zoho'; then
+            pass "SPF authorises Zoho"
+        else
+            fail "MX points at Zoho but SPF does not include it — Zoho must be able to send as this domain"
+        fi
+    fi
 fi
