@@ -205,12 +205,24 @@ mysql -h 127.0.0.1 -P 13306 -u oyafind -p oyafind
 
 There is no cPanel on this VM — the stack is self-managed. For a browser
 interface, the `adminer` service listens on `127.0.0.1:8081` and is reachable
-only through an SSH tunnel:
+only through an SSH tunnel. From a checkout of this repository:
+
+```bash
+./scripts/db-browser.sh          # opens the tunnel and your browser
+./scripts/db-browser.sh close    # closes it when you are done
+```
+
+Or do it by hand, keeping the first command running:
 
 ```bash
 ssh -N -L 8081:127.0.0.1:8081 ubuntu@145.241.204.16
 # then open http://127.0.0.1:8081 in a browser
 ```
+
+If the address does not open, nothing is listening on your side — the tunnel
+is the only thing that makes `127.0.0.1:8081` exist on your computer. Check
+with `lsof -nP -iTCP:8081 -sTCP:LISTEN`, and note that the tunnel must run on
+the same machine as the browser.
 
 Log in with:
 
