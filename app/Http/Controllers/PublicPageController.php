@@ -61,4 +61,13 @@ class PublicPageController extends Controller
     {
         return response()->view('app', ['meta' => $this->seo->staticPage($page)]);
     }
+
+    /**
+     * Unknown public URLs get the same shell and the same not-found screen the
+     * client router uses, with a real 404 status for crawlers.
+     */
+    public function notFound(): Response
+    {
+        return response()->view('app', ['meta' => $this->seo->notFound()], 404);
+    }
 }

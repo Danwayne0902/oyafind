@@ -145,11 +145,9 @@ const filteredCategories = computed(() => {
                 :key="cat.slug"
                 class="category-detail-card"
                 :class="`tone-${cat.tone}`"
+                data-reveal
             >
                 <div class="card-head">
-                    <span class="category-card-icon" :class="`icon-${cat.tone}`">
-                        <UiIcon :name="cat.icon" :size="24" />
-                    </span>
                     <div class="card-title-group">
                         <span class="category-badge">{{ cat.tag }}</span>
                         <h2>{{ cat.name }}</h2>
@@ -196,7 +194,7 @@ const filteredCategories = computed(() => {
             </button>
         </div>
 
-        <aside class="trust-notice-banner" aria-label="Our publishing standard">
+        <aside class="trust-notice-banner" aria-label="Our publishing standard" data-reveal>
             <span class="notice-icon"><UiIcon name="shield-check" :size="26" /></span>
             <div>
                 <h3>One standard for every category</h3>

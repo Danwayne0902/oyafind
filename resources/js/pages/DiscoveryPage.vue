@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import OpportunityCard from '../components/OpportunityCard.vue';
 import LocationPicker from '../components/LocationPicker.vue';
 import UiIcon from '../components/UiIcon.vue';
@@ -22,6 +22,26 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:query', 'search', 'navigate', 'location', 'save', 'sort']);
+
+/*
+ * `ready` gates the masthead's type-setting animation. It is set one frame
+ * after mount so the browser can paint the initial (hidden) state first;
+ * otherwise the rise is skipped on a cached load.
+ */
+const ready = ref(false);
+
+onMounted(() => {
+    requestAnimationFrame(() => {
+        ready.value = true;
+    });
+});
+
+const dateline = new Intl.DateTimeFormat('en-NG', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+}).format(new Date());
 
 const FALLBACK_CATEGORIES = [
     { name: 'Jobs', slug: 'jobs', icon: 'briefcase' },
@@ -82,8 +102,17 @@ function changeSort(event) {
 </script>
 
 <template>
-    <section class="explore-page">
+    <section class="explore-page" :class="{ 'is-ready': ready }">
         <header class="masthead">
+            <div class="masthead-dateline">
+                <span>
+                    National edition
+                    <span class="masthead-dateline-sep" aria-hidden="true"></span>
+                    {{ dateline }}
+                </span>
+                <span><strong>36</strong> states + FCT</span>
+            </div>
+
             <div class="masthead-inner">
                 <div class="masthead-lead">
                     <p class="pilot-eyebrow">
@@ -91,8 +120,8 @@ function changeSort(event) {
                         <span class="pilot-sub">&amp; beyond</span>
                     </p>
                     <h1>
-                        Find what’s next,<br>
-                        <span class="masthead-highlight">closer to home.</span>
+                        <span class="line"><span>Find what’s next,</span></span>
+                        <span class="line"><span><span class="masthead-highlight">closer to home.</span></span></span>
                     </h1>
                     <p class="masthead-copy">
                         Jobs, scholarships, grants, training and gigs for people building a living anywhere in Nigeria.
@@ -136,7 +165,6 @@ function changeSort(event) {
 
                 <aside class="masthead-cards" aria-label="What OyaFind does">
                     <article class="masthead-card">
-                        <span class="masthead-card-icon"><UiIcon name="shield-check" :size="18" /></span>
                         <p class="masthead-card-kicker">Checked before listing</p>
                         <h2>Source and details checked, with the date shown.</h2>
                         <p>Every public listing records when OyaFind last checked its source. A check is not an endorsement or a guarantee.</p>
@@ -145,12 +173,11 @@ function changeSort(event) {
                         </a>
                     </article>
 
-                    <article class="masthead-card is-ink">
+                    <article class="masthead-card">
                         <div class="masthead-card-top">
-                            <span class="masthead-card-icon"><UiIcon name="pin" :size="18" /></span>
+                            <p class="masthead-card-kicker">One national ledger</p>
                             <span class="masthead-card-stat"><strong>36</strong><span>states + FCT</span></span>
                         </div>
-                        <p class="masthead-card-kicker">One national ledger</p>
                         <h2>Browse your state, your LGA, or the whole country.</h2>
                         <p>Choose a reviewed area without sharing GPS or an exact address. All-area browsing stays available.</p>
                         <a class="masthead-card-link" href="/categories" data-internal-link>
@@ -165,14 +192,17 @@ function changeSort(event) {
 
         <div class="feed-layout">
             <div class="feed-main">
-                <div class="feed-head">
+                <div class="feed-head" data-reveal>
                     <div>
                         <p class="feed-kicker">{{ hasFilters ? 'Filtered view' : 'Live listings' }}</p>
                         <h2 class="feed-title">{{ title }}</h2>
                     </div>
                     <div class="feed-head-tools">
                         <p v-if="pagination && !loading" class="feed-count">
-                            <strong>{{ pagination.total }}</strong>
+                            <strong
+                                :key="`total-${pagination.total}`"
+                                :data-count-to="pagination.total"
+                            >{{ pagination.total }}</strong>
                             {{ pagination.total === 1 ? 'opportunity' : 'opportunities' }}
                         </p>
                         <label class="sort-control">
@@ -215,6 +245,7 @@ function changeSort(event) {
                     <OpportunityCard
                         v-for="opportunity in opportunities"
                         :key="opportunity.id"
+                        data-reveal
                         :opportunity="opportunity"
                         :saved="savedIds.includes(opportunity.id)"
                         :pending="savePendingId === opportunity.id"
@@ -250,7 +281,7 @@ function changeSort(event) {
             </div>
 
             <aside class="feed-rail" aria-label="About OyaFind listings">
-                <section class="rail-card rail-card-check">
+                <section class="rail-card rail-card-check" data-reveal>
                     <p class="rail-kicker">What a check means</p>
                     <h2>Checked before it is listed.</h2>
                     <p>
@@ -259,7 +290,7 @@ function changeSort(event) {
                     </p>
                 </section>
 
-                <section class="rail-card">
+                <section class="rail-card" data-reveal>
                     <p class="rail-kicker">The 30-day rule</p>
                     <p>
                         Listings without a deadline are rechecked every 30 days. If that check is overdue,
@@ -267,7 +298,7 @@ function changeSort(event) {
                     </p>
                 </section>
 
-                <section class="rail-card">
+                <section class="rail-card" data-reveal>
                     <p class="rail-kicker">Saving is private</p>
                     <p>
                         Sign in to keep a shortlist and track your own application progress.
@@ -288,22 +319,22 @@ function changeSort(event) {
         </div>
 
         <section class="how-band" aria-label="How OyaFind works">
-            <div class="how-band-head">
+            <div class="how-band-head" data-reveal>
                 <p class="feed-kicker">Three things to know</p>
                 <h2>Built for a phone, a tight budget and a short walk to the truth.</h2>
             </div>
             <div class="how-band-steps">
-                <article>
+                <article data-reveal>
                     <span class="how-step-num">01</span>
                     <h3>Browse without an account</h3>
                     <p>Explore public listings, categories and areas before you decide to sign in.</p>
                 </article>
-                <article>
+                <article data-reveal>
                     <span class="how-step-num">02</span>
                     <h3>Filter by reviewed areas</h3>
                     <p>Coarse, human-reviewed locations. No GPS, no maps, no exact address.</p>
                 </article>
-                <article>
+                <article data-reveal>
                     <span class="how-step-num">03</span>
                     <h3>Apply at the source</h3>
                     <p>OyaFind takes you to the provider’s own channel. It does not submit applications.</p>
@@ -311,7 +342,7 @@ function changeSort(event) {
             </div>
         </section>
 
-        <aside class="trust-note" aria-label="About OyaFind listings">
+        <aside class="trust-note" aria-label="About OyaFind listings" data-reveal>
             <span class="trust-icon" aria-hidden="true"><UiIcon name="shield-check" :size="20" /></span>
             <div>
                 <h2>Clear information, careful checks</h2>

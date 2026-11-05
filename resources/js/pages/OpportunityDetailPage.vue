@@ -145,7 +145,7 @@ function formatRequirements(value) {
                 <p class="detail-summary">{{ displayText(opportunity.summary) }}</p>
             </header>
 
-            <section class="check-panel" aria-label="Listing status and checks">
+            <section class="check-panel" aria-label="Listing status and checks" data-reveal>
                 <div class="check-row">
                     <span class="check-dot is-published" aria-hidden="true"></span>
                     <div>
@@ -167,7 +167,7 @@ function formatRequirements(value) {
                 </p>
             </section>
 
-            <dl class="detail-facts">
+            <dl class="detail-facts" data-reveal>
                 <div>
                     <dt>Deadline</dt>
                     <dd>{{ deadline }}</dd>
@@ -190,13 +190,13 @@ function formatRequirements(value) {
                 </div>
             </dl>
 
-            <section class="detail-copy" aria-labelledby="description-heading">
+            <section class="detail-copy" aria-labelledby="description-heading" data-reveal>
                 <h2 id="description-heading">About this opportunity</h2>
                 <p v-for="(paragraph, index) in descriptionParagraphs" :key="index">{{ paragraph }}</p>
                 <p v-if="opportunity.application_instructions">{{ opportunity.application_instructions }}</p>
             </section>
 
-            <div class="detail-act">
+            <div class="detail-act" data-reveal>
                 <section class="source-box" aria-labelledby="source-heading">
                     <h2 id="source-heading">Source information</h2>
                     <p>Review the provider’s original information before applying.</p>

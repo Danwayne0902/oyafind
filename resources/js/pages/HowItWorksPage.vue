@@ -128,16 +128,13 @@ const faqs = [
             </div>
 
             <div class="steps-grid">
-                <article v-for="step in steps" :key="step.number" class="step-card" :class="`tone-${step.tone}`">
-                    <div class="step-header">
-                        <span class="step-number">{{ step.number }}</span>
-                        <span class="step-icon" :class="`icon-${step.tone}`">
-                            <UiIcon :name="step.icon" :size="22" />
-                        </span>
+                <article v-for="step in steps" :key="step.number" class="step-card" data-reveal>
+                    <span class="step-number" aria-hidden="true">{{ step.number }}</span>
+                    <div class="step-body">
+                        <h3>{{ step.title }}</h3>
+                        <p class="step-summary">{{ step.summary }}</p>
+                        <p class="step-details">{{ step.details }}</p>
                     </div>
-                    <h3>{{ step.title }}</h3>
-                    <p class="step-summary">{{ step.summary }}</p>
-                    <p class="step-details">{{ step.details }}</p>
                 </article>
             </div>
         </section>
@@ -150,16 +147,12 @@ const faqs = [
             </div>
 
             <div class="audiences-grid">
-                <article v-for="item in audiences" :key="item.title" class="audience-card" :class="`tone-${item.tone}`">
+                <article v-for="item in audiences" :key="item.title" class="audience-card" data-reveal>
                     <div class="audience-head">
-                        <span class="audience-icon" :class="`icon-${item.tone}`">
-                            <UiIcon :name="item.icon" :size="24" />
-                        </span>
                         <h3>{{ item.title }}</h3>
                     </div>
                     <ul class="audience-list">
                         <li v-for="(benefit, bIndex) in item.benefits" :key="bIndex">
-                            <UiIcon name="check" :size="16" />
                             <span>{{ benefit }}</span>
                         </li>
                     </ul>
@@ -168,22 +161,19 @@ const faqs = [
         </section>
 
         <section class="trust-pillars-section" aria-label="What OyaFind commits to">
-            <div class="pillar-card">
-                <span class="pillar-icon"><UiIcon name="shield-check" :size="26" /></span>
+            <div class="pillar-card" data-reveal>
                 <div>
                     <h3>Reviewed before publication</h3>
                     <p>Every listing is reviewed by OyaFind before it appears. Only listings whose source and details have been checked are published.</p>
                 </div>
             </div>
-            <div class="pillar-card">
-                <span class="pillar-icon"><UiIcon name="calendar" :size="26" /></span>
+            <div class="pillar-card" data-reveal>
                 <div>
                     <h3>The 30-day rule</h3>
                     <p>Listings with a deadline expire when it passes. Listings without one are rechecked every 30 days or hidden from public view.</p>
                 </div>
             </div>
-            <div class="pillar-card">
-                <span class="pillar-icon"><UiIcon name="arrow" :size="26" /></span>
+            <div class="pillar-card" data-reveal>
                 <div>
                     <h3>Apply at the source</h3>
                     <p>OyaFind sends you to the provider’s own channel. It does not submit applications, take payments or decide outcomes.</p>
@@ -197,7 +187,7 @@ const faqs = [
                 <h2 id="faq-heading">Straight answers</h2>
             </div>
 
-            <div class="faq-accordion">
+            <div class="faq-accordion" data-reveal>
                 <div
                     v-for="(faq, index) in faqs"
                     :key="index"
@@ -220,7 +210,7 @@ const faqs = [
             </div>
         </section>
 
-        <div class="how-cta-banner">
+        <div class="how-cta-banner" data-reveal>
             <div>
                 <h2>Start with what is open now</h2>
                 <p>Browse the national feed, or create an account to save and track.</p>

@@ -64,3 +64,13 @@ Route::get('/categories/{slug}', [PublicPageController::class, 'category'])->whe
 Route::get('/opportunities/{slug}', [PublicPageController::class, 'opportunity'])->where('slug', '[A-Za-z0-9-]+')->name('opportunities.show');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/feed.xml', App\Http\Controllers\FeedController::class)->name('feed');
+
+// Anything else is a real 404, but still gets the branded shell instead of
+// Laravel's default error page. API paths keep their JSON/plain handling.
+Route::fallback(function (Request $request) {
+    if (! $request->isMethod('GET') || $request->is('api/*')) {
+        abort(404);
+    }
+
+    return app(PublicPageController::class)->notFound();
+});

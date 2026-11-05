@@ -21,6 +21,7 @@ import {
     unsaveOpportunity,
 } from './api/workspace.js';
 import { canonicalPageUrl, parsePublicRoute, safeExternalUrl, sharePageUrl, withLocationFilter } from './publicRoutes.js';
+import { initMotion, liftCurtain, refreshMotion } from './motion.js';
 import { useClickSound } from './useClickSound.js';
 
 const route = ref(parsePublicRoute(window.location));
@@ -53,6 +54,20 @@ let noticeTimer = null;
 let navigationTimer = null;
 
 const pageBusy = computed(() => isNavigating.value || loading.value || loadingDetail.value);
+
+/*
+ * The key on the swapped page forces a fresh mount per route so the sheet
+ * animation and the masthead type re-set on every navigation, the way a new
+ * edition replaces the last one.
+ */
+const routeKey = computed(() => [
+    route.value.name,
+    route.value.slug ?? '',
+    route.value.query.q ?? '',
+    route.value.query.location ?? '',
+    route.value.query.page ?? '',
+    route.value.query.sort ?? '',
+].join('|'));
 
 const userInitials = computed(() => (currentUser.value?.name ?? '')
     .trim()
@@ -420,9 +435,17 @@ watch(route, async (currentRoute) => {
     finishNavigation(180);
 }, { immediate: true });
 
+// Re-arm reveals and counters after each route swap; the observer picks up
+// anything the async data loads a moment later.
+watch(route, () => {
+    void nextTick(() => refreshMotion());
+});
+
 onMounted(() => {
     window.addEventListener('popstate', handlePopState);
     document.addEventListener('click', handleInternalNavigation);
+    initMotion();
+    liftCurtain();
     void checkAuth();
 });
 
@@ -437,6 +460,10 @@ onUnmounted(() => {
 <template>
     <div class="site-shell" :class="{ 'has-bottom-nav': showBottomNav }">
         <a class="skip-link" href="#main-content">Skip to content</a>
+
+        <div class="edition-curtain" aria-hidden="true">
+            <span class="edition-curtain-mark">OyaFind<span></span></span>
+        </div>
 
         <div class="page-loader" :class="{ 'is-active': pageBusy }" role="status" aria-live="polite">
             <span class="page-loader-track" aria-hidden="true"><span class="page-loader-sweep"></span></span>
@@ -500,121 +527,123 @@ onUnmounted(() => {
         </header>
 
         <main id="main-content" class="page-content" :aria-busy="pageBusy">
-            <template v-if="isNotFoundPage">
-                <section class="empty-panel">
-                    <span class="empty-panel-icon" aria-hidden="true"><UiIcon name="compass" :size="22" /></span>
-                    <h1>We couldn’t find that page</h1>
-                    <p>Try exploring current public opportunities instead.</p>
-                    <a class="button button-primary" href="/" data-internal-link>Explore opportunities</a>
-                </section>
-            </template>
-            <CategoriesPage
-                v-else-if="route.name === 'categories'"
-                :categories="categories"
-                @navigate="navigate"
-            />
-            <HowItWorksPage v-else-if="route.name === 'how-it-works'" />
-            <RegisterPage v-else-if="route.name === 'register'" @authenticated="handleAuthenticated($event)" />
-            <LoginPage v-else-if="route.name === 'login'" @authenticated="handleAuthenticated($event)" />
-            <VerifyEmailPage
-                v-else-if="route.name === 'verify-email'"
-                :user-id="route.userId"
-                :hash="route.hash"
-                :verification-query="route.query"
-            />
-            <ProfilePage v-else-if="route.name === 'profile'" :initial-profile="currentUser" @signed-out="handleSignedOut" />
-
-            <template v-else-if="route.name === 'saved'">
-                <SavedPage
-                    v-if="currentUser"
-                    :current-user="currentUser"
-                    @unsaved="markUnsaved"
-                    @tracked="markTracked"
-                />
-                <div v-else-if="!authReady" class="workspace-page">
-                    <p class="state-panel state-loading" role="status" aria-live="polite">
-                        <UiIcon class="loading-spinner" name="loader" :size="19" />
-                        Checking your account…
-                    </p>
-                </div>
-                <section v-else class="auth-gate">
-                    <p class="feed-kicker">Your shortlist</p>
-                    <h1>Sign in to see your saved opportunities</h1>
-                    <p>Saved listings are private to your account. Sign in, or create an account to start a shortlist.</p>
-                    <div class="auth-gate-actions">
-                        <a class="button button-primary" :href="loginHref" data-internal-link>Sign in</a>
-                        <a class="button button-secondary" :href="registerHref" data-internal-link>Create an account</a>
-                    </div>
-                    <a class="text-link" href="/" data-internal-link>Keep browsing without an account</a>
-                </section>
-            </template>
-
-            <template v-else-if="route.name === 'tracker'">
-                <MyOpportunitiesPage
-                    v-if="currentUser"
-                    :current-user="currentUser"
-                    @removed="markRemoved"
-                />
-                <div v-else-if="!authReady" class="workspace-page">
-                    <p class="state-panel state-loading" role="status" aria-live="polite">
-                        <UiIcon class="loading-spinner" name="loader" :size="19" />
-                        Checking your account…
-                    </p>
-                </div>
-                <section v-else class="auth-gate">
-                    <p class="feed-kicker">Private tracker</p>
-                    <h1>Sign in to open your application tracker</h1>
-                    <p>Your stages, dates and notes are private to your account. OyaFind never sends them to an employer.</p>
-                    <div class="auth-gate-actions">
-                        <a class="button button-primary" :href="loginHref" data-internal-link>Sign in</a>
-                        <a class="button button-secondary" :href="registerHref" data-internal-link>Create an account</a>
-                    </div>
-                    <a class="text-link" href="/" data-internal-link>Keep browsing without an account</a>
-                </section>
-            </template>
-
-            <template v-else-if="isDetailPage">
-                <OpportunityDetailPage
-                    :opportunity="selectedOpportunity"
-                    :loading="loadingDetail"
-                    :error="detailError"
-                    :share-message="shareMessage"
-                    :copy-fallback="copyFallback"
-                    :copy-url="copyUrl"
-                    :safe-external-url="safeExternalUrl"
-                    :saved="selectedOpportunity ? savedIds.includes(selectedOpportunity.id) : false"
-                    :save-pending="selectedOpportunity ? savePendingId === selectedOpportunity.id : false"
-                    :tracked="selectedOpportunity ? trackedIds.includes(selectedOpportunity.id) : false"
-                    @back="navigate('/search')"
-                    @share="shareCurrentPage"
-                    @copy="copyCurrentPageUrl"
-                    @save="toggleSave"
-                    @track="handleTrack"
-                />
-            </template>
-            <template v-else>
-                <DiscoveryPage
-                    :title="pageTitle"
-                    :query="searchInput"
+            <div class="page-swap" :key="routeKey">
+                <template v-if="isNotFoundPage">
+                    <section class="empty-panel">
+                        <span class="empty-panel-icon" aria-hidden="true"><UiIcon name="compass" :size="22" /></span>
+                        <h1>We couldn’t find that page</h1>
+                        <p>Try exploring current public opportunities instead.</p>
+                        <a class="button button-primary" href="/" data-internal-link>Explore opportunities</a>
+                    </section>
+                </template>
+                <CategoriesPage
+                    v-else-if="route.name === 'categories'"
                     :categories="categories"
-                    :categories-loading="categoriesLoading"
-                    :categories-error="categoriesError"
-                    :opportunities="opportunities"
-                    :loading="loading"
-                    :error="error"
-                    :pagination="pagination"
-                    :location-filtered="Boolean(route.query.location)"
-                    :selected-location="route.query.location ?? ''"
-                    :saved-ids="savedIds"
-                    :save-pending-id="savePendingId"
-                    :is-authenticated="Boolean(currentUser)"
-                    @update:query="searchInput = $event"
-                    @search="search"
                     @navigate="navigate"
-                    @location="selectLocation"
-                    @save="toggleSave"
                 />
-            </template>
+                <HowItWorksPage v-else-if="route.name === 'how-it-works'" />
+                <RegisterPage v-else-if="route.name === 'register'" @authenticated="handleAuthenticated($event)" />
+                <LoginPage v-else-if="route.name === 'login'" @authenticated="handleAuthenticated($event)" />
+                <VerifyEmailPage
+                    v-else-if="route.name === 'verify-email'"
+                    :user-id="route.userId"
+                    :hash="route.hash"
+                    :verification-query="route.query"
+                />
+                <ProfilePage v-else-if="route.name === 'profile'" :initial-profile="currentUser" @signed-out="handleSignedOut" />
+
+                <template v-else-if="route.name === 'saved'">
+                    <SavedPage
+                        v-if="currentUser"
+                        :current-user="currentUser"
+                        @unsaved="markUnsaved"
+                        @tracked="markTracked"
+                    />
+                    <div v-else-if="!authReady" class="workspace-page">
+                        <p class="state-panel state-loading" role="status" aria-live="polite">
+                            <UiIcon class="loading-spinner" name="loader" :size="19" />
+                            Checking your account…
+                        </p>
+                    </div>
+                    <section v-else class="auth-gate">
+                        <p class="feed-kicker">Your shortlist</p>
+                        <h1>Sign in to see your saved opportunities</h1>
+                        <p>Saved listings are private to your account. Sign in, or create an account to start a shortlist.</p>
+                        <div class="auth-gate-actions">
+                            <a class="button button-primary" :href="loginHref" data-internal-link>Sign in</a>
+                            <a class="button button-secondary" :href="registerHref" data-internal-link>Create an account</a>
+                        </div>
+                        <a class="text-link" href="/" data-internal-link>Keep browsing without an account</a>
+                    </section>
+                </template>
+
+                <template v-else-if="route.name === 'tracker'">
+                    <MyOpportunitiesPage
+                        v-if="currentUser"
+                        :current-user="currentUser"
+                        @removed="markRemoved"
+                    />
+                    <div v-else-if="!authReady" class="workspace-page">
+                        <p class="state-panel state-loading" role="status" aria-live="polite">
+                            <UiIcon class="loading-spinner" name="loader" :size="19" />
+                            Checking your account…
+                        </p>
+                    </div>
+                    <section v-else class="auth-gate">
+                        <p class="feed-kicker">Private tracker</p>
+                        <h1>Sign in to open your application tracker</h1>
+                        <p>Your stages, dates and notes are private to your account. OyaFind never sends them to an employer.</p>
+                        <div class="auth-gate-actions">
+                            <a class="button button-primary" :href="loginHref" data-internal-link>Sign in</a>
+                            <a class="button button-secondary" :href="registerHref" data-internal-link>Create an account</a>
+                        </div>
+                        <a class="text-link" href="/" data-internal-link>Keep browsing without an account</a>
+                    </section>
+                </template>
+
+                <template v-else-if="isDetailPage">
+                    <OpportunityDetailPage
+                        :opportunity="selectedOpportunity"
+                        :loading="loadingDetail"
+                        :error="detailError"
+                        :share-message="shareMessage"
+                        :copy-fallback="copyFallback"
+                        :copy-url="copyUrl"
+                        :safe-external-url="safeExternalUrl"
+                        :saved="selectedOpportunity ? savedIds.includes(selectedOpportunity.id) : false"
+                        :save-pending="selectedOpportunity ? savePendingId === selectedOpportunity.id : false"
+                        :tracked="selectedOpportunity ? trackedIds.includes(selectedOpportunity.id) : false"
+                        @back="navigate('/search')"
+                        @share="shareCurrentPage"
+                        @copy="copyCurrentPageUrl"
+                        @save="toggleSave"
+                        @track="handleTrack"
+                    />
+                </template>
+                <template v-else>
+                    <DiscoveryPage
+                        :title="pageTitle"
+                        :query="searchInput"
+                        :categories="categories"
+                        :categories-loading="categoriesLoading"
+                        :categories-error="categoriesError"
+                        :opportunities="opportunities"
+                        :loading="loading"
+                        :error="error"
+                        :pagination="pagination"
+                        :location-filtered="Boolean(route.query.location)"
+                        :selected-location="route.query.location ?? ''"
+                        :saved-ids="savedIds"
+                        :save-pending-id="savePendingId"
+                        :is-authenticated="Boolean(currentUser)"
+                        @update:query="searchInput = $event"
+                        @search="search"
+                        @navigate="navigate"
+                        @location="selectLocation"
+                        @save="toggleSave"
+                    />
+                </template>
+            </div>
         </main>
 
         <footer class="site-footer">
