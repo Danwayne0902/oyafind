@@ -479,38 +479,6 @@ textarea:focus-visible {
     text-decoration-color: var(--trust);
 }
 
-.sound-toggle {
-    display: inline-flex;
-    min-height: 1.9rem;
-    align-items: center;
-    gap: 0.32rem;
-    padding: 0.2rem 0.55rem;
-    border: 1px solid var(--wire);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--ink-2);
-    cursor: pointer;
-    font: inherit;
-    font-size: 0.78rem;
-    font-weight: 650;
-    transition:
-        border-color 160ms var(--ease-out),
-        background-color 160ms var(--ease-out),
-        color 160ms var(--ease-out),
-        transform 160ms var(--ease-out);
-}
-
-.sound-toggle:hover {
-    transform: translateY(-1px);
-    border-color: var(--trust);
-    background: var(--trust-soft);
-    color: var(--trust-dark);
-}
-
-.sound-toggle[aria-pressed='false'] {
-    color: var(--muted);
-}
-
 /* --------------------------------------------------------------------------
    Controls
    -------------------------------------------------------------------------- */
@@ -4813,8 +4781,7 @@ textarea:focus-visible {
     .category-chip:active,
     .save-btn:hover,
     .save-btn:active,
-    .masthead-card:hover,
-    .sound-toggle:hover {
+    .masthead-card:hover {
         transform: none;
     }
 }

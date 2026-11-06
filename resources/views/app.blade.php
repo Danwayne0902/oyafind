@@ -23,13 +23,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#F7F9FC" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#F7F5F0" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#101C3D" media="(prefers-color-scheme: dark)">
+    {{-- The .ico is the fallback every browser and launcher understands, including
+         the ones that ignore the manifest and the SVG icons. --}}
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="16x16 32x32 48x48">
     <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml" media="(prefers-color-scheme: light)">
     <link rel="icon" href="{{ asset('favicon-dark.svg') }}" type="image/svg+xml" media="(prefers-color-scheme: dark)">
     <link rel="icon" href="{{ asset('icons/favicon-light.png') }}" type="image/png" sizes="32x32" media="(prefers-color-scheme: light)">
     <link rel="icon" href="{{ asset('icons/favicon-dark.png') }}" type="image/png" sizes="32x32" media="(prefers-color-scheme: dark)">
-    <link rel="apple-touch-icon" href="{{ asset('icons/oyafind-apple-touch.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('icons/oyafind-apple-touch.png') }}">
+    <meta name="apple-mobile-web-app-title" content="OyaFind">
+    <meta name="application-name" content="OyaFind">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
     <title>{{ $pageMeta['title'] }}</title>
     <meta name="description" content="{{ $pageMeta['description'] }}">

@@ -1739,25 +1739,6 @@ th,
     text-underline-offset: 0.25em;
 }
 
-.sound-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: var(--ink-3);
-    font-size: 0.68rem;
-    font-weight: 650;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    cursor: pointer;
-}
-
-.sound-toggle:hover {
-    color: var(--ink);
-}
-
 /* --------------------------------------------------------------------------
    Bottom navigation — a printed tab strip
    -------------------------------------------------------------------------- */

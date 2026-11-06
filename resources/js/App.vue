@@ -22,7 +22,6 @@ import {
 } from './api/workspace.js';
 import { canonicalPageUrl, parsePublicRoute, safeExternalUrl, sharePageUrl, withLocationFilter } from './publicRoutes.js';
 import { initMotion, liftCurtain, refreshMotion } from './motion.js';
-import { useClickSound } from './useClickSound.js';
 
 const route = ref(parsePublicRoute(window.location));
 const menuOpen = ref(false);
@@ -36,7 +35,6 @@ const selectedOpportunity = ref(null);
 const loading = ref(false);
 const loadingDetail = ref(false);
 const isNavigating = ref(false);
-const { soundEnabled, toggleSound } = useClickSound();
 const error = ref('');
 const detailError = ref('');
 const categoriesError = ref('');
@@ -657,10 +655,6 @@ onUnmounted(() => {
                 <p class="footer-links">
                     <a href="/how-it-works" data-internal-link>How it works</a>
                     <a href="/categories" data-internal-link>Categories</a>
-                    <button class="sound-toggle" type="button" :aria-pressed="soundEnabled" @click="toggleSound">
-                        <UiIcon :name="soundEnabled ? 'volume' : 'volume-off'" :size="15" />
-                        {{ soundEnabled ? 'Sound on' : 'Sound off' }}
-                    </button>
                 </p>
             </div>
         </footer>

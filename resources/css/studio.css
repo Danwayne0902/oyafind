@@ -1420,8 +1420,7 @@ p {
     width: 100%;
 }
 
-.footer-links a,
-.sound-toggle {
+.footer-links a {
     color: #fff;
     font-size: 0.8rem;
     font-weight: 560;
@@ -1429,8 +1428,7 @@ p {
     transition: color var(--dur-1) var(--ease-out);
 }
 
-.footer-links a:hover,
-.sound-toggle:hover {
+.footer-links a:hover {
     color: var(--lime);
 }
 
