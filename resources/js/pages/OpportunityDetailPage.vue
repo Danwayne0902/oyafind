@@ -246,5 +246,25 @@ function formatRequirements(value) {
                 </div>
             </div>
         </article>
+
+        <Teleport to="body">
+        <div v-if="opportunity" class="detail-dock" role="group" aria-label="Listing actions">
+            <a
+                v-if="applicationUrl"
+                class="button button-primary detail-dock-main"
+                :href="applicationUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+            >Apply <span aria-hidden="true">↗</span></a>
+            <span v-else class="button button-disabled detail-dock-main" aria-disabled="true">No link</span>
+            <SaveButton compact :saved="saved" :pending="savePending" @toggle="emit('save', opportunity)" />
+            <a v-if="tracked" class="button button-secondary detail-dock-track" href="/tracker" data-internal-link aria-label="Open in tracker">
+                <UiIcon name="chart" :size="18" />
+            </a>
+            <button v-else class="button button-secondary detail-dock-track" type="button" aria-label="Track this privately" @click="emit('track', opportunity)">
+                <UiIcon name="chart" :size="18" />
+            </button>
+        </div>
+        </Teleport>
     </section>
 </template>

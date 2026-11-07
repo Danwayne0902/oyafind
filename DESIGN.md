@@ -29,18 +29,18 @@ one list.
 
 ## Layers
 
-Stylesheets load in this order and later layers win:
+There is one public stylesheet: `resources/css/studio.css`, loaded from
+`resources/js/app.js`. It holds two sections:
 
-| Order | File | Role |
+| Section | File | Role |
 |---|---|---|
-| 1 | `resources/css/app.css` | structural base, layout primitives, legacy components |
-| 2 | `resources/css/oyafind-v2.css` | earlier product layer (cards, workspaces, detail) |
-| 3 | `resources/css/edition.css` | the printed-edition layer (rules, numbering, wording) |
-| 4 | `resources/css/studio.css` | **authoritative visual layer** |
+| 1 | `studio.css` → Legacy foundations | structural base and surviving rules from the 2024–2026 layers. Frozen: do not extend. |
+| 2 | `studio.css` → Studio layer | **authoritative visual layer**. All new work goes here. |
 
-`studio.css` is loaded last from `resources/js/app.js`. When a legacy rule wins
-on specificity, override it in `studio.css` rather than deleting the rule from a
-lower layer until the layers are merged.
+The original `app.css`, `oyafind-v2.css` and `edition.css` were merged into the
+legacy section; declarations that a later layer already overrode were dropped.
+If a legacy rule wins on specificity, override it in the Studio section rather
+than editing the foundations.
 
 ## Tokens
 

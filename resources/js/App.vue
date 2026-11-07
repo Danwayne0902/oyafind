@@ -103,7 +103,7 @@ const returnPath = ref(`${window.location.pathname}${window.location.search}`);
 const loginHref = computed(() => `/login?returnTo=${encodeURIComponent(returnPath.value)}`);
 const registerHref = computed(() => `/register?returnTo=${encodeURIComponent(returnPath.value)}`);
 
-const showBottomNav = computed(() => !isAuthPage.value);
+const showBottomNav = computed(() => !isAuthPage.value && route.value.name !== 'opportunity');
 
 const bottomNavItems = computed(() => [
     { label: 'Explore', href: '/', icon: 'compass', active: ['home', 'search', 'category', 'categories', 'opportunity', 'how-it-works'].includes(route.value.name) },
