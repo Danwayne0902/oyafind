@@ -95,6 +95,8 @@ RUN mkdir -p \
 
 # The master process stays as root so it can write its PID file and hand the
 # writable directories to www-data; workers drop privileges on their own.
+COPY deploy/fpm-pool.conf /usr/local/etc/php-fpm.d/zz-oyafind.conf
+
 EXPOSE 9000
 
 ENTRYPOINT ["oyafind-entrypoint"]

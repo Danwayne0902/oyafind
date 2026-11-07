@@ -1,8 +1,9 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import OpportunityCard from '../components/OpportunityCard.vue';
 import LocationPicker from '../components/LocationPicker.vue';
 import UiIcon from '../components/UiIcon.vue';
+import { pointerLight } from '../pointerLight.js';
 
 const props = defineProps({
     title: { type: String, required: true },
@@ -29,11 +30,19 @@ const emit = defineEmits(['update:query', 'search', 'navigate', 'location', 'sav
  * otherwise the rise is skipped on a cached load.
  */
 const ready = ref(false);
+const headline = ref(null);
+let stopPointerLight = null;
 
 onMounted(() => {
     requestAnimationFrame(() => {
         ready.value = true;
     });
+
+    stopPointerLight = pointerLight(headline.value);
+});
+
+onUnmounted(() => {
+    stopPointerLight?.();
 });
 
 const dateline = new Intl.DateTimeFormat('en-NG', {
@@ -119,7 +128,7 @@ function changeSort(event) {
                         <span>Within Nigeria</span>
                         <span class="pilot-sub">&amp; beyond</span>
                     </p>
-                    <h1>
+                    <h1 ref="headline">
                         <span class="line"><span>Find what’s next,</span></span>
                         <span class="line"><span><span class="masthead-highlight">closer to home.</span></span></span>
                     </h1>

@@ -600,6 +600,9 @@ class SeoMetadataService
             static fn (string $url): bool => $url !== '',
         ));
 
+        $phone = trim((string) config('oyafind.contact.phone', ''));
+        $email = trim((string) config('oyafind.contact.email', ''));
+
         return array_filter([
             '@context' => 'https://schema.org',
             '@type' => 'Organization',
@@ -611,6 +614,16 @@ class SeoMetadataService
                 ['@type' => 'Country', 'name' => 'Nigeria'],
             ],
             'knowsLanguage' => 'en-NG',
+            'email' => $email === '' ? null : $email,
+            'telephone' => $phone === '' ? null : $phone,
+            'contactPoint' => $phone === '' && $email === '' ? null : array_filter([
+                '@type' => 'ContactPoint',
+                'contactType' => 'customer support',
+                'telephone' => $phone === '' ? null : $phone,
+                'email' => $email === '' ? null : $email,
+                'availableLanguage' => ['English'],
+                'areaServed' => 'NG',
+            ], static fn (mixed $value): bool => $value !== null),
             'sameAs' => $sameAs === [] ? null : $sameAs,
         ], static fn (mixed $value): bool => $value !== null);
     }

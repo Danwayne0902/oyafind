@@ -3029,3 +3029,305 @@ p {
         animation: none;
     }
 }
+
+/* --------------------------------------------------------------------------
+   Ambient ground — paper is never flat
+   -------------------------------------------------------------------------- */
+
+body {
+    background-color: var(--paper);
+    background-image:
+        radial-gradient(58rem 32rem at 6% -8%, rgb(198 255 0 / 8%), transparent 62%),
+        radial-gradient(46rem 30rem at 98% -2%, rgb(16 28 61 / 6%), transparent 64%),
+        linear-gradient(rgb(14 19 48 / 3%) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(14 19 48 / 3%) 1px, transparent 1px);
+    background-position: center top;
+    background-size: auto, auto, 64px 64px, 64px 64px;
+}
+
+.masthead {
+    overflow: clip;
+}
+
+/* Two soft light sources drifting behind the headline. Transform only, so
+   the paint cost stays on the compositor. */
+.masthead::before {
+    position: absolute;
+    inset: -14% -10% auto;
+    z-index: 0;
+    height: 88%;
+    background:
+        radial-gradient(32% 46% at 12% 24%, rgb(198 255 0 / 12%), transparent 70%),
+        radial-gradient(28% 42% at 54% 0%, rgb(11 107 83 / 9%), transparent 72%),
+        radial-gradient(26% 52% at 96% 26%, rgb(16 28 61 / 8%), transparent 70%);
+    content: '';
+    filter: blur(28px);
+    pointer-events: none;
+    transform: translate3d(0, 0, 0);
+    animation: ambient-drift 26s ease-in-out infinite alternate;
+}
+
+/* A paper grain, barely visible, so the background reads as material. */
+.masthead::after {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    content: '';
+    mix-blend-mode: multiply;
+    opacity: 0.16;
+    pointer-events: none;
+}
+
+.masthead > * {
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes ambient-drift {
+    from {
+        transform: translate3d(-1.6%, -1%, 0) scale(1);
+    }
+
+    to {
+        transform: translate3d(2%, 2.4%, 0) scale(1.06);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Headline illumination — a light that follows the pointer
+   -------------------------------------------------------------------------- */
+
+.masthead h1 {
+    --spot-x: 50%;
+    --spot-y: 30%;
+
+    position: relative;
+    isolation: isolate;
+}
+
+/* The light in the air: a soft lime bloom that travels with the pointer. */
+.masthead h1::before {
+    position: absolute;
+    z-index: 0;
+    width: 15rem;
+    height: 15rem;
+    margin: -7.5rem 0 0 -7.5rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(198 255 0 / 30%), transparent 66%);
+    content: '';
+    filter: blur(26px);
+    left: var(--spot-x);
+    opacity: 0;
+    pointer-events: none;
+    top: var(--spot-y);
+    transition: opacity 520ms var(--ease-out);
+}
+
+/* The light on the letters: white core, lime rim, and thin rays. */
+.masthead h1::after {
+    position: absolute;
+    inset: -0.4em -0.45em;
+    z-index: 2;
+    background:
+        repeating-conic-gradient(
+            from 0deg at var(--spot-x) var(--spot-y),
+            rgb(255 255 255 / 0.5) 0deg 4deg,
+            transparent 4deg 22deg
+        ),
+        radial-gradient(
+            circle 190px at var(--spot-x) var(--spot-y),
+            rgb(255 255 255 / 0.95) 0%,
+            rgb(198 255 0 / 0.45) 40%,
+            transparent 72%
+        );
+    content: '';
+    filter: blur(0.4px);
+    mix-blend-mode: soft-light;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 420ms var(--ease-out);
+    -webkit-mask-image: radial-gradient(
+        circle 250px at var(--spot-x) var(--spot-y),
+        #000 0%,
+        #000 26%,
+        transparent 72%
+    );
+    mask-image: radial-gradient(
+        circle 250px at var(--spot-x) var(--spot-y),
+        #000 0%,
+        #000 26%,
+        transparent 72%
+    );
+}
+
+.masthead h1.is-lit::before {
+    opacity: 1;
+}
+
+.masthead h1.is-lit::after {
+    opacity: 0.95;
+}
+
+@media (hover: none) {
+    .masthead h1::before,
+    .masthead h1::before,
+    .masthead h1::after {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .masthead::before {
+        animation: none;
+    }
+
+    .masthead h1::before,
+    .masthead h1::after {
+        display: none;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Footer — a brand lockup, not a poster
+   -------------------------------------------------------------------------- */
+
+.site-footer {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.7fr) minmax(0, 1.05fr);
+    gap: 2.4rem clamp(2rem, 4vw, 4rem);
+    padding-top: clamp(2.8rem, 5vw, 4.2rem);
+}
+
+.footer-brand-block {
+    gap: 0.95rem;
+}
+
+.footer-lockup {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.7rem;
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 760;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    text-decoration: none;
+}
+
+.footer-lockup img {
+    display: block;
+    width: 46px;
+    height: 46px;
+}
+
+.footer-tagline {
+    margin: 0;
+    color: #d5dced !important;
+    font-size: 0.98rem !important;
+    line-height: 1.45;
+}
+
+.footer-heading {
+    margin: 0 0 0.2rem;
+    color: #6b7694;
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.footer-column {
+    display: grid;
+    gap: 0.62rem;
+    align-content: start;
+    justify-items: start;
+}
+
+.footer-column a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #c2cade;
+    font-size: 0.86rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color var(--dur-1) var(--ease-out);
+}
+
+.footer-column a:hover {
+    color: var(--lime);
+}
+
+.footer-contact a svg {
+    color: var(--lime);
+}
+
+.footer-contact p {
+    max-width: 27ch;
+    margin: 0.15rem 0 0;
+    color: #7d88a6;
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.footer-contact a {
+    overflow-wrap: anywhere;
+}
+
+.footer-base {
+    display: flex;
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.6rem 1.6rem;
+    margin-top: 0.0rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid rgb(255 255 255 / 10%);
+}
+
+.footer-base p {
+    margin: 0;
+    color: #7883a0;
+    font-size: 0.76rem;
+    line-height: 1.6;
+}
+
+.footer-note {
+    max-width: 66ch;
+    text-align: right;
+}
+
+@media (max-width: 900px) {
+    .site-footer {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .footer-brand-block {
+        grid-column: 1 / -1;
+    }
+
+    .footer-note {
+        text-align: left;
+    }
+}
+
+@media (max-width: 560px) {
+    .site-footer {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.9rem;
+    }
+
+    .footer-base {
+        flex-direction: column;
+    }
+}
+
+/* The bottom navigation is fixed; the footer must clear it. */
+@media (max-width: 760px) {
+    .site-footer {
+        padding-bottom: calc(5.6rem + env(safe-area-inset-bottom));
+    }
+}

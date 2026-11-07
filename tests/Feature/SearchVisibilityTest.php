@@ -119,6 +119,25 @@ class SearchVisibilityTest extends TestCase
         $this->assertStringContainsString('/categories/jobs?location=lagos', $body);
     }
 
+    public function test_the_publisher_schema_publishes_the_owner_contact_details(): void
+    {
+        config(['app.url' => 'https://oyafind.com.ng']);
+
+        $schemas = $this->schemas((string) $this->get('/')->assertOk()->getContent());
+        $organisation = null;
+
+        foreach ($schemas as $schema) {
+            if (($schema['@type'] ?? null) === 'Organization') {
+                $organisation = $schema;
+            }
+        }
+
+        $this->assertNotNull($organisation);
+        $this->assertSame('+2347053404846', $organisation['telephone']);
+        $this->assertSame('danwayne0902@yahoo.com', $organisation['email']);
+        $this->assertSame('+2347053404846', $organisation['contactPoint']['telephone']);
+    }
+
     public function test_the_feed_is_xml_and_only_contains_live_listings(): void
     {
         config(['app.url' => 'https://oyafind.com.ng']);

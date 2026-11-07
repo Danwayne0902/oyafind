@@ -148,6 +148,15 @@ return [
     ],
 
     /*
+    | Owner-approved contact details. These are displayed in the footer and
+    | published in the Organization schema, so they must stay reachable.
+    */
+    'contact' => [
+        'phone' => env('OYAFIND_CONTACT_PHONE', '+2347053404846'),
+        'email' => env('OYAFIND_CONTACT_EMAIL', 'danwayne0902@yahoo.com'),
+    ],
+
+    /*
     | Search metadata that is not derived from the catalogue. `same_as` accepts
     | comma-separated profile URLs (social accounts, directories) that prove
     | the publisher identity to search engines. Leave it empty until the

@@ -23,6 +23,11 @@ import {
 import { canonicalPageUrl, parsePublicRoute, safeExternalUrl, sharePageUrl, withLocationFilter } from './publicRoutes.js';
 import { initMotion, liftCurtain, refreshMotion } from './motion.js';
 
+const brandMarkOnDark = '/brand/oyafind-mark-on-dark.svg';
+const contactPhone = '+2347053404846';
+const contactPhoneDisplay = '+234 705 340 4846';
+const contactEmail = 'danwayne0902@yahoo.com';
+
 const route = ref(parsePublicRoute(window.location));
 const menuOpen = ref(false);
 const currentUser = ref(null);
@@ -646,16 +651,39 @@ onUnmounted(() => {
 
         <footer class="site-footer">
             <div class="footer-brand-block">
-                <p class="footer-brand">Oya<span>Find</span></p>
-                <p>Real opportunities. Closer to you.</p>
+                <a class="footer-lockup" href="/" aria-label="OyaFind home" data-internal-link>
+                    <img :src="brandMarkOnDark" alt="" width="46" height="46">
+                    <span>OyaFind</span>
+                </a>
+                <p class="footer-tagline">Real opportunities.<br>Closer to you.</p>
                 <p class="footer-pilot">Across Nigeria · 36 states + FCT</p>
             </div>
-            <div class="footer-copy">
-                <p>OyaFind shares public listings. It does not submit applications, decide outcomes, or guarantee provider safety, selection or payment.</p>
-                <p class="footer-links">
-                    <a href="/how-it-works" data-internal-link>How it works</a>
-                    <a href="/categories" data-internal-link>Categories</a>
-                </p>
+
+            <nav class="footer-column" aria-labelledby="footer-explore">
+                <h2 id="footer-explore" class="footer-heading">Explore</h2>
+                <a href="/search" data-internal-link>Search</a>
+                <a href="/categories" data-internal-link>Categories</a>
+                <a href="/how-it-works" data-internal-link>How it works</a>
+                <a href="/saved" data-internal-link>Saved</a>
+                <a href="/tracker" data-internal-link>Tracker</a>
+            </nav>
+
+            <div class="footer-column footer-contact">
+                <h2 class="footer-heading">Contact</h2>
+                <a :href="`tel:${contactPhone}`">
+                    <UiIcon name="phone" :size="16" />
+                    {{ contactPhoneDisplay }}
+                </a>
+                <a :href="`mailto:${contactEmail}`">
+                    <UiIcon name="mail" :size="16" />
+                    {{ contactEmail }}
+                </a>
+                <p>Questions about a listing, a check, or your account.</p>
+            </div>
+
+            <div class="footer-base">
+                <p>© {{ new Date().getFullYear() }} OyaFind</p>
+                <p class="footer-note">OyaFind shares public listings. It does not submit applications, decide outcomes, or guarantee provider safety, selection or payment.</p>
             </div>
         </footer>
 

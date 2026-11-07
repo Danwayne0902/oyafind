@@ -82,6 +82,13 @@ defineProps({
             <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
             <circle cx="12" cy="10" r="2.5" />
         </template>
+        <template v-else-if="name === 'phone'">
+            <path d="M6.6 3h3l1.4 4-2 1.4a12 12 0 0 0 6.6 6.6L17 13l4 1.4v3a2 2 0 0 1-2.2 2A17 17 0 0 1 3.6 5.2 2 2 0 0 1 5.6 3Z" />
+        </template>
+        <template v-else-if="name === 'mail'">
+            <rect x="3" y="5" width="18" height="14" rx="2" />
+            <path d="m3.5 7 8.5 6 8.5-6" />
+        </template>
         <template v-else-if="name === 'loader'">
             <path d="M12 3a9 9 0 1 0 9 9" />
         </template>
