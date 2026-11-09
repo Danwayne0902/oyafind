@@ -11946,56 +11946,6 @@ body {
     }
 }
 
-/* --------------------------------------------------------------------------
-   Masthead light — a pool of light that follows the pointer on the paper
-   --------------------------------------------------------------------------
-
-   The light sits behind the content, so the type keeps its full contrast. It
-   is one fixed-size layer moved with a transform: the gradient is painted
-   once and the browser only composites it, which keeps pointer movement off
-   the main thread. Hidden for touch-only devices and reduced motion. */
-
-.masthead-light {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    width: 84px;
-    height: 150px;
-    margin: -75px 0 0 -42px;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgb(148 163 184 / 6%) 36%,
-        rgb(100 116 139 / 16%) 46%,
-        rgb(148 163 184 / 42%) 49.4%,
-        rgb(255 255 255 / 90%) 50%,
-        rgb(148 163 184 / 42%) 50.6%,
-        rgb(100 116 139 / 16%) 54%,
-        rgb(148 163 184 / 6%) 64%,
-        transparent 100%
-    );
-    filter: blur(0.5px);
-    opacity: 0;
-    pointer-events: none;
-    transform: translate3d(var(--spot-x, 50%), var(--spot-y, 50%), 0) rotate(5deg);
-    transform-origin: 50% 50%;
-    transition: opacity 380ms var(--ease-out);
-    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
-    mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
-    will-change: transform;
-}
-
-.masthead.is-lit .masthead-light {
-    opacity: 0.6;
-}
-
-@media (hover: none), (prefers-reduced-motion: reduce) {
-    .masthead-light {
-        display: none;
-    }
-}
-
 @media (prefers-reduced-motion: reduce) {
     .masthead::before {
         animation: none;

@@ -72,8 +72,7 @@ Lime on navy is allowed for the single signal word or stat in a dark card.
 - `--shadow-lift`: hover elevation for feed and category cards
 
 Elevation is layered and soft. Cards stay white on white, separated by a
-hairline and a soft shadow. No coloured glows behind text; the only light that
-moves is the neutral silver glint that follows the pointer in the masthead.
+hairline and a soft shadow. No coloured glows and no pointer-following light.
 
 **Layout**
 

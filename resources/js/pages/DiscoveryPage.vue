@@ -1,9 +1,8 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import OpportunityCard from '../components/OpportunityCard.vue';
 import LocationPicker from '../components/LocationPicker.vue';
 import UiIcon from '../components/UiIcon.vue';
-import { pointerLight } from '../pointerLight.js';
 
 const props = defineProps({
     title: { type: String, required: true },
@@ -30,19 +29,11 @@ const emit = defineEmits(['update:query', 'search', 'navigate', 'location', 'sav
  * otherwise the rise is skipped on a cached load.
  */
 const ready = ref(false);
-const masthead = ref(null);
-let stopPointerLight = null;
 
 onMounted(() => {
     requestAnimationFrame(() => {
         ready.value = true;
     });
-
-    stopPointerLight = pointerLight(masthead.value);
-});
-
-onUnmounted(() => {
-    stopPointerLight?.();
 });
 
 const dateline = new Intl.DateTimeFormat('en-NG', {
@@ -130,9 +121,7 @@ function changeSort(event) {
 
 <template>
     <section class="explore-page" :class="{ 'is-ready': ready }">
-        <header ref="masthead" class="masthead">
-            <span class="masthead-light" aria-hidden="true"></span>
-
+        <header class="masthead">
             <div class="masthead-dateline">
                 <span>
                     National edition
