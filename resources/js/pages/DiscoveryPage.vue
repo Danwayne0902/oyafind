@@ -30,7 +30,7 @@ const emit = defineEmits(['update:query', 'search', 'navigate', 'location', 'sav
  * otherwise the rise is skipped on a cached load.
  */
 const ready = ref(false);
-const headline = ref(null);
+const masthead = ref(null);
 let stopPointerLight = null;
 
 onMounted(() => {
@@ -38,7 +38,7 @@ onMounted(() => {
         ready.value = true;
     });
 
-    stopPointerLight = pointerLight(headline.value);
+    stopPointerLight = pointerLight(masthead.value);
 });
 
 onUnmounted(() => {
@@ -62,6 +62,24 @@ const FALLBACK_CATEGORIES = [
     { name: 'Gigs', slug: 'gigs', icon: 'bolt' },
     { name: 'Tenders', slug: 'tenders', icon: 'file' },
 ];
+
+const latestCheck = computed(() => {
+    const stamps = props.opportunities
+        .map((opportunity) => opportunity.verified_at)
+        .filter(Boolean)
+        .map((value) => new Date(value))
+        .filter((date) => !Number.isNaN(date.getTime()));
+
+    if (stamps.length === 0) {
+        return null;
+    }
+
+    return new Intl.DateTimeFormat('en-NG', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+    }).format(new Date(Math.max(...stamps)));
+});
 
 const categoryChips = computed(() => {
     const active = new Map(props.categories.map((category) => [category.slug, category]));
@@ -112,7 +130,9 @@ function changeSort(event) {
 
 <template>
     <section class="explore-page" :class="{ 'is-ready': ready }">
-        <header class="masthead">
+        <header ref="masthead" class="masthead">
+            <span class="masthead-light" aria-hidden="true"></span>
+
             <div class="masthead-dateline">
                 <span>
                     National edition
@@ -128,7 +148,7 @@ function changeSort(event) {
                         <span>Within Nigeria</span>
                         <span class="pilot-sub">&amp; beyond</span>
                     </p>
-                    <h1 ref="headline">
+                    <h1>
                         <span class="line"><span>Find what’s next,</span></span>
                         <span class="line"><span><span class="masthead-highlight">closer to home.</span></span></span>
                     </h1>
@@ -136,6 +156,12 @@ function changeSort(event) {
                         Jobs, scholarships, grants, training and gigs for people building a living anywhere in Nigeria.
                         Every public listing records when its source and details were checked.
                     </p>
+
+                    <ul class="masthead-proof" aria-label="What every listing carries">
+                        <li><UiIcon name="pin" :size="14" /> A reviewed area</li>
+                        <li><UiIcon name="calendar" :size="14" /> The date it was checked</li>
+                        <li><UiIcon name="shield-check" :size="14" /> A separate reviewer and verifier</li>
+                    </ul>
 
                     <form class="explore-search" role="search" @submit.prevent="emit('search')">
                         <UiIcon class="explore-search-icon" name="search" :size="20" />
@@ -169,6 +195,16 @@ function changeSort(event) {
                                 {{ chip.name }}
                             </a>
                         </nav>
+                    </div>
+
+                    <div v-if="pagination && !loading" class="masthead-ledger">
+                        <p>
+                            <span class="live-dot" aria-hidden="true"></span>
+                            <strong>{{ pagination.total }}</strong>
+                            live {{ pagination.total === 1 ? 'listing' : 'listings' }}
+                        </p>
+                        <p v-if="latestCheck">Latest source check <strong>{{ latestCheck }}</strong></p>
+                        <a href="/how-it-works" data-internal-link>How checks work <span aria-hidden="true">→</span></a>
                     </div>
                 </div>
 

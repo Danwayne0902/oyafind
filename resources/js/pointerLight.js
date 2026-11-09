@@ -1,13 +1,14 @@
 /**
- * A pointer-following light for the masthead headline.
+ * A pointer-following light for the masthead.
  *
  * The handler never reads layout on move: the bounding box is measured once
  * when the pointer enters and again on resize, then a single animation frame
- * writes two custom properties. The CSS does the rest with a masked gradient,
- * so the effect is compositor-friendly and the page is complete without it.
+ * writes two custom properties. The light itself is a transform on a fixed
+ * layer, so the browser composites it and the gradient never repaints.
  *
- * It is skipped entirely for touch-only devices and reduced motion, where a
- * light that follows nothing would just be a static smudge.
+ * The light lives behind the copy: it brightens the paper, never the letters,
+ * which is what keeps the headline crisp. It is skipped entirely for
+ * touch-only devices and reduced motion.
  */
 
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;

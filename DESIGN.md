@@ -46,15 +46,15 @@ than editing the foundations.
 
 | Token | Value | Use |
 |---|---|---|
-| `--paper` | `#f7f5f0` | page stock |
-| `--paper-2` | `#efebe1` | quiet fills, chips |
+| `--paper` | `#ffffff` | page stock; the page is white |
+| `--paper-2` | `#f5f7fa` | quiet fills, chips |
 | `--surface` | `#ffffff` | cards, panels, controls |
-| `--surface-2` | `#f2efe7` | inset blocks, quiet chips |
+| `--surface-2` | `#f6f8fb` | inset blocks, quiet chips |
 | `--ink` / `--navy` | `#0e1330` / `#101c3d` | text, primary buttons, dark bands |
 | `--ink-2` | `#2f3854` | secondary headings |
-| `--ink-3` / `--muted` | `#6a7290` | body secondary, metadata (≥4.5:1 on paper) |
-| `--wire` | `#e6e1d6` | card borders, hairlines |
-| `--wire-strong` | `#d3ccbc` | hover borders, section rules |
+| `--ink-3` / `--muted` | `#6a7290` | body secondary, metadata (≥4.5:1 on white) |
+| `--wire` | `#e5e8ee` | card borders, hairlines |
+| `--wire-strong` | `#d3d9e4` | hover borders, section rules |
 | `--trust` | `#0b6b53` | checked states, confirmations |
 | `--trust-dark` | `#075442` | trust text on light surfaces |
 | `--lime` | `#c6ff00` | marker, scroll hairline, focus ring companion |
@@ -71,8 +71,14 @@ Lime on navy is allowed for the single signal word or stat in a dark card.
 - `--shadow-lg`: `0 40px 90px -50px rgb(14 19 48 / 45%)`
 - `--shadow-lift`: hover elevation for feed and category cards
 
-Elevation is layered and soft. No coloured glows, no blurred gradients behind
-text.
+Elevation is layered and soft. Cards stay white on white, separated by a
+hairline and a soft shadow. No coloured glows behind text; the only light that
+moves is the neutral silver glint that follows the pointer in the masthead.
+
+**Layout**
+
+The public shell is `96vw` wide with a `clamp(1.15rem, 2vw, 2.5rem)` gutter, so
+a laptop uses 96% of the viewport while phones keep a safe margin.
 
 ## Type
 
